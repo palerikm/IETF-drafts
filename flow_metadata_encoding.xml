@@ -332,37 +332,37 @@
         <section title="Encoding Layout">
             <t>
                 This section introduces the encoding principles through a sketch (<xref target="encoding_layout" />) of the different building blocks.
-                The encoding uses markers to delimit sections pertaining to a producer or vendor except when the endpoint 
+                The encoding uses markers to delimit sections pertaining to a producer or vendor except when the endpoint
                 is the producer or when standard characteristics are in use.
                 A marker creates a context for the characteristics and allow to skip over a section.
                 A producer section MUST contain at least one of an upstream or downstream block and MAY contain a security token.
                 The upstream or downstream block MAY be standard or vendor specific in the latter case a vendor marker MUST precede the upstream
                 and downstream block. An upstream and a downstream block are composed of metadata tags, each tag specifying a characteristic.
                 A producer section MAY contain a mixture of standard and vendor characteristics but the standard section must always come first.
-                A standard section and a vendor section for a given vendor MUST appear at most once per producer. The tags appearing in a standard
-                and in a vendor section are managed by separate registries as defined by the standard body tracking the tag allocation and by the
-                given vendor for vedor specific tags.
+                The standard section and a vendor section for a given vendor MUST appear at most once per producer. The tags appearing in a standard
+                and in a vendor section are managed by separate registries as defined by the standard body tracking the standard tags allocation and by the
+                given vendor registry for vendor specific tags.
             </t>
             <figure align="center" anchor="encoding_layout">
                 <artwork align="left"><![CDATA[
-+-----------------------------------------------------------+            ^
-|                  Security Token                           |            |E
-+-----------------------------------------------------------+            |N
-+-----------------------------------------------------------+            |D
-|                  Upstream block                           | +---+      |P
-+-----------------------------------------------------------+    L|      |O
-+-----------------------------++----------------------------+    E|      |I
-|      MD tag 1               ||     MD tag2                |    N|      |N
-+-----------------------------++----------------------------+    G|      |T
-+-----------------------------+                                  T|      |
-|      MD tag 3               |                                  H|      |S
-+-----------------------------+                                   v      |E
-+-----------------------------------------------------------+            |C
-|                   Downstream block                        |            |T
-+-----------------------------------------------------------+            |I
-+-----------------------------+                                          |O
-|      MD tag 3               |                                          |N
-+-----------------------------+                                          |
++-----------------------------------------------------------+         ^  ^
+|                  Security Token                           |        S|  |E
++-----------------------------------------------------------+        T|  |N
++-----------------------------------------------------------+        A|  |D
+|                  Upstream block                           | +---+  N|  |P
++-----------------------------------------------------------+    L|  D|  |O
++-----------------------------++----------------------------+    E|  A|  |I
+|      MD tag 1               ||     MD tag2                |    N|  R|  |N
++-----------------------------++----------------------------+    G|  D|  |T
++-----------------------------+                                  T|   |  |
+|      MD tag 3               |                                  H|  S|  |S
++-----------------------------+                                   v  E|  |E
++-----------------------------------------------------------+        C|  |C
+|                   Downstream block                        |        T|  |T
++-----------------------------------------------------------+        I|  |I
++-----------------------------+                                      O|  |O
+|      MD tag 3               |                                      N|  |N
++-----------------------------+                                       v  |
 +-----------------------------------------------------------+        V^  |
 |                   Vendor section marker                   | +---+  E|  |
 +-----------------------------------------------------------+    L|  N|  |
@@ -404,9 +404,7 @@
 +-----------------------------++----------------------------+     v      v
                     ]]></artwork>
             </figure>
-            <t>
-                The encod
-            </t>
+            <t></t>
         </section>
         <section title="ABNF">
             <figure align="left" anchor="abnf">
