@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!-- This template is for creating an Internet Draft using xml2rfc,
+     which is available here: http://xml.resource.org. -->
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+<!-- One method to get references from the online citation libraries.
+     There has to be one entity for each item to be referenced. 
+     An alternate method (rfc include) is described in the references. -->
+<!ENTITY RFC2119 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
+<!ENTITY RFC2629 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2629.xml">
+<!ENTITY RFC3552 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3552.xml">
+<!ENTITY I-D.narten-iana-considerations-rfc2434bis SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.narten-iana-considerations-rfc2434bis.xml">
+]>
+<?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
+<!-- used by XSLT processors -->
+<!-- For a complete list and description of processing instructions (PIs), 
+     please see http://xml.resource.org/authoring/README.html. -->
+<!-- Below are generally applicable Processing Instructions (PIs) that most I-Ds might want to use.
+     (Here they are set differently than their defaults in xml2rfc v1.32) -->
+<?rfc strict="yes" ?>
+<!-- give errors regarding ID-nits and DTD validation -->
+<!-- control the table of contents (ToC) -->
+<?rfc toc="yes"?>
+<!-- generate a ToC -->
+<?rfc tocdepth="4"?>
+<!-- the number of levels of subsections in ToC. default: 3 -->
+<!-- control references -->
+<?rfc symrefs="yes"?>
+<!-- use symbolic references tags, i.e, [RFC2119] instead of [1] -->
+<?rfc sortrefs="yes" ?>
+<!-- sort the reference entries alphabetically -->
+<!-- control vertical white space 
+     (using these PIs as follows is recommended by the RFC Editor) -->
+<?rfc compact="yes" ?>
+<!-- do not start each main section on a new page -->
+<?rfc subcompact="no" ?>
+<!-- keep one blank line between list items -->
+<!-- end of list of popular I-D processing instructions -->
+<rfc category="std" docName="draft-ietf-flow-metadata-encoding-00"
+     ipr="trust200902">
+  <!-- category values: std, bcp, info, exp, and historic
+     ipr values: full3667, noModification3667, noDerivatives3667
+     you can add the attributes updates="NNNN" and obsoletes="NNNN" 
+     they will automatically be output with "(if approved)" -->
+
+  <!-- ***** FRONT MATTER ***** -->
+
+  <front>
+    <!-- The abbreviated title is used in the page header - it is only necessary if the 
+         full title is longer than 39 characters -->
+
+    <title abbrev="Flow Metadata Encoding">Protocol independent encoding for
+    signaling flow characteristics</title>
+
+    <!-- add 'role="editor"' below for the editors if appropriate -->
+
+    <!-- Another author who claims to be an editor-->
+
+    <author fullname="Toerless Eckert" initials="T." role="editor"
+            surname="Eckert">
+      <organization>Cisco Systems, Inc.</organization>
+
+      <address>
+        <postal>
+          <street/>
+
+          <!-- Reorder these if your country does things differently -->
+
+          <city>San Jose</city>
+
+          <region/>
+
+          <code/>
+
+          <country>US</country>
+        </postal>
+
+        <phone>+1 408 902 2043</phone>
+
+        <email>eckert@cisco.com</email>
+
+        <!-- uri and facsimile elements may also be added -->
+      </address>
+    </author>
+
+    <author fullname="Anca Zamfir" initials="A." surname="Zamfir">
+      <organization>Cisco Systems, Inc.</organization>
+
+      <address>
+        <postal>
+          <street/>
+
+          <!-- Reorder these if your country does things differently -->
+
+          <city>Lausanne</city>
+
+          <region/>
+
+          <code/>
+
+          <country>CH</country>
+        </postal>
+
+        <phone>+41 21 69 43 826</phone>
+
+        <email>ancaz@cisco.com</email>
+
+        <!-- uri and facsimile elements may also be added -->
+      </address>
+    </author>
+
+    <author fullname="Amine Choukir" initials="A." surname="Choukir">
+      <organization>Cisco Systems, Inc.</organization>
+
+      <address>
+        <postal>
+          <street/>
+
+          <!-- Reorder these if your country does things differently -->
+
+          <city>Lausanne</city>
+
+          <region/>
+
+          <code/>
+
+          <country>CH</country>
+        </postal>
+
+        <phone>+41 78 75 98 561</phone>
+
+        <email>amchouki@cisco.com</email>
+
+        <!-- uri and facsimile elements may also be added -->
+      </address>
+    </author>
+
+    <date month="May" year="2013"/>
+
+    <!-- If the month and year are both specified and are the current ones, xml2rfc will fill 
+         in the current day for you. If only the current year is specified, xml2rfc will fill 
+         in the current day and month for you. If the year is not the current one, it is 
+         necessary to specify at least a month (xml2rfc assumes day="1" if not specified for the 
+         purpose of calculating the expiry date).  With drafts it is normally sufficient to 
+         specify just the year. -->
+
+    <!-- Meta-data Declarations -->
+
+    <area>General</area>
+
+    <workgroup>Internet Engineering Task Force</workgroup>
+
+    <!-- WG name at the upperleft corner of the doc,
+         IETF is fine for individual submissions.  
+         If this element is not present, the default is "Network Working Group",
+         which is used by the RFC Editor as a nod to the history of the IETF. -->
+
+    <keyword>template</keyword>
+
+    <!-- Keywords will be incorporated into HTML output
+         files in a meta tag but they have no effect on text or nroff
+         output. If you submit your draft to the RFC Editor, the
+         keywords will be used for the search engine. -->
+
+    <abstract>
+      <t>This document describes a protocol independent encoding for Flow
+      Metadata. A flow in this context is defined as a 5-tuple (IP_src,
+      Port_src, IP_dst, Port_dst, Transport) where Transport is a layer 4
+      protocol such as TCP or UDP. Flow Metadata exposes key characteristics
+      of the flow such as the originating application, the type of media in
+      use (e.g. audio, video) and others as defined in [I-D-FMD]. The Flow
+      Metadata information is signaled either out of band or in band but
+      always congruently with the data flow transmitted by an application.
+      Examples of out of band and in band protocols would be RSVP
+      [RFC-RSVP-FMD] and STUN [RFC-STUN-FMD]. Different network deployments
+      call out for different protocols or combination of protocols as
+      described in [RFC-FMD]. The flow characteristics can be inspected by
+      intermediate network nodes for the purpose of applying a particular
+      treatment to the flow or simply for gathering insight on the nature of
+      the traffic crossing the network node.</t>
+
+      <t>As flow characteristics across different signaling protocols are
+      identical they would benefit from a single definition and encoding
+      irrespective of the signaling protocol in use. [RFC-FMD] defines the
+      overall framework for Flow Metadata and the definition of the flow
+      characteristics. This document capture the flow characteristics
+      encoding. Separate documents capture the mapping of the Flow Metadata
+      encoding to the different signaling protocols.</t>
+    </abstract>
+  </front>
+
+  <middle>
+    <section title="Introduction">
+      <t>TBD &gt; Need to describe the unidirectional vs bidirectional &gt;
+      Should explain the different producers</t>
+
+      <section title="Requirements Language">
+        <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+        "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+        document are to be interpreted as described in <xref
+        target="RFC2119">RFC 2119</xref>.</t>
+      </section>
+    </section>
+
+    <section title="Encoding Overview">
+        <section title="General Priciples">
+            <t>
+                The flow 5-tuple is defined in a signalling protocol specifc way to accomodate different requirements
+                pertaining to the specifc features of the protocol. As an example, the STUN messages do not contain
+                any part of the 5-tuple, they are rather derived from the encapsulation of the STUN messages themself, specifically
+                from their layer 3 and 4 headers. This is due to the fact that STUN messages are interleaved in band with the
+                application flow data. This allows STUN messages to transparently traverse NATs and to be congruent with the flow.
+                In RSVP the same 5-tuple is spread over multiple RSVP object in a PATH message. Spliting the 5-tuple allows RSVP to
+                support unicast and multicast sessions.
+            </t>
+            <t>
+                The Flow Metadata characteristics are to be interpred with respect to the 5-tuple defined by the
+                signalling protocol. The Flow Metadata encoding does not carry any part of the 5-tuple but
+                merely the flow characteristics.
+            </t>
+            <t>
+                The encoding defined herein does not relate to any specific signaling but rather allow differnt signalling
+                protocols to transport flow characteristics. As the encoding is shared amongst several protocols it is versioned
+                independently to allow, if needed, its evolution without impacting the signalling protocol.
+            </t>
+        </section>
+        <section title="Encoding Goals">
+            <t>
+                In this section we describe the key goals that guided the design of the encoding.
+                <list style="symbols">
+                    <t>
+                        The encoding is to be transport independent
+                    </t>
+                    <t>
+                        The encoding should allow for a standard namespace as well vendor specific namespaces
+                    </t>
+                    <t>
+                        The encoding should support multiple producers of flow characteristics
+                    </t>
+                    <t>
+                        The encoding should be able to encode flow characteristics for both the flow itself (upstream) 
+                        and the flow in the reverse direction (downstream).
+                    </t>
+                    <t>
+                        The encoding should be extensible in a backward compatible way.
+                    </t>
+                    <t>
+                        The encoding should be flexible
+                    </t>
+                    <t>
+                        The encoding should allow the flow characteristics to be protected for integrity, to be authenticated and authorized on a per producer basis
+                    </t>
+                    <t>
+                        The encoding should be compact with respect to the common signalling case
+                    </t>
+                </list>
+            </t>
+            <section title="Transport independent">
+                <t>
+                    This aspect of the encoding has already been covered extensively, we refer the reader to the previous sections.
+                </t>
+            </section>
+            <section title="Namespaces">
+                <t>
+                    Flow Metadata originated in Cisco originally and the flow characteristics were first defined within a proprietary registry.
+                    As Flow Metadata moves through the standardisation process some of those characteristics will be adopted as standard and some
+                    will remain proprietary. This process will not happen at once and the encoding needs to allow for a smooth transition from a 
+                    proprietary registry to a standard one. A second motivation for provising the two types of namespaces is that as a standard Flow Metadata 
+                    characteristices might be defined from day one as standard ones. At last vendors will likely want to define their own flow characteristics.
+                </t>
+            </section>
+            <section title="Multi-Producer">
+                <t>
+                    Endpoints and applications are the best candidate for using Flow Metadata as they have precise knowledge of the flows they insert into
+                    the network. But they are not the only valid ones. Deep Packet Inspection engines are deployed to recognize the originator and nature of
+                    the flows traversing a network. Media Termination Points (e.g. MCU, Transcoders) are deployed to offer additional services to voice
+                    endpoints and applications. MTP have knowledge of the transormations they apply on the flow they receive. Other proxies and gateways
+                    do exit for other applications and could produce information in relation to the flow.
+                </t>
+                <t>
+                    Another aspect that must be considered is that multiple producer can contribute flow characteristics to the signalling and the encoding 
+                    must allow them to collectively contribute to the characterization of the flow. 
+                </t>
+            </section>
+            <section title="Bi-directional signaling">
+                <t>
+                    As explained in the introduction and as detailed in [RFC-FMD] a flow is unidirectional by definition but different use cases and signalling 
+                    protocols call for signalling both upstream characteristics and downstream characteristics. A good example is when two parties communicate
+                    but only a single one supports Flow Metadata. In such a situation the network nodes would benefit from having information for both application
+                    flows to apply the right treatment to both directions.
+                </t>
+            </section>
+            <section title="Extensible">
+                <t>
+                    New use cases or new deployment scenario might require the use of new flow characteristics and the encoding should support those new addition
+                    in a backward compatible way. This allows for old implementation on both the signal originator and network nodes on the flow path to coexist
+                    with newer ones. A good example would be a signal orginator advertising the application name inserting the flow into the network in version 1
+                    and later on adding the media-type (e.g. audio, video). A version 2 flow originator can still receive treatment from a network node running 
+                    version 1 on the basis of the application name advertised. The same holds true for a version 1 originator and a network node supporting version 2.
+                    At the same time a version 2 originator and a version 2 network node can benefit from the additional information to refine the flow treatment.
+                </t>
+            </section>
+            <section title="Flexible">
+                <t>
+                    Different use cases might need different sets of flow characterists. In the same way different originators might signal different flow characteristics.
+                    A good example is a video conferencing endpoint might need to signal which of its flows are audio and video. Video surveillance cameras might only signal
+                    video flows but will need to indicate which one has priority based for example on embedded analytics.
+                </t>
+            </section>
+            <section title="Per producer security">
+                <t>
+                    Protecting the integrity and authenticating the flow characteristics is fundamental to allow the usage of the enclosed information. Indeed treatment applied
+                    on that basis can consume network resources and therefore lead to their exhaustion. But the integrity and authenticity of the flow characteristics is not 
+                    enough as a genuine applications or users can on purpose or by error send flow chracteristics its not authorized to send. The encoding must allow for the
+                    inclusion of security material to achieve those objectives. The encoding itself does not define the security material used and leave that task to separate
+                    documents.
+                </t>
+                <t>
+                    Another aspect needs to be taken into account which is that multiple producers can contribute to the flow characterization. And different producer will 
+                    liekly use different credentials. Securing the flow charcteristics must consequently be done per producer basis.
+                </t>
+            </section>
+            <section title="Compact for the common usage">
+                <t>
+                    The encoding defined must support the preceding requirement and to do so must pay some price in encoding structure. This should be minized for the common
+                    usage of the encoding which is for flow characteristics to be signalled by the endpoint or application inserting the flow on the network. This allow for
+                    most of the complexity to be hidden in the network or specific proxies and gateways.
+                </t>
+            </section>
+        </section>
+    </section>
+    <section title="Encoding specification">
+        <section title="Encoding Layout">
+            <t>
+                This section introduces the encoding principles through a sketch (<xref target="encoding_layout" />) of the different building blocks.
+                The encoding uses markers to delimit sections pertaining to a producer or vendor except when the endpoint 
+                is the producer or when standard characteristics are in use.
+                A marker creates a context for the characteristics and allow to skip over a section.
+                A producer section MUST contain at least one of an upstream or downstream block and MAY contain a security token.
+                The upstream or downstream block MAY be standard or vendor specific in the latter case a vendor marker MUST precede the upstream
+                and downstream block. An upstream and a downstream block are composed of metadata tags, each tag specifying a characteristic.
+                A producer section MAY contain a mixture of standard and vendor characteristics but the standard section must always come first.
+                A standard section and a vendor section for a given vendor MUST appear at most once per producer. The tags appearing in a standard
+                and in a vendor section are managed by separate registries as defined by the standard body tracking the tag allocation and by the
+                given vendor for vedor specific tags.
+            </t>
+            <figure align="center" anchor="encoding_layout">
+                <artwork align="left"><![CDATA[
++-----------------------------------------------------------+            ^
+|                  Security Token                           |            |E
++-----------------------------------------------------------+            |N
++-----------------------------------------------------------+            |D
+|                  Upstream block                           | +---+      |P
++-----------------------------------------------------------+    L|      |O
++-----------------------------++----------------------------+    E|      |I
+|      MD tag 1               ||     MD tag2                |    N|      |N
++-----------------------------++----------------------------+    G|      |T
++-----------------------------+                                  T|      |
+|      MD tag 3               |                                  H|      |S
++-----------------------------+                                   v      |E
++-----------------------------------------------------------+            |C
+|                   Downstream block                        |            |T
++-----------------------------------------------------------+            |I
++-----------------------------+                                          |O
+|      MD tag 3               |                                          |N
++-----------------------------+                                          |
++-----------------------------------------------------------+        V^  |
+|                   Vendor section marker                   | +---+  E|  |
++-----------------------------------------------------------+    L|  N|  |
++-----------------------------------------------------------+    E|  D|  |
+|                   Upstream block                          |    N|  O|  |
++-----------------------------------------------------------+    G|  R|  |
++-----------------------------++----------------------------+    T|   |  |
+|      MD tag 1'              ||       MD tag 2'            |    H|  S|  |
++-----------------------------++----------------------------+     v  .v  v
++-----------------------------------------------------------+            ^
+|                   Producer block marker                   | +---+      |P
++-----------------------------------------------------------+     |      |R
++-----------------------------------------------------------+     |      |O
+|                   Security token                          |     |      |D
++-----------------------------------------------------------+     |      |U
++-----------------------------------------------------------+     |      |C
+|                   Upstream block                          |     |      |E
++-----------------------------------------------------------+     |      |R
++-----------------------------++----------------------------+     |      |
+|       MD tag 2              ||     MD tag 4               |    L|      |S
++-----------------------------++----------------------------+    E|      |E
++-----------------------------+                                  N|      |C
+|       MD tag 5              |                                  G|      |T
++-----------------------------+                                  T|      |I
++-----------------------------------------------------------+    H|      |O
+|                    Downstream block                       |     |      |N
++-----------------------------------------------------------+     |      |
++-----------------------------+                                   |      |
+|       MD tag 6              |                                   |      |
++-----------------------------+                                   |      |
++-----------------------------------------------------------+     |      |
+|                    Vendor block marker                    |     |      |
++-----------------------------------------------------------+     |      |
++-----------------------------------------------------------+     |      |
+|                    Downstream block                       |     |      |
++-----------------------------------------------------------+     |      |
++-----------------------------++----------------------------+     |      |
+|       MD tag 3''            ||       MD tag 4''           |     |      |
++-----------------------------++----------------------------+     v      v
+                    ]]></artwork>
+            </figure>
+            <t>
+                The encod
+            </t>
+        </section>
+        <section title="ABNF">
+            <figure align="left" anchor="abnf">
+                <artwork align="left"> <![CDATA[
+MD-block = Version 1*( *1(Endpoint-block) / (Producer-tlv Producer-block) )
+
+Version = %x0-FF ;  NEW-VER will be picked up as the first
+;  version of the encoding
+
+Endpoint-block = Producer-block; For the endpoint we do not
+; require the Producer-tlv
+
+Producer-block = [Security-tlv] 1*( 1*1(Standard-block) / Vendor-block )
+
+Standard-block = Flow-block; We do not require the PEN-tlv
+; for the standard tags
+
+Vendor-block = PEN-tlv Flow-block
+
+Flow-block = 1*2( *1(Upstream-tlv) / *1(Downstream-tlv) )
+
+PEN-tlv = PEN-type Length PEN-value
+
+PEN-value = PEN-id Length; The Length here indicates
+; the length of the PEN section
+
+Length = %x0-FFFF; A length field
+
+Producer-tlv = Producer-type Length Producer-value
+
+Producer-type = %x0-FF; The first foreseen producer is MD-NETWORK
+; to cover for DPI engines, gateways and others
+
+Producer-value = Precedence Length; Here the length indicates the 
+size of the Producer section
+
+Precedence = %x0-FF;  Indicates the preferred source of information 
+for a  producer-type
+
+Security-tlv = Security-type Length Security-value
+
+Security-value = Security-scheme *(%x0-FF)
+
+Security-scheme = %x0-FF; Type of security used
+
+Upstream-tlv = Upstream-type Length Upstream-value
+
+Upstream-type = MD-ATTR-UP
+
+Upstream-value = attribute-list
+
+attribute-list = (attribute-tlv)*
+
+attribute-tlv = attribute-type attribute-length attribute-value
+
+Downstream-tlv = Downstream-type Length Downstream-value
+
+Downstream-type = MD-ATTR-DN
+
+Downstream-value = attribute-list
+
+attribute-list = (attribute-tlv)*
+                    ]]></artwork>
+            </figure>
+        </section>
+    </section>
+
+</middle>
+
+<!--  *****BACK MATTER ***** -->
+
+  <back>
+      <!-- References split into informative and normative -->
+
+      <!-- There are 2 ways to insert reference entries from the citation libraries:
+     1. define an ENTITY at the top, and use "ampersand character"RFC2629; here (as shown)
+     2. simply use a PI "less than character"?rfc include="reference.RFC.2119.xml"?> here
+        (for I-Ds: include="reference.I-D.narten-iana-considerations-rfc2434bis.xml")
+
+     Both are cited textually in the same manner: by using xref elements.
+     If you use the PI option, xml2rfc will, by default, try to find included files in the same
+     directory as the including file. You can also define the XML_LIBRARY environment variable
+     with a value containing a set of directories to search.  These can be either in the local
+     filing system or remote ones accessed by http (http://domain/dir/... ).-->
+
+    <references title="Normative References">
+        <!--?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml"?-->
+
+        &RFC2119;
+
+        <reference anchor="min_ref">
+            <!-- the following is the minimum to make xml2rfc happy -->
+
+            <front>
+                <title>Minimal Reference</title>
+
+                <author initials="authInitials" surname="authSurName">
+                    <organization/>
+                </author>
+
+                <date year="2006"/>
+            </front>
+        </reference>
+    </references>
+
+    <references title="Informative References">
+        <!-- Here we use entities that we defined at the beginning. -->
+
+        &RFC2629;
+
+        &RFC3552;
+
+        &I-D.narten-iana-considerations-rfc2434bis;
+
+        <!-- A reference written by by an organization not a person. -->
+
+    </references>
+
+</back>
+</rfc>
