@@ -34,6 +34,8 @@
 <!-- do not start each main section on a new page -->
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
+<?rfc autobreaks="yes"?>
+<!-- Prevent automatic page break -->
 <!-- end of list of popular I-D processing instructions -->
 <rfc category="std" docName="draft-ietf-flow-metadata-encoding-00"
      ipr="trust200902">
@@ -291,10 +293,11 @@
           <t>New use cases or new deployment scenario might require the use of
           new flow characteristics. The encoding should support new additions
           in a backwards compatible way. This allows for old implementations
-          on both the initiator and network nodes on the flow path to coexist
-          with newer ones. For example an endpoint advertising the application
-          name inserting the flow into the network in version 1 and later on
-          adding the media-type (e.g. audio, video). A version 2 flow
+          at the endpoint originating the flow and network nodes on the flow 
+          path to coexist with newer ones. For example an endpoint might advertise 
+          the application name in version 1 and later on
+          the media-type (e.g. audio, video) in version 2.
+          A version 2 flow
           originator can still receive treatment from a network node running
           version 1 on the basis of the application name advertised. The same
           holds true for a version 1 originator and a network node supporting
@@ -326,16 +329,13 @@
           resources and therefore lead to their exhaustion. But the integrity
           and authenticity of the flow characteristics is not enough as a
           genuine applications or users can on purpose or by error send flow
-          chracteristics its not authorized to send. The encoding must allow
-          for the inclusion of security material to achieve those objectives.
-          The encoding itself does not define the security material used and
-          leave that task to separate documents.</t>
+          chracteristics they are not authorized to send.</t>
         </section>
 
         <section title="Compact Encoding">
           <t>The encoding defined must support the preceding requirement and
           to do so must pay some price in encoding structure. This should be
-          minized for the common usage of the encoding which is for flow
+          minimized for the common usage of the encoding which is for flow
           characteristics to be signalled by the endpoint or application
           inserting the flow on the network. This allow for most of the
           complexity to be hidden in the network or specific proxies and
@@ -348,13 +348,13 @@
       <section title="Layout">
         <t>This section describes the encoding layout proposed by this
         specification. The format of the Flow Metadata (<xref
-        target="encoding_layout"/>) shows the of the different building
+        target="encoding_layout"/>) shows the layout of the different building
         blocks. </t>
 
         <t>The encoding uses markers to delimit sections pertaining to a
         producer or vendor except when the endpoint is the producer or when
         standard characteristics are in use. A marker creates a context for
-        the characteristics and allows to skip over a section. </t>
+        the characteristics</t>
 
         <t>A producer section MUST contain at least one upstream or downstream
         block and MAY contain a security token. </t>
@@ -373,66 +373,53 @@
         managed by separate registries as defined by the standard body
         tracking the standard tags allocation and by the given vendor registry
         for vendor specific tags.</t>
-
         <figure align="center" anchor="encoding_layout" title="">
           <artwork align="left"><![CDATA[
-+---------------------------------------------------+         ^  ^
-|              Security Token                       |        S|  |E
-+---------------------------------------------------+        T|  |N
-+---------------------------------------------------+        A|  |D
-|              Upstream block                       | +---+  N|  |P
-+---------------------------------------------------+    L|  D|  |O
-+-------------------------++------------------------+    E|  A|  |I
-|  MD tag 1               ||     MD tag2            |    N|  R|  |N
-+-------------------------++------------------------+    G|  D|  |T
-+-------------------------+                              T|   |  |
-|  MD tag 3               |                              H|  S|  |S
-+-------------------------+                               v  E|  |E
-+---------------------------------------------------+        C|  |C
-|               Downstream block                    |        T|  |T
-+---------------------------------------------------+        I|  |I
-+-------------------------+                                  O|  |O
-|  MD tag 3               |                                  N|  |N
-+-------------------------+                                   v  |
-+---------------------------------------------------+        V^  |
-|               Vendor section marker               | +---+  E|  |
-+---------------------------------------------------+    L|  N|  |
-+---------------------------------------------------+    E|  D|  |
-|               Upstream block                      |    N|  O|  |
-+---------------------------------------------------+    G|  R|  |
-+-------------------------++------------------------+    T|   |  |
-|  MD tag 1'              ||       MD tag 2'        |    H|  S|  |
-+-------------------------++------------------------+     v  .v  v
-+---------------------------------------------------+            ^
-|               Producer block marker               | +---+      |P
-+---------------------------------------------------+     |      |R
-+---------------------------------------------------+     |      |O
-|               Security token                      |     |      |D
-+---------------------------------------------------+     |      |U
-+---------------------------------------------------+     |      |C
-|               Upstream block                      |     |      |E
-+---------------------------------------------------+     |      |R
-+-------------------------++------------------------+     |      |
-|   MD tag 2              ||     MD tag 4           |    L|      |S
-+-------------------------++------------------------+    E|      |E
-+-------------------------+                              N|      |C
-|   MD tag 5              |                              G|      |T
-+-------------------------+                              T|      |I
-+---------------------------------------------------+    H|      |O
-|                Downstream block                   |     |      |N
-+---------------------------------------------------+     |      |
-+-------------------------+                               |      |
-|   MD tag 6              |                               |      |
-+-------------------------+                               |      |
-+---------------------------------------------------+     |      |
-|                Vendor block marker                |     |      |
-+---------------------------------------------------+     |      |
-+---------------------------------------------------+     |      |
-|                Downstream block                   |     |      |
-+---------------------------------------------------+     |      |
-+-------------------------++------------------------+     |      |
-|   MD tag 3''            ||       MD tag 4''       |     |      |
-+-------------------------++------------------------+     v      v
++--------------------------------+ 
+|         Security Token         |
++--------------------------------+
++--------------------------------+ ^  ^
+|          Upstream block        | |  |E
+| +------------+  +------------+ | |  |N
+| |  MD tag 1  |  |  MD tag 2  | | |S |D
+| +------------+  +------------+ | |T |P
++--------------------------------+ |D |O
++--------------------------------+ |  |I
+|         Downstream block       | |S |N
+| +------------+                 | |  |T
+| |  MD tag 3  |                 | |  |
+| +------------+                 | |  |S
++--------------------------------+ v  |E
++--------------------------------+    |C
+|     Vendor section marker      |    |T
++--------------------------------+    |I
++--------------------------------+ ^  |O
+|          Upstream block        | |V |N
+| +------------+  +------------+ | |N |
+| |  MD tag 1' |  |  MD tag 2' | | |D |
+| +------------+  +------------+ | |  |
++--------------------------------+ vS v
++--------------------------------+    ^
+|      Producer block marker     |    |
++--------------------------------+    |
++--------------------------------+    |P
+|         Security Token         |    |R
++--------------------------------+    |O
++--------------------------------+    |D
+|         Downstream block       |    |U
+| +------------+                 |    |C
+| |  MD tag 5  |                 |    |E
+| +------------+                 |    |R
++--------------------------------+    |
++--------------------------------+    |S
+|     Vendor section marker      |    |E
++--------------------------------+    |C
++--------------------------------+    |T
+|         Downstream block       |    |I
+| +------------+                 |    |O
+| |  MD tag 3''|                 |    |N
+| +------------+                 |    |
++--------------------------------+    v
                     ]]></artwork>
         </figure>
 
@@ -453,22 +440,149 @@
 |  MD tag 3               |
 +-------------------------+
                     ]]></artwork>
-        </figure>
-      </section>
-
-      <section title="Encoding Elements">
-        <t>This specification defines a number of encoding elements using a
-        TLV format. </t>
-
-        <figure align="center" anchor="encoding_layout_structure">
-          <artwork align="left"><![CDATA[
+            </figure>
+        </section>
+        <section title="Encoding structues">
+            <t>
+                This section explores the encoding looking more closely at the encoding structures and their roles.
+                <xref target="encoding_ep_std_struct" /> shows the encoding used by an endpoint using only standard
+                tags. <xref target="encoding_ep_vnd_struct" /> shows the encoding used by an endpoint using only
+                vendor specifc tags. <xref target="encoding_nt_std_struct" /> shows the encoding for non endpoint
+                producers using only standard tags. The three scenarios expose all the encoding structures, other application
+                can be derived. The encoding makes use of Type Length Value (TLV) as the base building block and some
+                level of nesting to create the different encoding structures.
+            </t>
+            <t>
+                As explained earlier endpoint and producer sections MUST contain at least one of an upstream or a downstream
+                block and MAY contain a security token. Those three structure are TLVs where the type indicates which structure
+                is encountered and the length indicates the size of the enclosed content.
+            </t>
+            <t>
+                The value of the security token is broken down in two parts, a security-scheme indicating the security method
+                used and the security-value holding the security payload specific to the security scheme. The definition of the
+                different security schemes and their payloads are left to a separate document.
+            </t>
+            <t>
+                The value of the upstream and downstream block are subdivided in Metadata tags. Each tag is itself a TLV
+                specifying a flow characteristic. The tags type is defined in a separate registry from the enclosing structures.
+                The security token, the upstream and the downstream block types are defined within the same registry.
+            </t>
+            <figure align="center" anchor="encoding_ep_std_struct">
+                <artwork align="left"><![CDATA[
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ ^S
+|        Security-type          |             Length            | |E
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |C
+|       Security-scheme         |                               : |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               : |T
+:                       Security-value                          : |O
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ vK
+|        Upstream-type          |             Length            |     ^U
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ ^M  |P
+|           Tag-type            |             Length            | |D  |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |   |B
+:                           Tag-value                           : |T  |L
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ v   |O
+:                            ...                                :     |C
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+     vK
+|        Downstream-type        |             Length            |     ^D
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+     |N
+|           Tag-type            |             Length            |     |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+     |B
+:                           Tag-value                           :     |L
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+     |O
+:                            ...                                :     |C
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+     vK
                     ]]></artwork>
-        </figure>
-      </section>
-
-      <section title="ABNF">
-        <figure align="left" anchor="abnf">
-          <artwork align="left"><![CDATA[ 
+            </figure>
+            <t>
+                <xref target="encoding_ep_vnd_struct" /> adds the vendor section marker which starts a vendor section. The vendor marker is a TLV which type
+                is defined in the same registry as the security token. Its value is
+                the vendor's is the Private Enterprise Number (PEN) allocated by IANA. The vendor marker does not enclose the
+                downstream and the upstream block but rather set the context to interpret them. Multiple vendor section within
+                the same endpoint or producer section as long as they pertain to different vendors.
+            </t>
+            <figure align="center" anchor="encoding_ep_vnd_struct">
+                <artwork align="left"><![CDATA[
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|        Security-type          |             Length            |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|       Security-scheme         |                               :
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               :
+:                       Security-value                          :
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ ^
+|           PEN-type            |             Length            | |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |
+|                            PEN-id                             | |V
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |E
+|        Upstream-type          |             Length            | |N
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |D
+|           Tag-type            |             Length            | |O
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |R
+:                           Tag-value                           : |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |S
+:                            ...                                : |E
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |C
+|        Downstream-type        |             Length            | |T
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |I
+|           Tag-type            |             Length            | |O
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |N
+:                           Tag-value                           : |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |
+:                            ...                                : |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ v
+                    ]]></artwork>
+            </figure>
+            <t>
+                <xref target="encoding_nt_std_struct" /> adds the producer marker which start a producer section. The producer marker is
+                a TLV which type is defined within the same registry as the security token. The value of the producer marker is the
+                producer precedence which indicates the administrative preference for the producer flow characteristics. The precedence
+                allows to merge information from different producer and retain only the preferred one.
+            </t>
+            <figure align="center" anchor="encoding_nt_std_struct">
+                <artwork align="left"><![CDATA[
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ ^
+|        Producer-type          |             Length            | |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |
+|                          Precedence                           | |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |
+|        Security-type          |             Length            | |P
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |R
+|       Security-scheme         |                               : |O
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               : |D
+:                       Security-value                          : |U
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |C
+|        Upstream-type          |             Length            | |E
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |R
+|           Tag-type            |             Length            | |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |S
+:                           Tag-value                           : |E
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |C
+:                            ...                                : |T
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |I
+|        Downstream-type        |             Length            | |O
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |N
+|           Tag-type            |             Length            | |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |
+:                           Tag-value                           : |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |
+:                            ...                                : |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ v
+                    ]]></artwork>
+            </figure>
+            <t>
+                All the exposed constructs can be combined to signal standard and vendor specific tags for different producers and allows
+                to secure each producer information independently.
+            </t>
+        </section>
+        <section title="ABNF">
+            <figure align="left" anchor="abnf">
+                <artwork align="left"> <![CDATA[
 MD-block = Version 1*( *1(Endpoint-block) / (Producer-tlv Producer-block) )
 
 Version = %x0-FF ;  NEW-VER will be picked up as the first
@@ -486,10 +600,9 @@ Vendor-block = PEN-tlv Flow-block
 
 Flow-block = 1*2( *1(Upstream-tlv) / *1(Downstream-tlv) )
 
-PEN-tlv = PEN-type Length PEN-value
+PEN-tlv = PEN-type Length PEN-id
 
-PEN-value = PEN-id Length; The Length here indicates
-; the length of the PEN section
+PEN-id = %x0-FFFFFFFF; Private Enterprise Number defined by IANA
 
 Length = %x0-FFFF; A length field
 
