@@ -208,9 +208,10 @@
         <t>This specification assumes that the flow 5-tuple is determined by
         the transport protocol. As an example, in STUN the 5-tuple is present
         in the layer 3 and 4 headers of the message. In RSVP the 5-tuple is
-        obtained from the SESSION and SENDER-TEMPLATE objects.</t>
-
-        <t>[AZ - let's add the PCP one as well]</t>
+        obtained from the SESSION and SENDER-TEMPLATE objects. In PCP the
+        source IP is part of the request common header the remainder of the
+        5-tuple needs to be embedded in the opcode data.
+    </t>
 
         <t>The Flow Metadata characteristics are to be interpreted in the
         context of the 5-tuple defined by the signaling protocol. The Flow
@@ -251,15 +252,15 @@
           <t>One goal of this proposal is to provide an encoding that can be
           used by more than one transport protocol. This should help with the
           future standardization effort and also implementations that make use
-          of different protocols when transporting flow metadata. One example
+          of different protocols when transporting Flow Metadata. One example
           is an endpoint that may use different signaling protocols depending
           on the environment, peer protocol support, etc. Another is a
-          middlebox on an administrative boundery that may need to perform
+          middlebox on an administrative boundary that may need to perform
           protocol interworking functions.</t>
         </section>
 
         <section title="Standard and Vendor Specific Namespaces">
-          <t>Vendors need the ability to define and use proprietary metadata
+          <t>Vendors need the ability to define and use proprietary Metadata
           when they are delivering a pre-standard feature or product or when
           the encoded information is of commercially sensitive nature. This
           specification provides support for both standard and vendor specific
@@ -267,17 +268,17 @@
         </section>
 
         <section title="Multiple Producers">
-          <t>[AZ = search for flow metadata and fix capitalization]</t>
 
           <t>Endpoints and applications are one category of candidates for
           generating Flow Metadata as they have precise knowledge of the flows
           they insert into the network. Middleboxes constitute a second class
-          of metadata producers. Deep Packet Inspection engines are deployed
+          of Metadata producers. Deep Packet Inspection engines are deployed
           to recognize the originator and nature of the flows traversing a
           network. Media Termination Points (e.g. MCU, Transcoders) are
           deployed to offer additional services to voice endpoints and
           applications. MTP have knowledge of the transformations they apply
-          on the flow they receive. Other proxies and gateways do exit for
+          on the flow they receive and can therefore update the 
+          characteristics of the flow. Other proxies and gateways do exit for
           other applications and could produce information in relation to the
           flow.</t>
 
@@ -293,7 +294,7 @@
           but some use cases and signaling protocols require the ability to
           signal both upstream and downstream flow characteristics. For
           example, when using end-to-edge transport protocols, such as PCP, it
-          is possible that the peer endpoint, even if it is metadata capable,
+          is possible that the peer endpoint, even if it is Metadata capable,
           is not on the signaling path and will not be able to signal for its
           upstream direction. In such a situation the network nodes would
           benefit from having information for both upstream and downstream
@@ -302,97 +303,110 @@
         </section>
 
         <section title="Extensibility">
-          <t>New use cases or deployment scenarios might require defining
-          additional flow characteristics. The encoding should support new
-          additions in a backwards compatible way. This allows for old
-          implementations at the endpoint originating the flow and network
-          nodes on the flow path to coexist with newer ones. For example an
-          endpoint might advertise the application name in version 1 and later
-          on the media-type (e.g. audio, video) in version 2. A version 2 flow
-          originator can still receive treatment from a network node running
-          version 1 on the basis of the application name advertised. The same
-          holds true for a version 1 originator and a network node supporting
-          version 2. At the same time a version 2 originator and a version 2
-          network node can benefit from the additional information to refine
-          the flow treatment.</t>
-
-          <t>[AZ] This one needs rewording.</t>
+            <t> New use cases or new deployment scenario will likely require the
+                use of new flow characteristics. For this reason the encoding
+                should support Metadata tag additions in a backwards compatible
+                way. New tag sets will consequently become superset
+                of older ones. Two implementation supporting different tag sets
+                can use the oldest of the two tag sets for the purpose of
+                applying treatment to or gathering information about the
+                endpoint or application flows.
+            </t>
         </section>
 
         <section title="Flexibility">
-          <t>Different use cases may use different sets of flow characterists.
-          In the same way different originators may signal different flow
-          characteristics. One example is a video conferencing endpoint that
-          signals which of its flows are audio and video. Video surveillance
-          cameras may only signal video flows but will need to indicate which
-          one has priority, based for example on embedded analytics.</t>
+            <t>
+                Distinct use cases and individual endpoints or application
+                will likely have a need for different subset of Metadata tags.
+                The encoding should support the signalling of any subset of
+                Metadata tags for that purpose. An example is a video
+                conferencing endpoint might need to signal which of its flows
+                are audio and video. Video surveillance cameras might only
+                signal video flows but will need to indicate which one has
+                priority based for example on embedded analytics.
+            </t>
         </section>
 
         <section title="Per Producer Security">
-          <t>Integrity protection and authentication of flow characteristics
-          is a very important aspect for features using the Flow Metadata
-          signaling. This specification defines a Security element container
-          to be used for this purposes. However the security method to be used
-          is outside the scope of this specification.</t>
+            <t>
+                Integrity protection and authentication of flow characteristics
+                is a very important aspect for features using the Flow Metadata
+                signaling. This specification defines a Security element container
+                to be used for this purpose. However the security method to be used
+                is outside the scope of this specification. 
+            </t>
 
-          <t>Indeed treatment applied on that basis can consume network
-          resources and therefore lead to their exhaustion. But the integrity
-          and authenticity of the flow characteristics is not enough as a
-          genuine applications or users can on purpose or by error send flow
-          chracteristics they are not authorized to send.</t>
+            <t>
+                Indeed treatment applied on that basis can consume network
+                resources and therefore lead to their exhaustion. But the integrity
+                and authenticity of the flow characteristics is not enough as a
+                genuine applications or users can on purpose or by error send flow
+                chracteristics they are not authorized to send. To that end
+                Authorization should be one of the goal of any security method 
+                used to secure the Metadata tags side by side with their 
+                authentication and integrity.
+            </t>
 
-          <t>[AZ - ok, but even with all security and authentication, apps can
-          lie, see that RFC Tiru pointed to]</t>
+            <t>[
+                AZ - ok, but even with all security and authentication, apps can
+                lie, see that RFC Tiru pointed to
+                [ AC I have read the RFC and there are two aspects
+                  1- Don't signal services but derive them otherwise application
+                  will lie to obtain the treatment it wishes. On this one we are
+                  covered as we are not signaling services but flow characteristics
+                  2- How to secure the data sent. Here what we suggest is for the 
+                  security method to use a combination of Authentication, Integrity
+                  and Authorization]
+                ]</t>
         </section>
 
         <section title="Compact Encoding">
-          <t>On of the goals of the encoding described in this specification
-          is to be compact and consume minimal space in protocol control
-          payload. Most of the protocols have limited space for metadata
-          purposes and don't support semantic fragmentation. </t>
-
-          <t>The encoding defined must support the preceding requirement and
-          to do so must pay some price in encoding structure. This should be
-          minimized for the common usage of the encoding which is for flow
-          characteristics to be signalled by the endpoint or application
-          inserting the flow on the network. This allow for most of the
-          complexity to be hidden in the network or specific proxies and
-          gateways.</t>
-
-          <t>[AZ - the paragraph above needs rewrite]</t>
+            <t>
+                One of the goals of the encoding described in this specification
+                is to be compact and consume minimal space in the signalling protocol 
+                payload. Most of the protocols have limited space for Metadata
+                purposes and don't support semantic fragmentation. The strategy
+                of the encoding is to minimize the encoding structures used
+                for the common signalling case. The common case is foreseen to
+                be the endpoint signalling standard flow characteristics.
+            </t>
         </section>
       </section>
     </section>
 
     <section title="Encoding specification">
       <section title="Layout">
-        <t>This section describes the encoding layout proposed by this
-        specification. The format of the Flow Metadata (<xref
-        target="encoding_layout"/>) shows the layout of the different building
-        blocks.</t>
+          <t>This section describes the encoding layout proposed by this
+              specification. The format of the Flow Metadata (<xref
+                  target="encoding_layout"/>) shows the layout of the different building
+              blocks. </t>
 
-        <t>The encoding uses markers to delimit sections pertaining to a
-        producer or vendor except when the endpoint is the producer or when
-        standard characteristics are in use. A marker creates a context for
-        the characteristics</t>
+          <t>The encoding uses markers to delimit sections pertaining to a
+              producer or vendor except when the endpoint is the producer or when
+              standard characteristics are in use. A marker creates a context for
+              the characteristics</t>
 
-        <t>A producer section MUST contain at least one upstream or downstream
-        block and MAY contain a security token.</t>
+          <t>A producer section MUST contain at least one upstream or downstream
+              block and MAY contain a security token. </t>
 
-        <t>The upstream or downstream block MAY be standard or vendor specific
-        and in the latter case a vendor marker MUST precede the upstream and/
-        or downstream block. Upstream and downstream blocks are composed of
-        metadata tags, each tag specifying a characteristic.</t>
+          <t>The upstream or downstream block MAY be standard or vendor specific
+              and in the latter case a vendor marker MUST precede the upstream and/
+              or downstream block. Upstream and downstream blocks are composed of
+              Metadata tags, each tag specifying a characteristic. </t>
 
-        <t>A producer section MAY contain a mixture of standard and vendor
-        characteristics but the standard section must always come first. The
-        standard section and a given vendor section MUST appear at most once
-        per producer.</t>
+          <t>
+              A producer section MAY contain a mixture of standard and vendor
+              characteristics but the standard section must always come first. The
+              standard section and a given vendor section MUST appear at most once
+              per producer. </t>
 
-        <t>The tags appearing in a standard and in a vendor section are
-        managed by separate registries as defined by the standard body
-        tracking the standard tags allocation and by the given vendor registry
-        for vendor specific tags.</t>
+          <t>
+              The tags appearing in a standard and in a vendor section are
+              managed by separate registries. A standard body wil track the
+              standard tags allocation and separate vendor registries will
+              track vendor specific tags allocations.
+              for vendor specific tags.
+          </t>
 
         <figure align="center" anchor="encoding_layout" title="">
           <artwork align="left"><![CDATA[
@@ -438,28 +452,25 @@
 +--------------------------------+    |T
 |         Downstream block       |    |I
 | +------------+                 |    |O
-| |  MD tag 3  |                 |    |N
+| |  MD tag    |                 |    |N
 | +------------+                 |    |
 +--------------------------------+    v
                     ]]></artwork>
         </figure>
 
         <t><xref target="encoding_layout_compact"/> shows an encoding example
-        for Flow metadata standard characteristics produced by an endpoint for
+        for Flow Metadata standard characteristics produced by an endpoint for
         the upstream (same as 5-tuple) direction. Further example are given in
         <xref target="examples"/>.</t>
 
         <figure align="center" anchor="encoding_layout_compact">
           <artwork align="left"><![CDATA[
-+---------------------------------------------------+
-|              Upstream block                       |
-+---------------------------------------------------+
-+-------------------------++------------------------+
-|  MD tag                 ||     MD tag             |
-+-------------------------++------------------------+
-+-------------------------+
-|  MD tag                 |.....
-+-------------------------+
++--------------------------------+
+|          Upstream block        |
+| +------------+  +------------+ |
+| |  MD tag    |  |  MD tag    | |
+| +------------+  +------------+ |
++--------------------------------+
                     ]]></artwork>
         </figure>
       </section>
