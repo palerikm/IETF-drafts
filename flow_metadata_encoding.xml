@@ -400,29 +400,29 @@
             </t>
             <figure align="center" anchor="encoding_section" title="Encoding section">
                 <artwork align="left"><![CDATA[
-                    +--------------------------------+
-                    |         Endpoint Section       |
-                    +--------------------------------+
-                    +--------------------------------+
-                    |         Producer-1 Marker      |
-                    +--------------------------------+
-                    +--------------------------------+
-                    |                                |
-                    |                                |
-                    |        Producer-1 Section      |
-                    |                                |
-                    +--------------------------------+
-                    +--------------------------------+
-                    |         Producer-2 Marker      |
-                    +--------------------------------+
-                    +--------------------------------+
-                    |         Producer-2 Section     |
-                    |                                |
-                    |                                |
-                    |                                |
-                    |                                |
-                    |                                |
-                    +--------------------------------+
++--------------------------------+
+|         Endpoint Section       |
++--------------------------------+
++--------------------------------+
+|         Producer-1 Marker      |
++--------------------------------+
++--------------------------------+
+|                                |
+|                                |
+|        Producer-1 Section      |
+|                                |
++--------------------------------+
++--------------------------------+
+|         Producer-2 Marker      |
++--------------------------------+
++--------------------------------+
+|         Producer-2 Section     |
+|                                |
+|                                |
+|                                |
+|                                |
+|                                |
++--------------------------------+
                     ]]></artwork>
             </figure>
             <t>
@@ -437,37 +437,37 @@
             </t>
             <figure align="center" anchor="encoding_section_content" title="Encoding section content">
                 <artwork align="left"><![CDATA[
-                    +--------------------------------+
-                    |         Security Token         |
-                    +--------------------------------+
-                    +--------------------------------+
-                    |                                |
-                    |                                |
-                    |      Standard Sub-Section      |
-                    |                                |
-                    +--------------------------------+
-                    +--------------------------------+
-                    |         Vendor-1 Marker        |
-                    +--------------------------------+
-                    +--------------------------------+
-                    |       Vendor-1 Sub-Section     |
-                    |                                |
-                    |                                |
-                    |                                |
-                    |                                |
-                    |                                |
-                    +--------------------------------+
-                    +--------------------------------+
-                    |         Vendor-2 Marker        |
-                    +--------------------------------+
-                    +--------------------------------+
-                    |       Vendor-2 Sub-Section     |
-                    |                                |
-                    |                                |
-                    |                                |
-                    |                                |
-                    |                                |
-                    +--------------------------------+
++--------------------------------+
+|         Security Token         |
++--------------------------------+
++--------------------------------+
+|                                |
+|                                |
+|      Standard Sub-Section      |
+|                                |
++--------------------------------+
++--------------------------------+
+|         Vendor-1 Marker        |
++--------------------------------+
++--------------------------------+
+|       Vendor-1 Sub-Section     |
+|                                |
+|                                |
+|                                |
+|                                |
+|                                |
++--------------------------------+
++--------------------------------+
+|         Vendor-2 Marker        |
++--------------------------------+
++--------------------------------+
+|       Vendor-2 Sub-Section     |
+|                                |
+|                                |
+|                                |
+|                                |
+|                                |
++--------------------------------+
                     ]]></artwork>
             </figure>
             <t>
@@ -478,18 +478,18 @@
 
             <figure align="center" anchor="encoding_subsection_content">
                 <artwork align="left"><![CDATA[
-                    +--------------------------------+
-                    |          Upstream block        |
-                    | +------------+  +------------+ |
-                    | |  MD tag    |  |  MD tag    | |
-                    | +------------+  +------------+ |
-                    +--------------------------------+
-                    +--------------------------------+
-                    |        Downstream block        |
-                    | +------------+  +------------+ |
-                    | |  MD tag    |  |  MD tag    | |
-                    | +------------+  +------------+ |
-                    +--------------------------------+
++--------------------------------+
+|          Upstream block        |
+| +------------+  +------------+ |
+| |  MD tag    |  |  MD tag    | |
+| +------------+  +------------+ |
++--------------------------------+
++--------------------------------+
+|        Downstream block        |
+| +------------+  +------------+ |
+| |  MD tag    |  |  MD tag    | |
+| +------------+  +------------+ |
++--------------------------------+
                     ]]></artwork>
             </figure>
                 <t>
@@ -506,51 +506,51 @@
                 </t>
                 <figure align="center" anchor="encoding_layout" title="">
                     <artwork align="left"><![CDATA[
-                        +--------------------------------+
-                        |         Security Token         |
-                        +--------------------------------+
-                        +--------------------------------+ ^  ^
-                        |          Upstream block        | |  |E
-                        | +------------+  +------------+ | |  |N
-                        | |  MD tag    |  |  MD tag    | | |S |D
-                        | +------------+  +------------+ | |T |P
-                        +--------------------------------+ |D |O
-                        +--------------------------------+ |  |I
-                        |         Downstream block       | |S |N
-                        | +------------+                 | |  |T
-                        | |  MD tag    |                 | |  |
-                        | +------------+                 | |  |S
-                        +--------------------------------+ v  |E
-                        +--------------------------------+    |C
-                        |     Vendor section marker      |    |T
-                        +--------------------------------+    |I
-                        +--------------------------------+ ^  |O
-                        |          Upstream block        | |V |N
-                        | +------------+  +------------+ | |N |
-                        | |  MD tag    |  |  MD tag    | | |D |
-                        | +------------+  +------------+ | |  |
-                        +--------------------------------+ vS v
-                        +--------------------------------+    ^
-                        |    Producer section marker     |    |
-                        +--------------------------------+    |
-                        +--------------------------------+    |P
-                        |         Security Token         |    |R
-                        +--------------------------------+    |O
-                        +--------------------------------+    |D
-                        |         Downstream block       |    |U
-                        | +------------+                 |    |C
-                        | |  MD tag    |                 |    |E
-                        | +------------+                 |    |R
-                        +--------------------------------+    |
-                        +--------------------------------+    |S
-                        |     Vendor section marker      |    |E
-                        +--------------------------------+    |C
-                        +--------------------------------+    |T
-                        |         Downstream block       |    |I
-                        | +------------+                 |    |O
-                        | |  MD tag    |                 |    |N
-                        | +------------+                 |    |
-                        +--------------------------------+    v
++--------------------------------+
+|         Security Token         |
++--------------------------------+
++--------------------------------+ ^  ^
+|          Upstream block        | |  |E
+| +------------+  +------------+ | |  |N
+| |  MD tag    |  |  MD tag    | | |S |D
+| +------------+  +------------+ | |T |P
++--------------------------------+ |D |O
++--------------------------------+ |  |I
+|         Downstream block       | |S |N
+| +------------+                 | |  |T
+| |  MD tag    |                 | |  |
+| +------------+                 | |  |S
++--------------------------------+ v  |E
++--------------------------------+    |C
+|     Vendor section marker      |    |T
++--------------------------------+    |I
++--------------------------------+ ^  |O
+|          Upstream block        | |V |N
+| +------------+  +------------+ | |N |
+| |  MD tag    |  |  MD tag    | | |D |
+| +------------+  +------------+ | |  |
++--------------------------------+ vS v
++--------------------------------+    ^
+|    Producer section marker     |    |
++--------------------------------+    |
++--------------------------------+    |P
+|         Security Token         |    |R
++--------------------------------+    |O
++--------------------------------+    |D
+|         Downstream block       |    |U
+| +------------+                 |    |C
+| |  MD tag    |                 |    |E
+| +------------+                 |    |R
++--------------------------------+    |
++--------------------------------+    |S
+|     Vendor section marker      |    |E
++--------------------------------+    |C
++--------------------------------+    |T
+|         Downstream block       |    |I
+| +------------+                 |    |O
+| |  MD tag    |                 |    |N
+| +------------+                 |    |
++--------------------------------+    v
                         ]]></artwork>
                 </figure>
 
@@ -564,12 +564,12 @@
 
                 <figure align="center" anchor="encoding_layout_compact">
                     <artwork align="left"><![CDATA[
-                        +--------------------------------+
-                        |          Upstream block        |
-                        | +------------+  +------------+ |
-                        | |  MD tag    |  |  MD tag    | |
-                        | +------------+  +------------+ |
-                        +--------------------------------+
++--------------------------------+
+|          Upstream block        |
+| +------------+  +------------+ |
+| |  MD tag    |  |  MD tag    | |
+| +------------+  +------------+ |
++--------------------------------+
                         ]]></artwork>
                 </figure>
             </section>
@@ -617,31 +617,31 @@
 
                 <figure align="center" anchor="encoding_ep_std_struct">
                     <artwork align="left"><![CDATA[
-                        0                   1                   2                   3
-                        0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ ^S
-                        |        Security-type          |             Length            | |E
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |C
-                        |       Security-scheme         |                               : |
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               : |T
-                        :                       Security-value                          : |O
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ vK
-                        |        Upstream-type          |             Length            |     ^U
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ ^M  |P
-                        |           Tag-type            |             Length            | |D  |
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |   |B
-                        :                           Tag-value                           : |T  |L
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ v   |O
-                        :                            ...                                :     |C
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+     vK
-                        |        Downstream-type        |             Length            |     ^D
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+     |N
-                        |           Tag-type            |             Length            |     |
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+     |B
-                        :                           Tag-value                           :     |L
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+     |O
-                        :                            ...                                :     |C
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+     vK
+0                   1                   2                   3
+0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ ^S
+|        Security-type          |             Length            | |E
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |C
+|       Security-scheme         |                               : |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               : |T
+:                       Security-value                          : |O
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ vK
+|        Upstream-type          |             Length            |     ^U
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ ^M  |P
+|           Tag-type            |             Length            | |D  |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |   |B
+:                           Tag-value                           : |T  |L
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ v   |O
+:                            ...                                :     |C
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+     vK
+|        Downstream-type        |             Length            |     ^D
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+     |N
+|           Tag-type            |             Length            |     |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+     |B
+:                           Tag-value                           :     |L
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+     |O
+:                            ...                                :     |C
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+     vK
                         ]]></artwork>
                 </figure>
 
@@ -656,35 +656,35 @@
 
                 <figure align="center" anchor="encoding_ep_vnd_struct">
                     <artwork align="left"><![CDATA[
-                        0                   1                   2                   3
-                        0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-                        |        Security-type          |             Length            |
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-                        |       Security-scheme         |                               :
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               :
-                        :                       Security-value                          :
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ ^
-                        |           PEN-type            |             Length            | |
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |
-                        |                            PEN-id                             | |V
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |E
-                        |        Upstream-type          |             Length            | |N
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |D
-                        |           Tag-type            |             Length            | |O
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |R
-                        :                           Tag-value                           : |
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |S
-                        :                            ...                                : |E
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |C
-                        |        Downstream-type        |             Length            | |T
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |I
-                        |           Tag-type            |             Length            | |O
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |N
-                        :                           Tag-value                           : |
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |
-                        :                            ...                                : |
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ v
+0                   1                   2                   3
+0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|        Security-type          |             Length            |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|       Security-scheme         |                               :
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               :
+:                       Security-value                          :
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ ^
+|           PEN-type            |             Length            | |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |
+|                            PEN-id                             | |V
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |E
+|        Upstream-type          |             Length            | |N
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |D
+|           Tag-type            |             Length            | |O
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |R
+:                           Tag-value                           : |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |S
+:                            ...                                : |E
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |C
+|        Downstream-type        |             Length            | |T
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |I
+|           Tag-type            |             Length            | |O
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |N
+:                           Tag-value                           : |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |
+:                            ...                                : |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ v
                         ]]></artwork>
                 </figure>
 
@@ -698,35 +698,35 @@
 
                 <figure align="center" anchor="encoding_nt_std_struct">
                     <artwork align="left"><![CDATA[
-                        0                   1                   2                   3
-                        0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ ^
-                        |        Producer-type          |             Length            | |
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |
-                        |                          Precedence                           | |
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |
-                        |        Security-type          |             Length            | |P
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |R
-                        |       Security-scheme         |                               : |O
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               : |D
-                        :                       Security-value                          : |U
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |C
-                        |        Upstream-type          |             Length            | |E
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |R
-                        |           Tag-type            |             Length            | |
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |S
-                        :                           Tag-value                           : |E
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |C
-                        :                            ...                                : |T
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |I
-                        |        Downstream-type        |             Length            | |O
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |N
-                        |           Tag-type            |             Length            | |
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |
-                        :                           Tag-value                           : |
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |
-                        :                            ...                                : |
-                        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ v
+0                   1                   2                   3
+0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ ^
+|        Producer-type          |             Length            | |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |
+|                          Precedence                           | |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |
+|        Security-type          |             Length            | |P
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |R
+|       Security-scheme         |                               : |O
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               : |D
+:                       Security-value                          : |U
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |C
+|        Upstream-type          |             Length            | |E
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |R
+|           Tag-type            |             Length            | |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |S
+:                           Tag-value                           : |E
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |C
+:                            ...                                : |T
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |I
+|        Downstream-type        |             Length            | |O
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |N
+|           Tag-type            |             Length            | |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |
+:                           Tag-value                           : |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |
+:                            ...                                : |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ v
                         ]]></artwork>
                 </figure>
 
@@ -738,63 +738,63 @@
             <section title="ABNF">
                 <figure align="left" anchor="abnf">
                     <artwork align="left"><![CDATA[
-                        MD-block = Version 1*( *1(Endpoint-block) / (Producer-tlv Producer-block) )
+MD-block = Version 1*( *1(Endpoint-block) / (Producer-tlv Producer-block) )
 
-                        Version = %x0-FF ;  NEW-VER will be picked up as the first
-                        ;  version of the encoding
+Version = %x0-FF ;  NEW-VER will be picked up as the first
+;  version of the encoding
 
-                        Endpoint-block = Producer-block; For the endpoint we do not
-                        ; require the Producer-tlv
+Endpoint-block = Producer-block; For the endpoint we do not
+; require the Producer-tlv
 
-                        Producer-block = [Security-tlv] 1*( 1*1(Standard-block) / Vendor-block )
+Producer-block = [Security-tlv] 1*( 1*1(Standard-block) / Vendor-block )
 
-                        Standard-block = Flow-block; We do not require the PEN-tlv
-                        ; for the standard tags
+Standard-block = Flow-block; We do not require the PEN-tlv
+; for the standard tags
 
-                        Vendor-block = PEN-tlv Flow-block
+Vendor-block = PEN-tlv Flow-block
 
-                        Flow-block = 1*2( *1(Upstream-tlv) / *1(Downstream-tlv) )
+Flow-block = 1*2( *1(Upstream-tlv) / *1(Downstream-tlv) )
 
-                        PEN-tlv = PEN-type Length PEN-id
+PEN-tlv = PEN-type Length PEN-id
 
-                        PEN-id = %x0-FFFFFFFF; Private Enterprise Number defined by IANA
+PEN-id = %x0-FFFFFFFF; Private Enterprise Number defined by IANA
 
-                        Length = %x0-FFFF; A length field
+Length = %x0-FFFF; A length field
 
-                        Producer-tlv = Producer-type Length Producer-value
+Producer-tlv = Producer-type Length Producer-value
 
-                        Producer-type = %x0-FF; The first foreseen producer is MD-NETWORK
-                        ; to cover for DPI engines, gateways and others
+Producer-type = %x0-FF; The first foreseen producer is MD-NETWORK
+; to cover for DPI engines, gateways and others
 
-                        Producer-value = Precedence Length; Here the length indicates the
-                        size of the Producer section
+Producer-value = Precedence Length; Here the length indicates the
+size of the Producer section
 
-                        Precedence = %x0-FF;  Indicates the preferred source of information
-                        for a  producer-type
+Precedence = %x0-FF;  Indicates the preferred source of information
+for a  producer-type
 
-                        Security-tlv = Security-type Length Security-value
+Security-tlv = Security-type Length Security-value
 
-                        Security-value = Security-scheme *(%x0-FF)
+Security-value = Security-scheme *(%x0-FF)
 
-                        Security-scheme = %x0-FF; Type of security used
+Security-scheme = %x0-FF; Type of security used
 
-                        Upstream-tlv = Upstream-type Length Upstream-value
+Upstream-tlv = Upstream-type Length Upstream-value
 
-                        Upstream-type = MD-ATTR-UP
+Upstream-type = MD-ATTR-UP
 
-                        Upstream-value = attribute-list
+Upstream-value = attribute-list
 
-                        attribute-list = (attribute-tlv)*
+attribute-list = (attribute-tlv)*
 
-                        attribute-tlv = attribute-type attribute-length attribute-value
+attribute-tlv = attribute-type attribute-length attribute-value
 
-                        Downstream-tlv = Downstream-type Length Downstream-value
+Downstream-tlv = Downstream-type Length Downstream-value
 
-                        Downstream-type = MD-ATTR-DN
+Downstream-type = MD-ATTR-DN
 
-                        Downstream-value = attribute-list
+Downstream-value = attribute-list
 
-                        attribute-list = (attribute-tlv)*
+attribute-list = (attribute-tlv)*
                         ]]></artwork>
                 </figure>
             </section>
