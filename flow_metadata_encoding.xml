@@ -168,7 +168,8 @@
             This document describes a protocol independent encoding for Flow
             Metadata. A flow in this context is defined as a 5-tuple (IP_src,
             Port_src, IP_dst, Port_dst, Transport) where Transport is a layer 4
-            protocol such as TCP or UDP. Flow Metadata exposes key characteristics
+            protocol such as TCP or UDP. Both Port_src and Port_dst both refer
+            to this protocol. Flow Metadata exposes key characteristics
             of the flow such as the originating application, the type of media in
             use (e.g. audio, video) and others as defined in [I-D-FMD]. The flow
             characteristics are captured through Metadata tags. The Metadata
@@ -208,13 +209,13 @@
     </section>
 
     <section title="Encoding Overview">
-        <section title="General Priciples">
+        <section title="General Principles">
             <t>This specification assumes that the flow 5-tuple is determined by
                 the transport protocol which carries the Metadata tags. As an example,
                 in STUN the 5-tuple is present in the layer 3 and 4 headers of the
                 message. In RSVP the 5-tuple is
                 obtained from the SESSION and SENDER-TEMPLATE objects. In PCP the
-                source IP is part of the request common header the remainder of the
+                source IP is part of the request common header; the remainder of the
                 5-tuple needs to be embedded in the opcode data.
             </t>
 
@@ -235,7 +236,7 @@
                 encoding:<list style="symbols">
                     <t>Transport independence</t>
 
-                    <t>Allow for a standard namespace as well vendor specific
+                    <t>Allow for a standard namespace as well as vendor specific
                         namespaces</t>
 
                     <t>Support multiple producers of flow characteristics</t>
@@ -262,6 +263,13 @@
                     on the environment, peer protocol support, etc. Another is a
                     middlebox on an administrative boundary that may need to perform
                     protocol interworking functions.</t>
+
+                <t>It is recommended that transport protocol implementations syntactically 
+                    validate the encoded flow characteristics block, e.g., verify that the
+                    length fields are correct. However, for extensibility and consistency
+                    reasons, transport protocols should not attempt to semantically
+                    interpret an encoded flow characteristics block; this should be left
+                    to upper layers (e.g., the local Metadata module).</t>
             </section>
 
             <section title="Standard and Vendor Specific Namespaces">
@@ -287,7 +295,7 @@
                     applications. Media Termination Points have knowledge of the
                     transformations they apply
                     on the flow they receive and can therefore update the
-                    characteristics of the flow. Other proxies and gateways do exit for
+                    characteristics of the flow. Other proxies and gateways do exist for
                     other applications and could produce information in relation to the
                     flow.</t>
 
@@ -310,11 +318,11 @@
             </section>
 
             <section title="Extensibility">
-                <t> New use cases or new deployment scenario will likely require the
+                <t> New use cases or new deployment scenarios will likely require the
                     use of new flow characteristics. For this reason the encoding
                     should support Metadata tag additions in a backwards compatible
                     way. New tag sets will consequently become superset
-                    of older ones. Two implementation supporting different tag sets
+                    of older ones. Two implementations supporting different tag sets
                     can use the oldest of the two tag sets for the purpose of
                     applying treatment to or gathering information about the
                     endpoint or application flows.
@@ -323,10 +331,10 @@
 
             <section title="Flexibility">
                 <t>
-                    Distinct use cases and individual endpoints or application
-                    will likely have a need for different subset of Metadata tags.
-                    The encoding should support the signalling of any subset of
-                    Metadata tags for that purpose. An example is a video
+                    Distinct use cases and individual endpoints or applications
+                    will likely have a need for different subsets of Metadata tags.
+                    The encoding should support the signaling of any subset of
+                    Metadata tags for that purpose. For example, a video
                     conferencing endpoint might need to signal which of its flows
                     are audio and video. Video surveillance cameras might only
                     signal video flows but will need to indicate which one has
@@ -341,15 +349,15 @@
                     signaling.
                     Indeed treatment applied on that basis can consume network
                     resources and therefore lead to their exhaustion. But the integrity
-                    and authenticity of the flow characteristics is not enough as a
+                    and authentication of the flow characteristics is not enough as
                     genuine applications or users can on purpose or by error send flow
                     chracteristics they are not authorized to send. To that end
-                    Authorization should be one of the goal of any security method
+                    Authorization should be one of the goals of any security method
                     used to secure the Metadata tags side by side with their
                     authentication and integrity.
                 </t>
                 <t>
-                    This specification defines a Security element container
+                    This specification defines an optional Security element container
                     to be used for this purpose. However the security method to be used
                     is outside the scope of this specification.
                 </t>
@@ -364,18 +372,22 @@
                     2- How to secure the data sent. Here what we suggest is for the
                     security method to use a combination of Authentication, Integrity
                     and Authorization]
+                    SM - This might be a very basic argument, but the token-based
+                    schemes whose specs we've seen around would prevent apps from lying
+                    as they can't lie to obtain the token (if the token server is 
+                    well designed)
                     ]</t>
             </section>
 
             <section title="Compact Encoding">
                 <t>
                     One of the goals of the encoding described in this specification
-                    is to be compact and consume minimal space in the signalling protocol
+                    is to be compact and consume minimal space in the signaling protocol
                     payload. Most of the protocols have limited space for Metadata
-                    purposes and don't support semantic fragmentation. The strategy
+                    purposes and do not support semantic fragmentation. The strategy
                     of the encoding is to minimize the encoding structures used
-                    for the common signalling case. The common case is foreseen to
-                    be the endpoint signalling standard flow characteristics.
+                    for the common signaling case. The common case is foreseen to
+                    be the endpoint signaling standard flow characteristics.
                 </t>
             </section>
         </section>
@@ -416,9 +428,9 @@
 |         Producer-2 Marker      |
 +--------------------------------+
 +--------------------------------+
+|                                |
+|                                |
 |         Producer-2 Section     |
-|                                |
-|                                |
 |                                |
 |                                |
 |                                |
@@ -426,14 +438,18 @@
                     ]]></artwork>
             </figure>
             <t>
-                A section is divided into standard and vendor sub-section. A section
+                A section is divided into standard and vendor sub-sections. A section
                 MUST at least have one sub-section. A section MUST contain at most one
-                standard sub-section and can contain multiple vendor sub-section for
+                standard sub-section and can contain multiple vendor sub-sections for
                 different vendors. A standard and a vendor sub-section are
                 segregated through a vendor marker. The standard sub-section if
                 present must come first as it is the default.
                 <xref target="encoding_section_content" /> shows a sample section
                 content.
+            </t>
+            <t>
+                A section MUST include at most one security token. The security token, 
+                if present, MUST appear at the beginning of the section.
             </t>
             <figure align="center" anchor="encoding_section_content" title="Encoding section content">
                 <artwork align="left"><![CDATA[
@@ -472,8 +488,13 @@
             </figure>
             <t>
                 A Sub-Section MUST contain at least one upstream or downstream
-                block. Upstream and downstream blocks are composed of
-                Metadata tags, each tag specifying a characteristic.
+                block.  A Sub-Section MUST contain at most one upstream block,
+                and at most one downstream block. Upstream and downstream blocks
+                are composed of Metadata tags, each tag specifying a characteristic.
+            </t>
+            <t> SM - Do we want to order them? (i.e., if both upstream and downstream
+                are present, upstream MUST appear first). I think that would simplify
+                the parsers. Not sure about what Amine and Yann's code does
             </t>
 
             <figure align="center" anchor="encoding_subsection_content">
@@ -502,7 +523,7 @@
                 <t>
                     <xref target="encoding_layout" /> shows a complete example
                     combining the endpoint and producer sections together with
-                    their standard and vedor sub-sections.
+                    their standard and vendor sub-sections.
                 </t>
                 <figure align="center" anchor="encoding_layout" title="">
                     <artwork align="left"><![CDATA[
@@ -556,10 +577,11 @@
 
                 <t><xref target="encoding_layout_compact"/> shows an encoding example
                     for Flow Metadata standard characteristics produced by an endpoint for
-                    the upstream (same as 5-tuple) direction. As can be see in the figure
-                    no producer marker is used as we are signalling for the endpoint. In
-                    the same way there is no vendor marker as we are signalling standard
-                    flow characteristics. Further example are given in
+                    the upstream (same as 5-tuple) direction. As can be seen in the figure
+                    no producer marker is used as we are signaling for the endpoint. In
+                    the same way there is no vendor marker as we are signaling standard
+                    flow characteristics. This example also assumes a use case where no
+                    security token is needed. Further examples are given in
                     <xref target="examples"/>.</t>
 
                 <figure align="center" anchor="encoding_layout_compact">
@@ -585,10 +607,10 @@
                         target="encoding_nt_std_struct"/> shows the encoding for non endpoint
                     producers using only standard tags.
                     The three scenarios expose all the encoding structures, other
-                    application can be derived. The encoding makes use of Type Length
+                    applications can be derived. The encoding makes use of Type Length
                     Value (TLV) as the base building block and some level of nesting to
-                    create the different encoding structures. The type allows to indicates
-                    which encoding structure is in use. In case of a marker the length
+                    create the different encoding structures. The type allows to indicate
+                    which encoding structure is in use. In case of a marker, the length
                     gives the size of the marker but not of the delimited section or
                     sub-section.
                 </t>
@@ -597,7 +619,7 @@
                     As explained earlier endpoint and producer sections MUST contain at
                     least one standard or vendor sub-section and MAY contain a
                     security token.
-                    The value of the security tokeni TLV  is broken down in two parts, a
+                    The value of the security token TLV is broken down in two parts, a
                     security-scheme indicating the security method used and the
                     security-value holding the security payload specific to the security
                     scheme. The definition of the different security schemes and their
@@ -693,7 +715,7 @@
                     type is defined within the same registry as the security token. The
                     value of the producer marker is the producer precedence that indicates
                     the administrative preference for the producer flow characteristics.
-                    The precedence allows to merge information from different producer and
+                    The precedence allows to merge information from different producers and
                     retain only the preferred one.</t>
 
                 <figure align="center" anchor="encoding_nt_std_struct">
@@ -733,68 +755,88 @@
                 <t>All the constructs above can be combined to signal standard and
                     vendor specific tags for different producers and allow to secure each
                     producer information independently.</t>
+
+                <t>SM - Somewhere in this section we should specify that a MD tag MUST NOT 
+                   appear more than once in the same (upstream/downstream) block. The same
+                   MD tag MAY appear in different block, or sections. For sub-sections, it
+                   is obvious as a MD tag refers to different registries. Added this as an
+                   edition comment because I'm not sure where to put it.
+                </t>
             </section>
 
             <section title="ABNF">
                 <figure align="left" anchor="abnf">
                     <artwork align="left"><![CDATA[
-MD-block = Version 1*( *1(Endpoint-block) / (Producer-tlv Producer-block) )
+MD-block = Version (Endpoint-block / Producer-blocks / (Endpoint-block Producer-blocks))
 
-Version = %x0-FF ;  NEW-VER will be picked up as the first
-;  version of the encoding
+Producer-blocks = 1*(Producer-tlv Producer-block)
 
-Endpoint-block = Producer-block; For the endpoint we do not
+Endpoint-block = Producer-block ; For the endpoint we do not
 ; require the Producer-tlv
 
-Producer-block = [Security-tlv] 1*( 1*1(Standard-block) / Vendor-block )
+Producer-block = [Security-tlv] (Standard-block / Vendor-blocks / (Standard-block Vendor-blocks))
+
+Vendor-blocks = 1*(PEN-tlv Flow-block)
 
 Standard-block = Flow-block; We do not require the PEN-tlv
 ; for the standard tags
 
-Vendor-block = PEN-tlv Flow-block
-
-Flow-block = 1*2( *1(Upstream-tlv) / *1(Downstream-tlv) )
+Flow-block = Upstream-tlv / Downstream-tlv / Upstream-tlv Downstream-tlv ; If both present
+; upstream must come first
 
 PEN-tlv = PEN-type Length PEN-id
 
-PEN-id = %x0-FFFFFFFF; Private Enterprise Number defined by IANA
+Producer-tlv = Producer-type Length Precedence
 
-Length = %x0-FFFF; A length field
-
-Producer-tlv = Producer-type Length Producer-value
-
-Producer-type = %x0-FF; The first foreseen producer is MD-NETWORK
-; to cover for DPI engines, gateways and others
-
-Producer-value = Precedence Length; Here the length indicates the
-size of the Producer section
-
-Precedence = %x0-FF;  Indicates the preferred source of information
-for a  producer-type
-
-Security-tlv = Security-type Length Security-value
-
-Security-value = Security-scheme *(%x0-FF)
-
-Security-scheme = %x0-FF; Type of security used
+Security-tlv = Security-type Length Security-scheme Security-value
 
 Upstream-tlv = Upstream-type Length Upstream-value
 
-Upstream-type = MD-ATTR-UP
-
-Upstream-value = attribute-list
-
-attribute-list = (attribute-tlv)*
-
-attribute-tlv = attribute-type attribute-length attribute-value
+Upstream-value = Attribute-list
 
 Downstream-tlv = Downstream-type Length Downstream-value
 
-Downstream-type = MD-ATTR-DN
+Downstream-value = Attribute-list
 
-Downstream-value = attribute-list
+Attribute-list = *(Attribute-tlv)
 
-attribute-list = (attribute-tlv)*
+Attribute-tlv = Tag-type Length Attribute-value
+
+;---------
+;TERMINALS
+;---------
+
+Version = %x01 ;  NEW-VER will be picked up as the first
+;  version of the encoding
+
+PEN-id = 4(OCTET); Private Enterprise Number defined by IANA
+
+Length = 2(OCTET); 16-bit length field
+
+Precedence = 4(OCTET);  Indicates the preferred source of information
+; for a producer-type
+
+Security-scheme = OCTET; Type of security used
+
+Security-value =  *(OCTET) ; length of this field must match Length of Security-tlv + 2
+
+Tag-type = 2(OCTET) ; Value according to IANA / Vendor-specific registry
+
+Producer-type = Zero %x01; The first foreseen producer is MD-NETWORK
+; to cover for DPI engines, gateways and others
+; Further values may be allocated later
+
+PEN-type = Zero %x02 ; Actual value TBD
+
+Security-type = Zero %x03 ; Actual value TBD
+
+Upstream-type = Zero %x04 ; Actual value TBD
+
+Downstream-type = Zero %x05 ; Actual value TBD
+
+Attribute-value = *(%x0-FF) ; Actual value of a Metadata tag
+
+Zero = %x00
                         ]]></artwork>
                 </figure>
             </section>
