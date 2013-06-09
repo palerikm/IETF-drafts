@@ -767,22 +767,25 @@
             <section title="ABNF">
                 <figure align="left" anchor="abnf">
                     <artwork align="left"><![CDATA[
-MD-block = Version (Endpoint-block / Producer-blocks / (Endpoint-block Producer-blocks))
+MD-block = Version (Endpoint-block / Producer-blocks / 
+(Endpoint-block Producer-blocks))
 
 Producer-blocks = 1*(Producer-tlv Producer-block)
 
 Endpoint-block = Producer-block ; For the endpoint we do not
 ; require the Producer-tlv
 
-Producer-block = [Security-tlv] (Standard-block / Vendor-blocks / (Standard-block Vendor-blocks))
+Producer-block = [Security-tlv] (Standard-block / Vendor-blocks /
+(Standard-block Vendor-blocks))
 
 Vendor-blocks = 1*(PEN-tlv Flow-block)
 
 Standard-block = Flow-block; We do not require the PEN-tlv
 ; for the standard tags
 
-Flow-block = Upstream-tlv / Downstream-tlv / Upstream-tlv Downstream-tlv ; If both present
-; upstream must come first
+Flow-block = Upstream-tlv / Downstream-tlv /
+(Upstream-tlv Downstream-tlv)
+; If both present, upstream must come first
 
 PEN-tlv = PEN-type Length PEN-id
 
@@ -818,7 +821,8 @@ Precedence = 4(OCTET);  Indicates the preferred source of information
 
 Security-scheme = OCTET; Type of security used
 
-Security-value =  *(OCTET) ; length of this field must match Length of Security-tlv + 2
+Security-value =  *(OCTET)
+; length of this field must match Length of Security-tlv + 2
 
 Tag-type = 2(OCTET) ; Value according to IANA / Vendor-specific registry
 
@@ -849,6 +853,11 @@ Zero = %x00
             </t>
 
         </section>
+
+    <section anchor="Security" title="Security Considerations">
+      <t>All drafts are required to have a security considerations section.
+      See <xref target="RFC3552">RFC 3552</xref> for a guide.</t>
+    </section>
     </middle>
 
     <!--  *****BACK MATTER ***** -->
