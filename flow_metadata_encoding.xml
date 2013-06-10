@@ -164,72 +164,58 @@
          keywords will be used for the search engine. -->
 
     <abstract>
-        <t>
-            This document describes a protocol independent encoding for Flow
+        <t>This document describes a protocol independent encoding for Flow
             Metadata. A flow in this context is defined as a 5-tuple (IP_src,
             Port_src, IP_dst, Port_dst, Transport) where Transport is a layer 4
-            protocol such as TCP or UDP. Both Port_src and Port_dst both refer
-            to this protocol. Flow Metadata exposes key characteristics
-            of the flow such as the originating application, the type of media in
-            use (e.g. audio, video) and others as defined in [I-D-FMD]. The flow
-            characteristics are captured through Metadata tags. The Metadata
-            tags information is signaled either out of band or in band but
-            always along the same path of the data flow transmitted by an application.
-            As flow characteristics across different signaling protocols are
-            identical they benefit from a single definition and encoding
-            irrespective of the signaling protocol in use.
-            Examples of out of band and in band protocols would be RSVP
-            [RFC-RSVP-FMD], STUN [RFC-STUN-FMD], and PCP [RFC-PCP-FMD].
-            Different network deployments
-            call out for different protocols or combination of protocols as
-            described in [RFC-FMD]. The flow characteristics can be inspected by
-            intermediate network nodes for the purpose of applying a particular
-            treatment to the flow or simply for gathering insight on the nature of
-            the traffic crossing the network node.
-        </t>
+            protocol such as TCP or UDP. Port_src and Port_dst both refer to
+            this protocol. Flow Metadata exposes key characteristics of the flow
+            such as the originating application, the type of media in use (e.g.
+            audio, video) and others as defined in [RFC-FMD]. The flow
+            characteristics are captured through Metadata tags. The Metadata tags
+            information is signaled either out of band or in band but always along
+            the same path of the data flow transmitted by an application.</t>
 
-        <t> [RFC-FMD] defines the
-            overall framework for Flow Metadata and the definition of the flow
-            characteristics. This document captures the flow characteristics
-            encoding. The mapping of the Flow Metadata encoding to the different
-            signaling protocols is outside the scope of this document.</t>
+        <t>[RFC-FMD] defines the overall framework for Flow Metadata and the
+            definition of the flow characteristics. This document captures the flow
+            characteristics encoding. The mapping of the Flow Metadata encoding to
+            the different signaling protocols is outside the scope of this
+            document.</t>
     </abstract>
 </front>
 
 <middle>
     <section title="Introduction">
-        <t>TBD &gt; Need to describe the unidirectional vs bidirectional &gt;
-            Should explain the different producers</t>
-
-        <t>
-            This document describes a protocol independent encoding for Flow
+      <t>This document describes a protocol independent encoding for Flow
             Metadata. A flow in this context is defined as a 5-tuple (IP_src,
             Port_src, IP_dst, Port_dst, Transport) where Transport is a layer 4
-            protocol such as TCP or UDP. Both Port_src and Port_dst both refer
-            to this protocol. Flow Metadata exposes key characteristics
-            of the flow such as the originating application, the type of media in
-            use (e.g. audio, video) and others as defined in [I-D-FMD]. The flow
-            characteristics are captured through Metadata tags. The Metadata
-            tags information is signaled either out of band or in band but
-            always along the same path of the data flow transmitted by an application.
-            As flow characteristics across different signaling protocols are
-            identical they benefit from a single definition and encoding
-            irrespective of the signaling protocol in use.
-            Examples of out of band and in band protocols would be RSVP
-            [RFC-RSVP-FMD], STUN [RFC-STUN-FMD], and PCP [RFC-PCP-FMD].
-            Different network deployments
-            call out for different protocols or combination of protocols as
-            described in [RFC-FMD]. The flow characteristics can be inspected by
-            intermediate network nodes for the purpose of applying a particular
-            treatment to the flow or simply for gathering insight on the nature of
-            the traffic crossing the network node.
-        </t>
-        <t>
+            protocol such as TCP or UDP. Port_src and Port_dst both refer to
+            this protocol. Flow Metadata exposes key characteristics of the flow
+            such as the originating application, the type of media in use (e.g.
+            audio, video) and others as defined in [RFC-FMD]. The flow
+            characteristics are captured through Metadata tags. The Metadata tags
+            information is signaled either out of band or in band but always along
+            the same path of the data flow transmitted by an application. As flow
+            characteristics across different signaling protocols are identical they
+            benefit from a single definition and encoding irrespective of the
+            signaling protocol in use. Examples of out of band and in band protocols
+            would be RSVP [RFC-RSVP-FMD], STUN [RFC-STUN-FMD], and PCP
+            [RFC-PCP-FMD]. Different network deployments call out for different
+            protocols or combination of protocols as described in [RFC-FMD]. The
+            flow characteristics can be inspected by intermediate network nodes for
+            the purpose of applying a particular treatment to the flow or simply for
+            gathering insight on the nature of the traffic crossing the network
+            node.</t>
+
+        <t>Flows, and the corresponding Flow Metadata, are inherently
+      unidirectional, in the direction from the source to the destination
+      (e.g. from Alice to Bob). In some cases, there may be a related flow in
+      the reverse direction (e.g. from Bob to Alice), but this is treated as a
+      separate flow, not a bidirectional flow.
             The Metadata tags can characterise data in the same direction as the
             flow (upstream) or in the opposite direction (downstream). The
             encoding allows to signal for either direction or both at the same
-            time. The Metadata tags can be signalled by the endpoint itself
-            and/or by network elements that have visibilty on the iflow data
+            time. The Metadata tags can be signaled by the endpoint itself
+            and/or by network elements that have visibilty on the flow data.
             The encoding clearly segregate between information coming
             from the endpoint and information coming from the network. Within
             this document endpoint and application are used interchangeabely.
@@ -263,10 +249,11 @@
                 flow characteristics. As the encoding is shared amongst several
                 protocols, it is versioned independently to allow, if needed, its
                 evolution without impacting the signaling protocol.</t>
+
         </section>
 
         <section title="Encoding Goals">
-            <t>Following goals have been considered in the design of the
+            <t>The following goals have been considered in the design of the
                 encoding:<list style="symbols">
                     <t>Transport independence</t>
 
@@ -278,12 +265,16 @@
                     <t>Ability to encode flow characteristics for both the flow itself
                         (upstream) and the flow in the reverse direction (downstream).</t>
 
-                    <t>Extensibility while allowing for backwards compatiblity.</t>
+                    <t>Ability to communicate flow characteristics from an
+                        application to the network as well as from the network back to the
+                        application</t>
+
+                    <t>Extensibility while allowing for backwards compatibility.</t>
 
                     <t>Flexibility</t>
 
-                    <t>Support for integrity, authenticatication and authorization on
-                        a per producer basis</t>
+            <t>Support for integrity, authentication and authorization on a
+            per producer basis</t>
 
                     <t>Compact encoding</t>
             </list></t>
@@ -298,12 +289,13 @@
                     middlebox on an administrative boundary that may need to perform
                     protocol interworking functions.</t>
 
-                <t>It is recommended that transport protocol implementations syntactically 
-                    validate the encoded flow characteristics, e.g., verify that the
-                    length fields are correct. However, for extensibility and consistency
-                    reasons, transport protocols should not attempt to semantically
-                    interpret an encoded flow characteristics; this should be left
-                    to upper layers (e.g., the local Metadata module).</t>
+          <t>It is recommended that transport protocol implementations
+          syntactically validate the encoded flow characteristics block, e.g.,
+          verify that the length fields are correct. However, for
+          extensibility and consistency reasons, transport protocols should
+          not attempt to semantically interpret an encoded flow
+          characteristics block; this should be left to upper layers (e.g.,
+          the local Metadata module).</t>
             </section>
 
             <section title="Standard and Vendor Specific Namespaces">
@@ -330,26 +322,40 @@
                     offer additional services to voice endpoints and
                     applications. Media Termination Points have knowledge of the
                     transformations they apply on the flow they receive and can
-                    therefore update the characteristics of the flow. Other
-                    proxies and gateways do exist for other applications and
-                    could produce information in relation to the
-                    flow. This second category of producers are collectively
-                    termed network producers.
-                </t>
-            </section>
+          therefore update the characteristics of the flow. Other proxies and
+          gateways do exist for other applications and could produce
+          information in relation to the flow.</t>
 
-            <section title="Bi-directional signaling">
-                <t> As explained in the introduction a flow is unidirectional by
-                    definition but some use cases and signaling protocols
-                    require or allow to
-                    signal both upstream and downstream flow characteristics.
-                    For example in the context of a home user that need to
-                    prioritize its upstream and downstream flow an end-to-edge
-                    protocol can expose flow characteristics to the edge ISP
-                    node controlling its access link for both its upstream and
-                    dowstream flow. This allows the edge node to apply proper
-                    treatment to both directions.
-                </t>
+        </section>
+
+        <section title="Upstream and Downstream">
+            <t>
+                As explained in the introduction a flow is unidirectional by
+                definition but some use cases and signaling protocols
+                require or allow to
+                signal both upstream and downstream flow characteristics.
+                For example in the context of a home user that need to
+                prioritize its upstream and downstream flow an end-to-edge
+                protocol can expose flow characteristics to the edge ISP
+                node controlling its access link for both its upstream and
+                dowstream flow. This allows the edge node to apply proper
+                treatment to both directions.
+          </t>
+        </section>
+
+        <section title="Network to Application">
+          <t>When an application includes Flow Metadata for a flow, the
+          metadata is communicated from the application to the network. In
+          some cases, it may be beneficial for the network to convey
+          information back to the application about the same flow. [RFC-FMD]
+          defines a mechanism by which flow metadata for the
+          same flow may be communication both from the application to the
+          network as well as from the network back to the application. The
+          flow metadata is encoded identically regardless of whether it is
+          signalled from application to network or network back to
+          application. It is assumed that the ability to differentiate between
+          the two is provided by the transport protocol making use of this
+          specification of transport protocol independent Flow Metadata encoding.</t>
             </section>
 
             <section title="Extensibility">
@@ -870,7 +876,7 @@ Zero = %x00
 
         <section anchor="Acknowledgements" title="Acknowledgements">
             <t>
-                We would like to thank Yann Poupet and Davide Cuda for reviewing
+                We would like to thank Yann Poupet, Davide Cuda, Charles Eckel for reviewing
                 this document and helping us proof its content. We would also
                 to express our gratitude to Sergio Mena de la Cruz for
                 contributing ideas, proofing the text and for his work on
