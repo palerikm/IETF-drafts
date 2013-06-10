@@ -849,7 +849,10 @@ Zero = %x00
         <section anchor="Acknowledgements" title="Acknowledgements">
             <t>
                 We would like to thank Yann Poupet and Davide Cuda for reviewing
-                this document and helping us proof its content.
+                this document and helping us proof its content. We would also
+                to express our gratitude to Sergio Mena de la Cruz for
+                contributing ideas, proofing the text and for his work on
+                the validating the grammar.
             </t>
 
         </section>
