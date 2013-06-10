@@ -179,7 +179,8 @@
             identical they benefit from a single definition and encoding
             irrespective of the signaling protocol in use.
             Examples of out of band and in band protocols would be RSVP
-            [RFC-RSVP-FMD] and STUN [RFC-STUN-FMD]. Different network deployments
+            [RFC-RSVP-FMD], STUN [RFC-STUN-FMD], and PCP [RFC-PCP-FMD].
+            Different network deployments
             call out for different protocols or combination of protocols as
             described in [RFC-FMD]. The flow characteristics can be inspected by
             intermediate network nodes for the purpose of applying a particular
@@ -321,9 +322,10 @@
                 <t> New use cases or new deployment scenarios will likely require the
                     use of new flow characteristics. For this reason the encoding
                     should support Metadata tag additions in a backwards compatible
-                    way. New tag sets will consequently become superset
-                    of older ones. Two implementations supporting different tag sets
-                    can use the oldest of the two tag sets for the purpose of
+                    way. New versions of the set of specified tags will consequently 
+                    be a superset of the older set.
+                    Two implementations supporting different versions of the tag set
+                    can use the oldest version for the purpose of
                     applying treatment to or gathering information about the
                     endpoint or application flows.
                 </t>
