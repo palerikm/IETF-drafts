@@ -176,8 +176,8 @@
             the same path of the data flow transmitted by an application.</t>
 
         <t>[RFC-FMD] defines the overall framework for Flow Metadata and the
-            definition of the flow characteristics. This document captures the flow
-            characteristics encoding. The mapping of the Flow Metadata encoding to
+            definition of the flow characteristics, whereas this document
+            captures the flow characteristics encoding. The mapping of the Flow Metadata encoding to
             the different signaling protocols is outside the scope of this
             document.</t>
     </abstract>
@@ -361,10 +361,12 @@
                 <t> New use cases and new deployment scenarios will require the
                     use of new flow characteristics. For this reason the encoding
                     should support Metadata tag additions in a backwards compatible
-                    way. New versions of the set of specified Metadata tags will
-                    consequently be a superset of the older set.
-                    Two implementations supporting different versions of the tag set
-                    can use the oldest version for the purpose of
+                    way.
+
+                    New Metadata tag addition supplement but do not redefine
+                    existing tags. An application or a network node always
+                    signals its currently supported tag set and devices leverage
+                    the subset they understand for the purpose of
                     applying treatment to or gathering information about the
                     application flows.
                 </t>
@@ -425,7 +427,7 @@
                 specification. We take a top down approach to show the encoding
                 layout, we show:
                 <list style="symbols">
-                    <t>How the application and network producers co-exits using
+                    <t>How the application and network producers coexist using
                         sections in <xref target="encoding_section"/></t>
                     <t>The subdivision of a section with standard and 
                         vendor specific sub-sections and an optional
@@ -487,7 +489,7 @@
                 content.
             </t>
             <t>
-                A section MUST include at most one security token. The security token, 
+                A section MAY include at most one security token. The security token, 
                 if present, MUST appear at the beginning of the section.
             </t>
             <figure align="center" anchor="encoding_section_content" title="Encoding section content">
@@ -527,7 +529,7 @@
             </figure>
             <t>
                 A Sub-Section MUST contain at least one upstream or downstream
-                block.  A Sub-Section MUST contain at most one upstream block,
+                block.  A Sub-Section contains at most one upstream block,
                 and at most one downstream block. Upstream and downstream blocks
                 are composed of Metadata tags, each tag specifying a characteristic.
                 If the upstream and downstream blocks are both present the upstream
@@ -555,7 +557,7 @@
                     managed by separate registries. A standard body will track the
                     standard tags allocation and separate vendor registries will
                     track vendor specific tag allocations. See [RFC-RFMD] for a 
-                    full coverage of the information model and how the rgistries
+                    full coverage of the information model and how the registries
                     are handled.
                 </t>
 
@@ -679,7 +681,7 @@
                     downstream block, the vendor and network marker types are defined
                     within the same registry. On the other hand the tag types are
                     defined in a separate registry from the enclosing encoding structures.
-                    The sepration of the registries is possible as the tags are part of
+                    The separation of the registries is possible as the tags are part of
                     the upstream and downstream block TLV value and therefore do
                     not collide with the encoding structures.
                 </t>
@@ -804,7 +806,7 @@
 
                 <t>All the constructs above can be combined to signal standard and
                     vendor specific tags for different producers and allow to secure each
-                    producer information independently.</t>
+                    producer's information independently.</t>
 
             </section>
 
