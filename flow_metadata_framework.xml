@@ -185,10 +185,10 @@ A framework for traffic intent attributes and their signaling
 
     <abstract>
         <t>
-            The purpose of this document is to give an overview of a few, hopefully
-            simple and useful elements to towards better, consistent signaling between
-            applications and the network to expand the workflows built around traffic
-            inspection into one that explicity integrates application.
+            The purpose of this document is to give an overview of a few,
+            simple and useful elements toward better, consistent signaling between
+            applications and the network for the purpose of proper
+            treatment and visibility of application flows.
         </t>
     </abstract>
   </front>
@@ -196,10 +196,32 @@ A framework for traffic intent attributes and their signaling
   <middle>
     <section title="Introduction">
         <t>
-            The purpose of this document is to give an overview of a few, hopefully
-            simple and useful elements to towards better, consistent signaling between
-            applications and the network to expand the workflows built around traffic
-            inspection into one that explicity integrates application.
+            The purpose of this document is to give an overview of a few,
+            simple and useful elements toward better, consistent signaling between
+            applications and the network for the purpose of proper
+            treatment and visibility of application flows.
+
+            Treatment of applications flows is typically based on heuristics 
+            or require application level gateways (ALG). Heuristics may be
+            based on port ranges, IP subnetting or deep packet inspections.
+            Port based solutions suffer from port overloading and inconsistent
+            port usage. IP subnetting solutions are error prone and result
+            in network management hassle. Deep packet inspection becomes a
+            challenge with the wider adoption of encrypted signaling and
+            secured traffic. ALGs do not suffer the heuristics drawbacks
+            but do fall into other problems such as flow hair pinning and
+            the necessity of their deployement at different place in the network. One further
+            drawback of deep packet inspection and ALGs is that their insights
+            are not availaible to network nodes further down the application
+            flow path or need to be re-computed.
+
+            The proposed solution allows applications to explicitely
+            signal their flow characteristics to the network. It
+            also provides network nodes with visibility of
+            the application flow characteristics and the ability to contribute
+            to the flow description.
+
+
         </t>
 
       <section title="Requirements Language">
