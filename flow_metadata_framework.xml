@@ -196,30 +196,33 @@
       <t>The purpose of this document is to give an overview of a few, simple
       and useful elements toward better, consistent signaling between
       applications and the network for the purpose of proper treatment and
-      visibility of application flows. Treatment of applications flows is
-      typically based on heuristics or require application level gateways
-      (ALG). Heuristics may be based on port ranges, IP subnetting or deep
-      packet inspections. Port based solutions suffer from port overloading
-      and inconsistent port usage. IP subnetting solutions are error prone and
+      visibility of application flows. Treatment of application flows is
+      typically based on heuristics or requires application level gateways
+      (ALG).</t>
+
+      <t>Heuristics may be based on port ranges, IP subnetting or deep packet
+      inspections. Port based solutions suffer from port overloading and
+      inconsistent port usage. IP subnetting solutions are error prone and
       result in network management hassle. Deep packet inspection becomes a
       challenge with the wider adoption of encrypted signaling and secured
-      traffic. ALGs do not suffer the heuristics drawbacks but do fall into
+      traffic. ALGs do not suffer these drawbacks; however, they fall into
       other problems such as flow hair pinning and the necessity of their
-      deployement at different place in the network. One further drawback of
+      deployement at different places in the network. One further drawback of
       deep packet inspection and ALGs is that their insights are not
       availaible to network nodes further down the application flow path or
-      need to be re-computed. The proposed solution allows applications to
-      explicitely signal their flow characteristics to the network. It also
-      provides network nodes with visibility of the application flow
-      characteristics and the ability to contribute to the flow
-      description.</t>
+      need to be re-computed.</t>
 
-      <section title="Requirements Language">
-        <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-        "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
-        document are to be interpreted as described in <xref
-        target="RFC2119">RFC 2119</xref>.</t>
-      </section>
+      <t>The proposed solution allows applications to explicitely signal their
+      flow characteristics to the network. It also provides network nodes with
+      visibility of the application flow characteristics and the ability to
+      contribute to the flow description.</t>
+    </section>
+
+    <section title="Requirements Language">
+      <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+      "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+      document are to be interpreted as described in <xref
+      target="RFC2119">RFC 2119</xref></t>
     </section>
 
     <section title="Overview">
