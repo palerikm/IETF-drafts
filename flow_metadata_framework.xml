@@ -532,10 +532,6 @@ take all the above aspects into acccount:
             </section>
         </section>
         <section title="Proposed common information elements">
-            <t>
-                TBD
-            </t>
-        </section>
         <section title="Application Identification">
             <t>
 Application identification is clearly one of the more difficult classification
@@ -776,6 +772,12 @@ probability for GUID collision and therefore oversubscription of
 bandwidth to less than 1% which is less than the spare headroom that
 any bandwidth management system should have anyhow. 
             </t>
+        </section>
+        <section title="Delay, Jitter, Loss Tolerance">
+            <t>
+                TBD --> Charles, Reinaldo
+            </t>
+        </section>
         </section>
     </section>
 
