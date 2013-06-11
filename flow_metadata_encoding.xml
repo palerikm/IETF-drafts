@@ -214,11 +214,10 @@
             The Metadata tags can characterise data in the same direction as the
             flow (upstream) or in the opposite direction (downstream). The
             encoding allows to signal for either direction or both at the same
-            time. The Metadata tags can be signaled by the endpoint itself
+            time. The Metadata tags can be signaled by the application itself
             and/or by network elements that have visibilty on the flow data.
             The encoding clearly segregate between information coming
-            from the endpoint and information coming from the network. Within
-            this document endpoint and application are used interchangeabely.
+            from the application and information coming from the network.
         </t>
         <section title="Requirements Language">
             <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
@@ -284,7 +283,7 @@
                     used by more than one transport protocol. This should help with the
                     future standardization effort and also implementations that make use
                     of different protocols when transporting Flow Metadata. One example
-                    is an endpoint that may use different signaling protocols depending
+                    is an application that may use different signaling protocols depending
                     on the environment, peer protocol support, etc. Another is a
                     middlebox on an administrative boundary that may need to perform
                     protocol interworking functions.</t>
@@ -312,14 +311,14 @@
                     Flow Metadata information associated with a given flow.
                 </t>
 
-                <t> Endpoints and applications are one category of candidates for
+                <t> Applications are one category of candidates for
                     generating Flow Metadata as they have precise knowledge of
                     the flows they insert into the network. Middleboxes
                     constitute a second class of Metadata producers. Deep Packet
                     Inspection engines are deployed to recognize the originator
                     and nature of the flows traversing a network. Media
                     Termination Points (e.g. MCU, Transcoders) are deployed to
-                    offer additional services to voice endpoints and
+                    offer additional services to voice applications and
                     applications. Media Termination Points have knowledge of the
                     transformations they apply on the flow they receive and can
           therefore update the characteristics of the flow. Other proxies and
@@ -367,17 +366,17 @@
                     Two implementations supporting different versions of the tag set
                     can use the oldest version for the purpose of
                     applying treatment to or gathering information about the
-                    endpoint flows.
+                    application flows.
                 </t>
             </section>
 
             <section title="Flexibility">
                 <t>
-                    Distinct use cases and individual endpoints or applications
+                    Distinct use cases and individual applications
                     have a need for different subsets of Metadata tags.
                     The encoding should support the signaling of any subset of
                     Metadata tags for that purpose. For example, a video
-                    conferencing endpoint might need to signal which of its flows
+                    conferencing application might need to signal which of its flows
                     are audio and video. Video surveillance cameras might only
                     signal video flows but will need to indicate which one has
                     priority based for example on embedded analytics.
@@ -413,7 +412,7 @@
                     purposes and do not support semantic fragmentation. The strategy
                     of the encoding is to minimize the encoding structures used
                     for the common signaling case. The common case is foreseen to
-                    be the endpoint signaling standard flow characteristics.
+                    be the application signaling standard flow characteristics.
                 </t>
             </section>
         </section>
@@ -421,25 +420,38 @@
 
     <section title="Encoding specification">
         <section title="Layout">
-            <t>This section describes the encoding layout proposed by this
-                specification. The format of the Flow Metadata (<xref
-                    target="encoding_layout"/>) shows the layout of the different building
-                blocks. </t>
+            <t>
+                This section describes the encoding layout proposed by this
+                specification. We take a top down approach to show the encoding
+                layout, we show:
+                <list style="symbols">
+                    <t>How the application and network producers co-exits using
+                        sections in <xref target="encoding_section"/></t>
+                    <t>The subdivision of a section with standard and 
+                        vendor specific sub-sections and an optional
+                        security token in
+                        <xref target="encoding_section_content"/></t>
+                    <t>The subdivision of a sub-section in upstream
+                        and downstream block in
+                        <xref target="encoding_subsection_content"/></t>
+                    <t>A full example using all the encoding building
+                        blocks in <xref target="encoding_layout"/></t>
+                </list></t>
 
             <t>
                 The flow characteristics are grouped in sections within the encoding.
-                A section pertains to an endpoint or to a network producer. To segregate
-                endpoint and network producer sections the encoding uses a network marker.
-                The endpoint section does not use a network marker and therefore
-                must come first if present. The encoding MUST contain at least an endpoint or a
+                A section pertains to an application or to a network producer. To segregate
+                application and network producer sections the encoding uses a network marker.
+                The application section does not use a network marker and therefore
+                must come first if present. The encoding MUST contain at least an application or a
                 network section. <xref target="encoding_section" /> shows an
-                example which combines an endpoint section with two network
+                example which combines an application section with two network
                 sections.
             </t>
             <figure align="center" anchor="encoding_section" title="Encoding section">
                 <artwork align="left"><![CDATA[
 +--------------------------------+
-|         Endpoint Section       |
+|      Application Section       |
 +--------------------------------+
 +--------------------------------+
 |         Network-1 Marker       |
@@ -542,12 +554,14 @@
                     The tags appearing in a standard and in a vendor sub-section are
                     managed by separate registries. A standard body will track the
                     standard tags allocation and separate vendor registries will
-                    track vendor specific tag allocations.
+                    track vendor specific tag allocations. See [RFC-RFMD] for a 
+                    full coverage of the information model and how the rgistries
+                    are handled.
                 </t>
 
                 <t>
                     <xref target="encoding_layout" /> shows a complete example
-                    combining the endpoint and network sections together with
+                    combining the application and network sections together with
                     their standard and vendor sub-sections.
                 </t>
                 <figure align="center" anchor="encoding_layout" title="">
@@ -601,9 +615,9 @@
                 </figure>
 
                 <t><xref target="encoding_layout_compact"/> shows an encoding example
-                    for Flow Metadata standard characteristics produced by an endpoint for
+                    for Flow Metadata standard characteristics produced by an application for
                     the upstream (same as 5-tuple) direction. As can be seen in the figure
-                    no network marker is used as we are signaling for the endpoint. In
+                    no network marker is used as we are signaling for the application. In
                     the same way there is no vendor marker as we are signaling standard
                     flow characteristics. This example also assumes a use case where no
                     security token is needed. Further examples are given in
@@ -624,13 +638,18 @@
             <section title="Encoding Structures">
                 <t>
                     This section explores the encoding looking more closely at the
-                    encoding structures. <xref
+                    encoding structures.
+                    <list>
+                        <t><xref
                         target="encoding_ep_std_struct"/> shows the encoding used by an
-                    endpoint using only standard tags. <xref
+                    application using only standard tags.</t>
+                <t><xref
                         target="encoding_ep_vnd_struct"/> shows the encoding used by an
-                    endpoint using only vendor specifc tags. <xref
+                    application using only vendor specifc tags.</t>
+                <t><xref
                         target="encoding_nt_std_struct"/> shows the encoding for network
-                    producers using only standard tags.
+                    producers using only standard tags.</t>
+                </list>
                     The three scenarios expose all the encoding structures, other
                     applications can be derived. The encoding makes use of Type Length
                     Value (TLV) as the base building block and some level of nesting to
@@ -641,7 +660,7 @@
                 </t>
 
                 <t>
-                    As explained earlier endpoint and network sections MUST contain at
+                    As explained earlier application and network sections MUST contain at
                     least one standard or vendor sub-section and MAY contain a
                     security token.
                     The value of the security token TLV is broken down in two parts, a
@@ -703,7 +722,7 @@
                     is the vendor's Private Enterprise Number (PEN) allocated by IANA. The
                     vendor marker does not include the downstream and the upstream block
                     but rather sets the context to interpret them. Multiple vendor
-                    sub-sections within the same endpoint or network section are allowed as
+                    sub-sections within the same application or network section are allowed as
                     long as they pertain to different vendors.
                 </t>
 
@@ -792,12 +811,12 @@
             <section title="ABNF">
                 <figure align="left" anchor="abnf">
                     <artwork align="left"><![CDATA[
-MD-block = Version (Endpoint-block / 1*Network-block /
-(Endpoint-block 1*Network-block))
+MD-block = Version (Application-block / 1*Network-block /
+(Application-block 1*Network-block))
 
 Network-blocks = Network-tlv Producer-block
 
-Endpoint-block = Producer-block ; For the endpoint we do not
+Application-block = Producer-block ; For the application we do not
 ; require the Producer-tlv
 
 Producer-block = [Security-tlv] (Standard-block / 1*Vendor-block /
@@ -878,9 +897,9 @@ Zero = %x00
             <t>
                 We would like to thank Yann Poupet, Davide Cuda, Charles Eckel for reviewing
                 this document and helping us proof its content. We would also
-                to express our gratitude to Sergio Mena de la Cruz for
+                like to express our gratitude to Sergio Mena de la Cruz for
                 contributing ideas, proofing the text and for his work on
-                the validating the grammar.
+                validating the grammar.
             </t>
 
         </section>
