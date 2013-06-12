@@ -313,26 +313,34 @@
           </t>
           <t>
               It also seems clear that there will be no single
-              one-protocol-fits-all. Nevertheless, today, every protocol is
+              one-protocol-fits-all. This is due to certain protocol being
+              widely used in specific domains, on different network deplyoyments
+              calling for different protocols and on the use cases being resolved.
+              Nevertheless, today, every protocol is
               currently defined in its own silo, creating duplicate and/or
               inconsistent information models. This results in duplicate work, more
               operational complexity and an inability to easily convert information
               between protocols to easily leverage the best protocol option for each
-              specific use case. 
+              specific use case.
           </t>
           <t>
               Some of the signaling options include: 
           </t> 
           <t>
               RSVP is the
-              original onpath signaling protocol standardized by the IETF. It
-              operates onpath out-of-band and could support any transport protocol
-              traffic (it currently supports TCP and UDP). Its original goal was to
+              original on-path signaling protocol standardized by the IETF. It
+              operates out-of-band but on-path with the data flow for which it
+              signals. It could support any transport protocol
+              traffic (currently TCP and UDP). Its original goal was to
               provide admission control and it gained only limited success with that
-              service. Arguably, its success was also impact by its reliance on
-              router-alert because this often lead for RSVP packets to be filtered
+              service. Arguably, its success was also impacted by its reliance on
+              router-alert because this often lead RSVP packets to be filtered
               by intervening networks. So far, more lightweight signaling workflows
-              utilizing RSVP where not put into the IETF. 
+              utilizing RSVP where not put into the IETF. The hop-by-hop nature
+              of the protocol makes it a good candidate for application to 
+              network signaling as it provides for the inspection of its content
+              by interested network node.
+
           </t>
           <t>
               NSIS (next Steps in
@@ -340,32 +348,33 @@
               IETF. Because it still focussed on the same fundamental workflow as
               RSVP admission control as its main driver, and because it did not
               provide significant enough use-case benenfits over RSVP, it has seen
-              even less adoption than RSVP. 
+              even less adoption than RSVP.
           </t>
           <t>
-              STUN is currently an onpath, inband
+              STUN is currently an on-path, in-band
               signaling signaling that could easily be extended to provide signaling
-              to onpath network devices because it provides an easily inspected
+              to on-path network devices because it provides an easily inspected
               packet signature, at least for transport protocols such as UDP and
               SCTP. Through its extensions TURN and ICE, it is becoming quite
-              populat in application signaling driven by the initial use-case of
+              popular in application signaling driven by the initial use-case of
               automatically opening up fireall pinholes and determining the best
-              local/remote addresses for peer-to-peer connectivity (ICE). 
+              local/remote addresses for peer-to-peer connectivity (ICE).
           </t>
           <t>
               PCP is a
-              protocol originally designed to support use-cases similar to UPnP
+              point-to-point protocol originally designed to support use-cases
+              similar to UPnP
               firewall traversal. It also can easily be expanded to provide more
               generic application/network signaling for traffic flows. Unlike the
-              prior protocols, it is not meant to be used onpath end-to-end but
+              prior protocols, it is not meant to be used on-path end-to-end but
               rather independently on one "edge" of a traffic flow. It is therefore
               an attractive alternative (albeit with challenges under path
               redundancy) because it allows to introduce host to network signaling
               without relying on the remote side. This is specially useful in
-              multi-domain communications. 
+              multi-domain communications.
           </t>
           <t>
-              Last but not least: Depending on the
+              Last but not least, depending on the
               devices where it is performed, different degrees of
               deep-packet-inspection are viable. Inspection of for example HTTP
               connections is often viable in high-touch network devices. Such
@@ -382,100 +391,145 @@
         <t>The proposed framwork includes the following elements:</t>
 
         <section title="Common, IPFIX registered, intent based information elements">
-          <t>Application intent should be expressed as a set of information
-          elements that are defined and registered like observation-based
-          IPFIX attributes. We consider to leverage IPFIX as the information
-          model (not necessary as the transport signaling) because: - As
-          outlined above, export of traffic information is one of the two big
-          workflows. IPFIX is arguably the most flexible, extensible and best
-          defined option within thre IETF scope for this. Leveraging the same
-          information model for traffic intent allows the most easy export of
-          this information via IPFIX. - IPFIX allows both for IETF/IANA
-          standardized information elements, but also for unambiguous
-          vendor-defined attributes by including the so-called PEN (Private
-          Enterprise Number) into the information element type. Note that
-          IPFIX has ongoing work to better disseminate especially vendor
-          specific registation of attributes. This framwork proposal expects
-          to be able to leverage the output of that work.</t>
+            <t>Application intent should be expressed as a set of information
+                elements that are defined and registered like observation-based
+                IPFIX attributes. We consider to leverage IPFIX as the information
+                model (not necessary as the transport signaling) because:
+                <list style="symbols"> 
+                    <t>As
+                        outlined above, export of traffic information is one of the two big
+                        workflows. IPFIX is arguably the most flexible, extensible and best
+                        defined option within thre IETF scope for this. Leveraging the same
+                        information model for traffic intent allows the most easy export of
+                        this information via IPFIX.
+                    </t> 
+                    <t>IPFIX allows both for IETF/IANA
+                        standardized information elements, but also for unambiguous
+                        vendor-defined attributes by including the so-called PEN (Private
+                        Enterprise Number) into the information element type. Note that
+                        IPFIX has ongoing work to better disseminate especially vendor
+                        specific registation of attributes. This framwork proposal expects
+                        to be able to leverage the output of that work.
+                    </t>
+                    <t>
+                        [AC why do we need the PEN here as I think only the
+                        standard tags will be registered in the IPFIX registry?
+                        The PEN is used in the encoding to create the standard
+                        and vendor specific namespaces for the information element]
+                    </t>
+                </list>
+            </t>
         </section>
 
         <section title="Cross-protocol consistent information element encoding rules">
-          <t>The mayority of protocol listed above (RSVP, NSIS, STUN/ICE, PCP)
-          require (or favor) compact, binary encoding of information elements.
-          This is natively supported by the information element registration
-          of IPFIX. The IPFIX registry defines each information elements
-          data-type, and there is a native binary network encoding for each of
-          these types. At minimum, every protocol leveraging common
-          information elements would need to use e n encoding that identifies
-          the information elements PEN, IE-ID and leverages network standard
-          binary encoding of the value including the length of the value.
-          Including the length of the value into the encoding is required for
-          extensibility because otherwise new information elements could not
-          be introduced without first having all network devices know the
-          data-type and therefore length of the information element.
-          Leveraging network standard binary encoding is equally important to
-          permit network elements to propagate information elements from one
-          protocol to another protocol without understanding the information
-          elements data-type. In protocols that are not constrained to to
-          binary encoding, it is nevertheless highly desirable to include the
-          equivalent information and therefore permit propagation between
-          binary and non-binary transport of information elements without
-          having to understand all information elements.</t>
+            <t>
+                The majority of protocol listed above (RSVP, NSIS, STUN/ICE, PCP)
+                require (or favor) compact, binary encoding of information elements.
+                This is natively supported by the information element registration
+                of IPFIX.
+            </t>
+            <t>
+                The IPFIX registry defines each information elements
+                data-type, and there is a native binary network encoding for each of
+                these types. At minimum, every protocol leveraging common
+                information elements would need to use an encoding that identifies
+                the information elements PEN, IE-ID and leverages network standard
+                binary encoding of the value including the length of the value.
+            </t>
+            <t>
+                Including the length of the value into the encoding is required for
+                extensibility because otherwise new information elements could not
+                be introduced without first having all network devices know the
+                data-type and therefore length of the information element.
+                Leveraging network standard binary encoding is equally important to
+                permit network elements to propagate information elements from one
+                protocol to another protocol without understanding the information
+                elements data-type.
+            </t>
+            <t>
+                In protocols that are not constrained to
+                binary encoding, it is nevertheless highly desirable to include the
+                equivalent information and therefore permit propagation between
+                binary and non-binary transport of information elements without
+                having to understand all information elements.
+            </t>
         </section>
 
         <section title="Considerations for signaling of common information elements">
-          <section title="Transcation type:  Advisory application-to-network traffic classification">
-            <t>This is the most basic transaction to enable the workflows
-            traditionally performed via DPI mechanisms as explained above. In
-            it, the application levages one or more of the appropriate
-            signaling protocols to simply indicate the common information
-            elements and values that describe the intent of the applications
-            traffic-classes/flows. The application expects no signaling
-            feedback form the network. We observe that most of the protocols
-            do not natively support this most simple transaction, and it is
-            highly desirable to support it independnet of any additional
-            transactions, because any more advanced transaction may be
-            something the application may not desire to perform. In addition,
-            it is highly desirable that all protocols support the ability to
-            indicate the common information element classification not only
-            for the traffic flows originated by the application but also, as
-            much as known for the traffic flows received by the application
-            (usually the reverse 5-tuple flows from the ones being sent). This
-            is customary in protocols like PCP explicitly designed to support
-            edge-signaling, but it is equally benefical in signaling destined
-            to be end-to-end - in case the other side does not support
-            explicit signaling, or some intervening network blocks that
-            signaling. Note that this most simple advisory
-            application-to-network traffic classification transaction is
-            sufficient to trigger the most often asked for network services
-            such as setting the right QoS for the traffic when there are
-            network elements that can simply leverage the advisory trafic
-            classification to set DSCP on the associated traffic (see below
-            for the proposed TCL common information element). Expanding
-            existing protocols to support solely advisory
-            application-to-network traffic classification can often easily be
-            achieved by simply reducing some pre-existing transaction in the
-            protocol to a NOP. For example, in RSVP, the original CAC
-            transaction can be indicated to be a NOP by settin the flowspec
-            bandwidth and other parameters to 0, and the protocol signaling
-            can be reduced purely to PATH messages from the sender without
-            expecting that the receiver provides any RESV nor that the
-            receiver support RSVP in the first place.</t>
-          </section>
+            <section title="Transcation type:  Advisory application-to-network traffic classification">
+                <t>
+                    This is the most basic transaction to enable the workflows
+                    traditionally performed via DPI mechanisms as explained above.
+                    The application levages one or more of the appropriate
+                    signaling protocols to simply indicate the common information
+                    elements and values that describe the intent of the applications
+                    traffic-classes/flows. The application expects no signaling
+                    feedback form the network. 
+                </t>
+                <t>
+                    We observe that most of the protocols
+                    do not natively support this most simple transaction, and it is
+                    highly desirable to support it independnet of any additional
+                    transactions, because any more advanced transaction may be
+                    something the application may not desire to perform. 
+                </t>
+                <t>
+                    In addition,
+                    it is highly desirable that all protocols support the ability to
+                    indicate the common information element classification not only
+                    for the traffic flows originated by the application but also, as
+                    much as known for the traffic flows received by the application
+                    (usually the reverse 5-tuple flows from the ones being sent). This
+                    is customary in protocols like PCP explicitly designed to support
+                    edge-signaling, but it is equally benefical in signaling destined
+                    to be end-to-end - in case the other side does not support
+                    explicit signaling, or some intervening network blocks that
+                    signaling. 
+                </t>
+                <t>
+                    Note that this most simple advisory
+                    application-to-network traffic classification transaction is
+                    sufficient to trigger the most often asked for network services
+                    such as setting the right QoS for the traffic when there are
+                    network elements that can simply leverage the advisory trafic
+                    classification to set DSCP on the associated traffic (see below
+                    for the proposed TCL common information element). 
+                </t>
+                <t>
+                    Expanding
+                    existing protocols to support solely advisory
+                    application-to-network traffic classification can often easily be
+                    achieved by simply reducing some pre-existing transaction in the
+                    protocol to a NOP. 
+                </t>
+                <t>
+                    For example, in RSVP, the original CAC
+                    transaction can be indicated to be a NOP by setting the flowspec
+                    bandwidth and other parameters to 0, and the protocol signaling
+                    can be reduced purely to PATH messages from the sender without
+                    expecting that the receiver provides any RESV nor that the
+                    receiver support RSVP in the first place.</t>
+            </section>
 
           <section title="Transaction type: Common Information Element enhanced protocol specific transactions">
-            <t>Whenever an application uses one of the signalng protocols to
+            <t>Whenever an application uses one of the signaling protocols to
             perform a pre-existing (or to be defined) transaction that is
             specific to a particular traffic-class/flow, the protocol should
-            support a way to add the common, intent-based information elements
+            support a way to add the common, intent based information elements
             on the signaling from the application to the network. When doing
             so, the intent based information elemenets provide additional
             information to the network element that can help to improve the
-            the outcome of a transaction. For example, assume a PCP
+            the outcome of a transaction.
+            </t>
+            <t>
+                For example, assume a PCP
             transaction to secure an outside UDP/TCP port on a NAT. Providing
             additional intent-based attributes can help the PCP server on the
             NAT to decide which of the requesting applications to grant the
-            more prestigious "native" port (eg: port 80). Similarily, with
+            more prestigious "native" port (eg: port 80). 
+            </t>
+            <t>
+                Similarily, with
             RSVP it is possible to negotiate the DSCP to be used for traffic
             flows by using the DCLASS object in a transaction. The network can
             signal back to applications what DSCP they should set. This is
