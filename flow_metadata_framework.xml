@@ -228,99 +228,152 @@
     <section title="Overview">
       <section title="Deep packet inspection">
         <section title="Benefits">
-          <t>Deep Packet Inspection and other traffic observation methods
-          (such as performance monitoring) are successfully being used for two
-          type of workflows: 1. Provide network operators with insight into
-          traffic for troubleshooting, capacity planning, accounting/billing
-          and other offnet workflows. This is done by exporting observed
-          traffic analsysis via IPFIX. 2. Differentiate network services for
-          the traffic by network operator defined rulesets against the
-          observed traffic classification. This includes assignment of
-          different QoS classes for different traffic classes identified by
-          DPI including policing/shaping of traffic, providing admission
-          control, impacting routing, permitting passing of traffic (eg:
-          firewall functions), assigning different context in the network
-          (VRF, VLAN,..) and so on. Note: For the context of this document, we
-          consider that DPI starts as early nto packets as using ACLs with
-          UDP/TCP port numbers to classify traffic.</t>
+            <t>Deep Packet Inspection (DPI) and other traffic observation methods
+                (such as performance monitoring) are successfully being used for two
+                type of workflows: 
+                <list style="format %d.">
+                    <t>
+                        Provide network operators with insight into
+                        traffic for troubleshooting, capacity planning, accounting/billing
+                        and other off network workflows. This is done by exporting observed
+                        traffic analsysis via IPFIX.
+                    </t>
+                    <t>
+                        Differentiate network services for
+                        the traffic by network operator defined rulesets against the
+                        observed traffic classification. This includes assignment of
+                        different QoS classes for different traffic classes identified by
+                        DPI including policing/shaping of traffic, providing admission
+                        control, impacting routing, permitting passing of traffic (eg:
+                        firewall functions), assigning different context in the network
+                        (VRF, VLAN,..) and so on. 
+                    </t>
+                </list>
+            </t>
+                <t>
+                    Note: For the context of this document, we
+                    consider that DPI starts as early into packets as using ACLs with
+                    UDP/TCP port numbers to classify traffic.
+                </t>
         </section>
 
         <section title="Limitation">
-          <t>These two workflows - visibility and differentiated networks
-          services are highly critical in many network, but solely relying on
-          inspection/observation limits the ability to apply these workflows
-          more widely. 1. Simple observation based classification, especially
-          the ones relying on TCP/UDP ports will often result in incorrect
-          results because those ports are not only used by the applications
-          that once claimed them with IANA. 2. More and more traffic becomes
-          encrypted and therefore renders deep packet inspection impossible or
-          much more complex - such as when having to share encryption keys
-          with network equipment. 3. Observation often needs to inspect
-          control/signaling of application traffic which may flow on different
-          network paths than the actual application media traffic whose
-          behavior should be impacted. 4. Observation of control/signaling and
-          media traffic with DPI will in general result in less insight into
-          the applications intent than if the application was explicitly
-          signaling its intent to the network. 5. Without explicit desire by
-          the application to signal its intent to the network, it will also
-          not consider to explicitly provide authentication to the network, so
-          DPI mechanism also have a more difficult job in analyzing
-          application layer authentication mechanisms (if they can). 6.
-          Without explicit involvement of the application, feedback from
-          network services leveraging DPI traffic classification can only
-          impact the application behavior by impacting its traffic, but not
-          provide explicit feedback in the form of signaling.</t>
+            <t>These two workflows - visibility and differentiated network
+                services are highly critical in many network, but solely relying on
+                inspection/observation limits the ability to apply these workflows
+                more widely. 
+                <list style="symbols">
+                    <t>
+                        Simple observation based classification, especially
+                        the ones relying on TCP/UDP ports will often result in incorrect
+                        results because those ports are not only used by the applications
+                        that once claimed them with IANA.
+                    </t>
+                    <t>
+                        More and more traffic becomes
+                        encrypted and therefore renders deep packet inspection impossible or
+                        much more complex - such as when having to share encryption keys
+                        with network equipment.
+                    </t>
+                    <t>
+                        Observation often needs to inspect
+                        control/signaling of application traffic which may flow on different
+                        network paths than the actual application media traffic whose
+                        behavior should be impacted.
+                    </t>
+                    <t>
+                        Observation of control/signaling and
+                        media traffic with DPI will in general result in less insight into
+                        the applications intent than if the application was explicitly
+                        signaling its intent to the network.
+                    </t>
+                    <t>
+                        Without explicit desire by
+                        the application to signal its intent to the network, it will also
+                        not consider to explicitly provide authentication to the network, so
+                        DPI mechanism also have a more difficult job in analyzing
+                        application layer authentication mechanisms (if they can).
+                    </t>
+                    <t>
+                        Without explicit involvement of the application, feedback from
+                        network services leveraging DPI traffic classification can only
+                        impact the application behavior by impacting its traffic, but not
+                        provide explicit feedback in the form of signaling.
+                    </t>
+                </list>
+            </t>
         </section>
       </section>
 
       <section title="Explicit signaling methods">
-        <t>There is a variety of existing and evolving signaling options that
-        can provide explicit application to network signaling and serve the
-        two workflows where DPI is currently more successful than explicit
-        signaling. It also seems clear that there will be no single
-        one-protocol-fits-all. Nevertheless, today, every protocol is
-        currently defined in its own silo, creating duplicate and/or
-        inconsistent information models. This results in duplicate work, more
-        operational complexity and an inability to easily convert information
-        between protocols to easily leverage the best protocol option for each
-        specific use case. Some of the signaling options include: RSVP is the
-        original onpath signaling protocol standardized by the IETF. It
-        operates onpath out-of-band and could support any transport protocol
-        traffic (it currently supports TCP and UDP). Its original goal was to
-        provide admission control and it gained only limited success with that
-        service. Arguably, its success was also impact by its reliance on
-        router-alert because this often lead for RSVP packets to be filtered
-        by intervening networks. So far, more lightweight signaling workflows
-        utilizing RSVP where not put into the IETF. NSIS (next Steps in
-        Signaling) is the next iteration of RSVP-like signaling defined by the
-        IETF. Because it still focussed on the same fundamental workflow as
-        RSVP admission control as its main driver, and because it did not
-        provide significant enough use-case benenfits over RSVP, it has seen
-        even less adoption than RSVP. STUN is currently an onpath, inband
-        signaling signaling that could easily be extended to provide signaling
-        to onpath network devices because it provides an easily inspected
-        packet signature, at least for transport protocols such as UDP and
-        SCTP. Through its extensions TURN and ICE, it is becoming quite
-        populat in application signaling driven by the initial use-case of
-        automatically opening up fireall pinholes and determining the best
-        local/remote addresses for peer-to-peer connectivity (ICE). PCP is a
-        protocol originally designed to support use-cases similar to UPnP
-        firewall traversal. It also can easily be expanded to provide more
-        generic application/network signaling for traffic flows. Unlike the
-        prior protocols, it is not meant to be used onpath end-to-end but
-        rather independently on one "edge" of a traffic flow. It is therefore
-        an attractive alternative (albeit with challenges under path
-        redundancy) because it allows to introduce host to network signaling
-        without relying on the remote side. This is specially useful in
-        multi-domain communications. Last but not least: Depending on the
-        devices where it is performed, different degrees of
-        deep-packet-inspection are viable. Inspection of for example HTTP
-        connections is often viable in high-touch network devices. Such
-        inspection can turn into an explicit signaling methods whenever the
-        application explicitly keeps the elements such as HTTP heeader that
-        are meant to be signaled to the network in the clear or knowingly uses
-        an encryption shared with the network and if the application it
-        knowingly inserts information elements destined to the network.</t>
+          <t>
+              There is a variety of existing and evolving signaling options that
+              can provide explicit application to network signaling and serve
+              the differentiated network services and visibility workflows.
+          </t>
+          <t>
+              It also seems clear that there will be no single
+              one-protocol-fits-all. Nevertheless, today, every protocol is
+              currently defined in its own silo, creating duplicate and/or
+              inconsistent information models. This results in duplicate work, more
+              operational complexity and an inability to easily convert information
+              between protocols to easily leverage the best protocol option for each
+              specific use case. 
+          </t>
+          <t>
+              Some of the signaling options include: 
+          </t> 
+          <t>
+              RSVP is the
+              original onpath signaling protocol standardized by the IETF. It
+              operates onpath out-of-band and could support any transport protocol
+              traffic (it currently supports TCP and UDP). Its original goal was to
+              provide admission control and it gained only limited success with that
+              service. Arguably, its success was also impact by its reliance on
+              router-alert because this often lead for RSVP packets to be filtered
+              by intervening networks. So far, more lightweight signaling workflows
+              utilizing RSVP where not put into the IETF. 
+          </t>
+          <t>
+              NSIS (next Steps in
+              Signaling) is the next iteration of RSVP-like signaling defined by the
+              IETF. Because it still focussed on the same fundamental workflow as
+              RSVP admission control as its main driver, and because it did not
+              provide significant enough use-case benenfits over RSVP, it has seen
+              even less adoption than RSVP. 
+          </t>
+          <t>
+              STUN is currently an onpath, inband
+              signaling signaling that could easily be extended to provide signaling
+              to onpath network devices because it provides an easily inspected
+              packet signature, at least for transport protocols such as UDP and
+              SCTP. Through its extensions TURN and ICE, it is becoming quite
+              populat in application signaling driven by the initial use-case of
+              automatically opening up fireall pinholes and determining the best
+              local/remote addresses for peer-to-peer connectivity (ICE). 
+          </t>
+          <t>
+              PCP is a
+              protocol originally designed to support use-cases similar to UPnP
+              firewall traversal. It also can easily be expanded to provide more
+              generic application/network signaling for traffic flows. Unlike the
+              prior protocols, it is not meant to be used onpath end-to-end but
+              rather independently on one "edge" of a traffic flow. It is therefore
+              an attractive alternative (albeit with challenges under path
+              redundancy) because it allows to introduce host to network signaling
+              without relying on the remote side. This is specially useful in
+              multi-domain communications. 
+          </t>
+          <t>
+              Last but not least: Depending on the
+              devices where it is performed, different degrees of
+              deep-packet-inspection are viable. Inspection of for example HTTP
+              connections is often viable in high-touch network devices. Such
+              inspection can turn into an explicit signaling methods whenever the
+              application explicitly keeps the elements such as HTTP heeader that
+              are meant to be signaled to the network in the clear or knowingly uses
+              an encryption shared with the network and if the application it
+              knowingly inserts information elements destined to the network.</t>
       </section>
     </section>
 
