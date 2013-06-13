@@ -35,7 +35,7 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="info" docName="cisco-draft-flow-metadata-encoding-00"
+<rfc category="info" docName="cisco-internal-flow-metadata-framework-00"
      ipr="trust200902">
   <!-- category values: std, bcp, info, exp, and historic
      ipr values: full3667, noModification3667, noDerivatives3667
