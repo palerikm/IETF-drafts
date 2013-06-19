@@ -35,9 +35,10 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="info" docName="cisco-internal-flow-metadata-framework-00"
+<rfc category="info" docName="cisco-internal-flow-metadata-framework-01"
      ipr="trust200902">
-  <!-- category values: std, bcp, info, exp, and historic
+  <!-- category values: std, bcp
+, info, exp, and historic
      ipr values: full3667, noModification3667, noDerivatives3667
      you can add the attributes updates="NNNN" and obsoletes="NNNN" 
      they will automatically be output with "(if approved)" -->
@@ -48,8 +49,9 @@
     <!-- The abbreviated title is used in the page header - it is only necessary if the 
          full title is longer than 39 characters -->
 
-    <title abbrev="Traffic intent attributes framework">A framework for
-    traffic intent attributes and their signaling</title>
+    <title abbrev="Framework for Signaling Flow Characteristics">A Framework
+    for Signaling Flow Characteristics between Applications and the
+    Network</title>
 
     <!-- add 'role="editor"' below for the editors if appropriate -->
 
@@ -184,30 +186,34 @@
          keywords will be used for the search engine. -->
 
     <abstract>
-      <t>The purpose of this document is to give an overview of a few, simple
-      and useful elements toward better, consistent signaling between
-      applications and the network for the purpose of proper visibility and
-      treatment of application flows.</t>
+      <t>This document provides a framework for communicating information
+      elements (a.k.a. metadata) in a consistent manner between applications
+      and the network to provide better visibility of application flows,
+      thereby enabling differentiated treatment of those flows. These
+      information elements can be conveyed using various signaling protocols,
+      including PCP, RSVP, and STUN.</t>
     </abstract>
   </front>
 
   <middle>
     <section title="Introduction">
-      <t>The purpose of this document is to give an overview of a few, simple
-      and useful elements toward better, consistent signaling between
-      applications and the network for the purpose of proper visibility and
-      treatment of application flows. Identification and treatment of
-      application flows is typically based on heuristics.</t>
+      <t>This document provides a framework for communicating information
+      elements (a.k.a. metadata) in a consistent manner between applications
+      and the network to provide better visibility of application flows,
+      thereby enabling differentiated treatment of those flows. These
+      information elements can be conveyed using various signaling protocols,
+      including PCP, RSVP, and STUN.</t>
 
-      <t>Heuristics may be based on port ranges, IP subnetting, or deep packet
-      inspection (DPI), e.g. application level gateway (ALG). Port based
-      solutions suffer from port overloading and inconsistent port usage. IP
-      subnetting solutions are error prone and result in network management
-      hassle. DPI is computationally expensive and becomes a challenge with
-      the wider adoption of encrypted signaling and secured traffic. An
-      additional drawback of DPI is that the resulting insights are not
-      available, or need to be recomputed at, network nodes further down the
-      application flow path.</t>
+      <t>Identification and treatment of application flows is typically based
+      on heuristics. Heuristics may be based on port ranges, IP subnetting, or
+      deep packet inspection (DPI), e.g. application level gateway (ALG). Port
+      based solutions suffer from port overloading and inconsistent port
+      usage. IP subnetting solutions are error prone and result in network
+      management hassle. DPI is computationally expensive and becomes a
+      challenge with the wider adoption of encrypted signaling and secured
+      traffic. An additional drawback of DPI is that the resulting insights
+      are not available, or need to be recomputed at, network nodes further
+      down the application flow path.</t>
 
       <t>The proposed solution allows applications to explicitly signal their
       flow characteristics to the network. It also provides network nodes with
@@ -594,8 +600,9 @@
           <t>This attribute is used to convey the loss tolerance of an
           application with respect to the associated flow. When provided by a
           network element, it indicates the loss tolerance expected of the
-          application with respect to the associated flow. It is an 8 bit
-          field defined in terms of percentage of dropped packets.</t>
+          application with respect to the associated flow. It is a 16 bit
+          field defined in terms of hundredths of a percent of dropped packets
+          (e.g. 5 == 0.05%, 150 == 1.50%, etc.)</t>
 
           <t>Default Value: 0</t>
 
