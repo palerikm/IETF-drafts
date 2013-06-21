@@ -35,7 +35,7 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="info" docName="cisco-internal-flow-metadata-framework-01"
+<rfc category="info" docName="cisco-internal-flow-metadata-framework-02"
      ipr="trust200902">
   <!-- category values: std, bcp
 , info, exp, and historic
@@ -382,7 +382,7 @@
           <t>The majority of the protocols listed previously (RSVP, NSIS,
           STUN/ICE, PCP) require (or favor) compact, binary encoding of
           information elements. This is natively supported by the information
-          element registration of IPFIX. </t>
+          element registration of IPFIX.</t>
 
           <t>The IPFIX registry defines each information element's data-type,
           and there is a native binary network encoding for each of these
@@ -409,64 +409,67 @@
         <section title="Anticipated Usage Models">
           <t>The signaling of information elements may be from application to
           the network or from network to application. When signaled within a
-          given protocol, this signaling may be interpreted independently of
-          that protocol, or it may be used in combination with the given
-          protocol.</t>
+          given protocol, the information elements may be interpreted
+          independently of that protocol, or it may be used in combination
+          with the given protocol.</t>
 
-          <section title="Advisory application to network traffic classification">
-            <t>This is the most basic usage model to enable the workflows
-            traditionally performed via DPI mechanisms as explained
-            previously. The application leverages one or more of the
-            appropriate signaling protocols to indicate the common information
-            elements and values that describe the application's media traffic
-            flows. The application expects no signaling feedback form the
-            network.</t>
+          <section title="Informational">
+            <t>The most simplistic usage model is one in which applications
+            signal information elements describing their anticipated or
+            existing flows into the network along the path of those flows
+            without expecting or requiring anything back from the network.
+            Network elements along the flow path may or may not do something
+            with this information.</t>
 
-            <t>We observe that many protocols do not natively support this
-            basic transaction. It is highly desirable to support it
-            independent of any additional transactions because more advanced
-            transaction may be something the application does not desire to
-            perform.</t>
-
-            <t>In addition, it is highly desirable that all protocols support
-            the ability to indicate the common information element
-            classification not only for the traffic flows originated by the
-            application but also, to the extent it is possible, for the
-            traffic flows received by the application (often times the reverse
-            5-tuple flows from the ones being sent). This is customary in
-            protocols such as PCP that are designed to support edge-signaling,
-            but it is equally beneficial in signaling destined to be
-            end-to-end - in case the other side does not support explicit
-            signaling of information about its traffic flow.</t>
-
-            <t>Note that this basic advisory application to network traffic
-            classification is sufficient to trigger the most often asked for
-            network services, such as a network element setting the right QoS
-            for the traffic.</t>
+            <t>This "informational" usage model enables network elements along
+            the path to support the workflows traditionally performed via DPI
+            mechanisms, as described previously.</t>
           </section>
 
-          <section title="Enhancing protocol specific transactions">
-            <t>Whenever an application uses a signaling protocols to perform a
-            transaction that is specific to a particular traffic-class/flow,
-            the protocol should support a way to add the common information
-            elements to the signaling from the application to the network.
-            When doing so, information elements provide additional information
-            to the network element that can improve the outcome of a
-            transaction.</t>
+          <section title="Advisory">
+            <t>This usage model extends the "informational" usage in that the
+            application expects or requests some information back from the
+            network. With this usage, the same information elements apply and
+            may be communicated by the application into the network, but the
+            application indicates its interest in receiving some feedback.</t>
 
-            <t>For example, assume a PCP transaction to secure an outside
-            UDP/TCP port on a NAT. Providing additional informational
-            attributes can help the PCP server on the NAT decide which of the
-            requesting applications to grant the more prestigious "native"
-            port (eg: port 80). Similarly, with RSVP it is possible to
-            negotiate the DSCP to be used for traffic flows by using the
-            DCLASS object in a transaction. The network can signal back to
-            applications what DSCP they should set. This is beneficial if the
-            DSCP needs to be set correctly before a network device can set it
-            appropriately based on purely advisory common information elements
-            (for example if the sending device or the access-L2-network has
-            QoS). By providing common information elements, the network can
-            decide the right DSCP to signal back.</t>
+            <t>Default values are defined for each information element to
+            unambiguously support cases in which an application does not have
+            a valid value to communicate with the network; rather, it wants
+            the network to provide a value back to it in response. In essence,
+            this allows an application to ask a question and receive an answer
+            from the network. Of course, a network element may provide similar
+            feedback for cases in which an application communicated a non
+            default value as well. </t>
+
+            <t>In either case, an application is not guaranteered an answer or
+            any specific service from the network. In the event an answer is
+            provided, that answer is similarly not a guarantee of any specific
+            service or treatment.by the network. It is to interpreted as
+            advisory only.</t>
+
+            <t>As mentioned previously, the same information elements are used
+            in the signaling from the application to the network as well as
+            from the network to the application. The underlying transport
+            protocol used to carry to the information elements is expected to
+            provide the necessary request/response semantics or some other
+            mechanism to by which the communication in both directions can be
+            tied together.</t>
+          </section>
+
+          <section title="Service Request">
+            <t>This usage model extends the "advisory" usage to operate as an
+            explicit service request. Unlike the advisory usage, information
+            elements signalled by the application are interpreted by network
+            elements within the context of a service request, and information
+            elements signalled by the network back to the application are
+            interpreted within the context of a response to that request. </t>
+
+            <t>As with the advisory usage, the same information elements are
+            used in the signaling from the application to the network as well
+            as from the network to the application. The underlying transport
+            protocol used to carry to the information elements is expected to
+            provide the necessary service request/response semantics.</t>
           </section>
         </section>
 
@@ -478,7 +481,7 @@
             network as feedback), it is clear that wide-range adoption of such
             technology is improved by enabling also the use of proxies that
             can provide or amend that information in the absence of support by
-            the application itself. </t>
+            the application itself.</t>
           </section>
 
           <section title="Authentication of common information elements">
@@ -516,9 +519,13 @@
 
       <section title="Proposed common information elements">
         <t>The section defines an initial set of common information elements.
-        Additional information elements may be defined in other documents. The
-        definition of an information element must include the following:<list
-            counter="1" style="numbers">
+        These information elements are targeted to be IANA standardized
+        information elements. Additional information elements may be defined
+        in other documents. These information elements may be added to the set
+        of IANA standardized information elements, or they may be
+        vendor-defined attributes identified by a PEN. All information element
+        definition must include the following:<list counter="1"
+            style="numbers">
             <t>Default value to be provided by an application when it does not
             have an informative value to provide to the network, but is
             interested in receiving an informative value of the attribute from
@@ -587,7 +594,7 @@
           application with respect to the associated flow. When provided by a
           network element, it indicates the delay tolerance expected of the
           application with respect to the associated flow. It is a 16 bit
-          field defined in terms of milliseconds. </t>
+          field defined in terms of milliseconds.</t>
 
           <t>Default Value: 0</t>
 
