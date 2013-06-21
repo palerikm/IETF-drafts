@@ -440,11 +440,12 @@
             this allows an application to ask a question and receive an answer
             from the network. Of course, a network element may provide similar
             feedback for cases in which an application communicated a non
-            default value as well. </t>
+            default value as well. Network elements may also provide unsolicited
+	    Advisory feedback</t>
 
-            <t>In either case, an application is not guaranteered an answer or
-            any specific service from the network. In the event an answer is
-            provided, that answer is similarly not a guarantee of any specific
+            <t>In all cases, applications are not guaranteered to receive an
+	    answer or any specific service from the network. In the event an answer
+	    is provided, that answer is similarly not a guarantee of any specific
             service or treatment.by the network. It is to interpreted as
             advisory only.</t>
 
@@ -472,6 +473,7 @@
             provide the necessary service request/response semantics.</t>
           </section>
         </section>
+
 
         <section title="Considerations for signaling of common information elements">
           <section title="Support for proxy originated information">
@@ -514,22 +516,97 @@
                 <t>Signaling of authenticators</t>
               </list></t>
           </section>
+
+          <section title="Usage Model to Protocol integration">
+
+	    <t>
+	    There is a range of options of how much of this framework
+	    is integrated with a particular transport. We describe two
+	    examples we consider useful:
+	    </t>
+
+            <section title="Common transport informative integration">
+
+	      <t> <list counter="1" style="numbers">
+	        <t>A transport protocol signaling method is defined to carry
+	        the common encoded information elements at least in signaling
+	        from hosts/application to the network.
+	        </t>
+	      
+	        <t>If the transport by itself does not already have
+	        a mechanism to indicate a purely informative protocol transaction,
+	        then a protocol specific indication for this is added.
+	        </t>
+	      </list>
+	      </t>
+
+	      <t> In result, this integration achieves two option: <list counter="1" style="numbers">
+	        <t>Informative common information elements can be sent from
+		hosts/applications to the network by using the protocols method
+		to indicate the purely informational protocol transaction. This
+		option effectively leverages the protocol as transport for
+		additional informative attribute based services without impacting
+		the services/transactions of the protocol otherwise.
+		</t>
+
+		<t>Informative common information elements can be sent alongside
+		an existing protocol transaction. In this case they may either
+		be ships-in-the-night (triggering informative attribute based
+		services), or they may additionally be ued by the policy rules
+		of the protocol transaction itself which could be advisory or
+		service request.  All feedback of the transaction would still 
+		rely on protocol specific information element (common information
+		elements only used from host to network).
+		</t>
+	      </list>
+	      </t>
+
+	      <t>
+	      This integration is for example defined in [draft-flow-metadata-rsvp].
+	      </t>
+	    </section>
+
+            <section title="Common transport advisory integration">
+	      <t>
+	      In addition to the common transport informative integration,
+	      the transport encoding is extended to carry the common
+	      transport information element in feedback messages from
+	      the network to the host/application. The method to indicate
+	      informative only transaction, when sending to the network
+	      is used to indicate advisory only transaction when signaling
+	      from the network. 
+	      </t>
+	      <t>
+	      This option primarily enables informative and advisory usage 
+	      models, but it can equally interact with pre-existing
+	      service-request options of the transport protocol and
+	      impact advisory feedback or the service request itself
+	      based on that interaction.
+	      </t>
+	    </section>
+  
+	  </section>
+
         </section>
       </section>
 
       <section title="Proposed common information elements">
         <t>The section defines an initial set of common information elements.
-        These information elements are targeted to be IANA standardized
-        information elements. Additional information elements may be defined
-        in other documents. These information elements may be added to the set
-        of IANA standardized information elements, or they may be
-        vendor-defined attributes identified by a PEN. All information element
+        These information elements are intended to be added to the set
+        of IANA standardized information elements via followup documents.
+	They are listed here for informational purposes of the framework only.
+	Additional documents are expected to define additional addtributes that
+	can use either IANA or other vendor-PEN.
+	</t>
+
+	<t>All information element
         definition must include the following:<list counter="1"
             style="numbers">
             <t>Default value to be provided by an application when it does not
             have an informative value to provide to the network, but is
-            interested in receiving an informative value of the attribute from
-            the network</t>
+            interested in receiving an advisory value of the attribute from
+            the network. If no advisory feedback is requested, and no informative
+	    value is known, the attribute may simply not be sent.</t>
 
             <t>Conflict resolution in the presence of different values for the
             same information element (e.g. two peers signaling information
@@ -537,88 +614,113 @@
             include different values for the information element)</t>
           </list></t>
 
-        <section title="Maximum Bandwidth">
-          <t>This attribute is used to convey the maximum sustained bandwidth
-          for the flow. It is a 64 bit value and is specified in bits per
-          second.</t>
+        <section title="Bandwidth Attributes">
 
-          <t>Default Value: 0</t>
+          <section title="Maximum Bandwidth">
+            <t>This attribute is used to convey the maximum sustained bandwidth
+            for the flow. It is a 64 bit value and is specified in bits per
+            second.</t>
+  
+            <t>Default Value: 0</t>
+  
+            <t>Conflict Resolution: Minimum for the set of non default
+            values</t>
+          </section>
+  
+          <section title="Minimum Bandwidth">
+            <t>This attribute is used to convey the minimum sustained bandwidth
+            for the flow. It is a 64 bit value and is specified in bits per
+            second. Not sending the Minimum Bandwidth is equivalent to sending
+	    the same value as for Maximum Bandwidth.</t>
+  
+            <t>Default Value: 0</t>
+  
+            <t>Conflict Resolution: Minimum of the set of non default values</t>
+          </section>
 
-          <t>Conflict Resolution: Minimum for the set of non default
-          values</t>
+          <section title="Bandwidth Pool">
+	    <t>This attribute is used to convey that the traffic dynamically
+	    shares bandwidth with other traffic using the same Bandwidth Pool. 
+	    Variable length GUID (Global Unique ID) of at least 48 bits. The Maximum 
+	    Bandwidth used by the pool pool is the largest Maximum Bandwidth 
+	    indicated by any member, the Minimum Bandwidth of the Pool is the 
+	    largest Minimum Bandwidth indicated by any member. 
+	    </t>
+
+          </section>
+        </section>
+  
+        <section title="Traffic Class Attributes">
+
+          <section title="RFC4594-DSCP">
+            <t>This attribute is used to convey the DSCP value appropriate for
+            the flow. It is an 8 bit value. Values signaled are assumed to be
+	    in compliance with RFC 4594 or backward compatible extensions thereof.
+            Other values are undefined.</t>
+  
+            <t>Default Value: 0xff</t>
+  
+            <t>Conflict Resolution: tbd</t>
+          </section>
+
+          <section title="Traffic Class Label (TCL)">
+            <t>The data type of this information element is a string. It carries
+            the Traffic Class Label defined in
+            [draft-ietf-mmusic-traffic-class-for-sdp]. Depending on the outcome
+            of that drafts standardization, the version carried as an
+            information element may be slightly expanded over the its definition
+            for SDP. The TCL is a structured string of the form:</t>
+  
+            <t>&lt;category&gt;.&lt;application&gt;(.adjective)(.adjective)</t>
+  
+            <t>category and application provide a base categorization of the
+            traffic class that attempts to provide a simplified and extensible,
+            framework for the traffic class definitions in RFC4594. These base
+            classifications can be refined with zero or more adjectives.
+            Examples of a TCL is "conversational.video.avconf".</t>
+  
+            <t>Default Value: Empty string</t>
+  
+            <t>Conflict Resolution: tbd</t>
+          </section>
+
         </section>
 
-        <section title="Minimum Bandwidth">
-          <t>This attribute is used to convey the minimum sustained bandwidth
-          for the flow. It is a 64 bit value and is specified in kilobits per
-          second.</t>
+        <section title="Acceptable Path Attributes">
 
-          <t>Default Value: 0</t>
+          <section title="Delay Tolerance">
+            <t>This attribute is used to convey the delay tolerance of an
+            application with respect to the associated flow. When provided by a
+            network element, it indicates the delay tolerance expected of the
+            application with respect to the associated flow. It is a 16 bit
+            field defined in terms of milliseconds.</t>
+  
+            <t>Default Value: 0</t>
+  
+            <t>Conflict Resolution: For application to network, the minimum of
+            the set of non default values. For network to application, the
+            maximum of the set of non default values.</t>
+          </section>
+  
+          <section title="Loss Tolerance">
+            <t>This attribute is used to convey the loss tolerance of an
+            application with respect to the associated flow. When provided by a
+            network element, it indicates the loss tolerance expected of the
+            application with respect to the associated flow. It is a 16 bit
+            field defined in terms of hundredths of a percent of dropped packets
+            (e.g. 5 == 0.05%, 150 == 1.50%, etc.)</t>
+  
+            <t>Default Value: 0</t>
+  
+            <t>Conflict Resolution: For application to network, the minimum of
+            the set of non default values. For network to application, the
+            maximum of the set of non default values.</t>
+          </section>
 
-          <t>Conflict Resolution: Minimum of the set of non default values</t>
-        </section>
-
-        <section title="DSCP">
-          <t>This attribute is used to convey the DSCP value appropriate for
-          the flow. It is an 8 bit value. Valid values are defined in RFC
-          4594. Other values are undefined.</t>
-
-          <t>Default Value: 0xff</t>
-
-          <t>Conflict Resolution: tbd</t>
-        </section>
-
-        <section title="Traffic Class Label (TCL)">
-          <t>The data type of this information element is a string. It carries
-          the Traffic Class Label defined in
-          [draft-ietf-mmusic-traffic-class-for-sdp]. Depending on the outcome
-          of that drafts standardization, the version carried as an
-          information element may be slightly expanded over the its definition
-          for SDP. The TCL is a structured string of the form:</t>
-
-          <t>&lt;category&gt;.&lt;application&gt;(.adjective)(.adjective)</t>
-
-          <t>category and application provide a base categorization of the
-          traffic class that attempts to provide a simplified and extensible,
-          framework for the traffic class definitions in RFC4594. These base
-          classifications can be refined with zero or more adjectives.
-          Examples of a TCL is "conversational.video.avconf".</t>
-
-          <t>Default Value: Empty string</t>
-
-          <t>Conflict Resolution: tbd</t>
-        </section>
-
-        <section title="Delay Tolerance">
-          <t>This attribute is used to convey the delay tolerance of an
-          application with respect to the associated flow. When provided by a
-          network element, it indicates the delay tolerance expected of the
-          application with respect to the associated flow. It is a 16 bit
-          field defined in terms of milliseconds.</t>
-
-          <t>Default Value: 0</t>
-
-          <t>Conflict Resolution: For application to network, the minimum of
-          the set of non default values. For network to application, the
-          maximum of the set of non default values.</t>
-        </section>
-
-        <section title="Loss Tolerance">
-          <t>This attribute is used to convey the loss tolerance of an
-          application with respect to the associated flow. When provided by a
-          network element, it indicates the loss tolerance expected of the
-          application with respect to the associated flow. It is a 16 bit
-          field defined in terms of hundredths of a percent of dropped packets
-          (e.g. 5 == 0.05%, 150 == 1.50%, etc.)</t>
-
-          <t>Default Value: 0</t>
-
-          <t>Conflict Resolution: For application to network, the minimum of
-          the set of non default values. For network to application, the
-          maximum of the set of non default values.</t>
-        </section>
-
+	</section>
+  
         <section title="Application Identification">
+
           <t>Application identification is clearly one of the more difficult
           classification goals. The proposals included here are as of yet not
           widely vetted:</t>
