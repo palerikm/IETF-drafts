@@ -3,7 +3,7 @@
      which is available here: http://xml.resource.org. -->
 <!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
 <!-- One method to get references from the online citation libraries.
-     There has to be one entity for each item to be referenced. 
+     There has to be one entity for each item to be referenced.
      An alternate method (rfc include) is described in the references. -->
 <!ENTITY RFC2119 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
 <!ENTITY RFC2629 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2629.xml">
@@ -12,7 +12,7 @@
 ]>
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 <!-- used by XSLT processors -->
-<!-- For a complete list and description of processing instructions (PIs), 
+<!-- For a complete list and description of processing instructions (PIs),
      please see http://xml.resource.org/authoring/README.html. -->
 <!-- Below are generally applicable Processing Instructions (PIs) that most I-Ds might want to use.
      (Here they are set differently than their defaults in xml2rfc v1.32) -->
@@ -28,7 +28,7 @@
 <!-- use symbolic references tags, i.e, [RFC2119] instead of [1] -->
 <?rfc sortrefs="yes" ?>
 <!-- sort the reference entries alphabetically -->
-<!-- control vertical white space 
+<!-- control vertical white space
      (using these PIs as follows is recommended by the RFC Editor) -->
 <?rfc compact="yes" ?>
 <!-- do not start each main section on a new page -->
@@ -40,13 +40,13 @@
   <!-- category values: std, bcp
 , info, exp, and historic
      ipr values: full3667, noModification3667, noDerivatives3667
-     you can add the attributes updates="NNNN" and obsoletes="NNNN" 
+     you can add the attributes updates="NNNN" and obsoletes="NNNN"
      they will automatically be output with "(if approved)" -->
 
   <!-- ***** FRONT MATTER ***** -->
 
   <front>
-    <!-- The abbreviated title is used in the page header - it is only necessary if the 
+    <!-- The abbreviated title is used in the page header - it is only necessary if the
          full title is longer than 39 characters -->
 
     <title abbrev="Framework for Signaling Flow Characteristics">A Framework
@@ -160,11 +160,11 @@
 
     <date month="June" year="2013"/>
 
-    <!-- If the month and year are both specified and are the current ones, xml2rfc will fill 
-         in the current day for you. If only the current year is specified, xml2rfc will fill 
-	 in the current day and month for you. If the year is not the current one, it is 
-	 necessary to specify at least a month (xml2rfc assumes day="1" if not specified for the 
-	 purpose of calculating the expiry date).  With drafts it is normally sufficient to 
+    <!-- If the month and year are both specified and are the current ones, xml2rfc will fill
+         in the current day for you. If only the current year is specified, xml2rfc will fill
+	 in the current day and month for you. If the year is not the current one, it is
+	 necessary to specify at least a month (xml2rfc assumes day="1" if not specified for the
+	 purpose of calculating the expiry date).  With drafts it is normally sufficient to
 	 specify just the year. -->
 
     <!-- Meta-data Declarations -->
@@ -174,7 +174,7 @@
     <workgroup>Internet Engineering Task Force</workgroup>
 
     <!-- WG name at the upperleft corner of the doc,
-         IETF is fine for individual submissions.  
+         IETF is fine for individual submissions.
 	 If this element is not present, the default is "Network Working Group",
          which is used by the RFC Editor as a nod to the history of the IETF. -->
 
@@ -237,7 +237,7 @@
           for two type of workflows:<list counter="1" style="numbers">
               <t>Provide network operators with visibility into traffic for
               troubleshooting, capacity planning, accounting/billing and other
-              offnet workflows. This is done by exporting observed traffic
+              off network workflows. This is done by exporting observed traffic
               analysis via IPFIX.</t>
 
               <t>Provide differentiated network services for the traffic
@@ -295,7 +295,7 @@
         <t>There is a variety of existing and evolving signaling options that
         can provide explicit application to network signaling and serve the
         differentiated network services and visibility workflows where DPI is
-        currently being used.It seems clear that there will be no single
+        currently being used. It seems clear that there will be no single
         one-protocol-fits-all solution. Every protocol is currently defined in
         its own silo, creating duplicate and/or inconsistent information
         models. This results in duplicate work, more operational complexity
@@ -357,7 +357,7 @@
         <t>The proposed framework includes the following elements:</t>
 
         <section title="Common, application independent, IPFIX registered, information elements">
-          <t>An applications media flows may be expressed as a set of
+          <t>An application media flow may be expressed as a set of
           information elements that are defined and registered like
           observation-based IPFIX attributes. We propose leveraging IPFIX as
           the information model (not necessary as the transport signaling) for
@@ -446,15 +446,15 @@
             <t>In all cases, applications are not guaranteered to receive an
 	    answer or any specific service from the network. In the event an answer
 	    is provided, that answer is similarly not a guarantee of any specific
-            service or treatment.by the network. It is to interpreted as
+            service or treatment by the network. It is to be interpreted as
             advisory only.</t>
 
             <t>As mentioned previously, the same information elements are used
             in the signaling from the application to the network as well as
             from the network to the application. The underlying transport
-            protocol used to carry to the information elements is expected to
+            protocol used to carry the information elements is expected to
             provide the necessary request/response semantics or some other
-            mechanism to by which the communication in both directions can be
+            mechanism by which the communication in both directions can be
             tied together.</t>
           </section>
 
@@ -469,7 +469,7 @@
             <t>As with the advisory usage, the same information elements are
             used in the signaling from the application to the network as well
             as from the network to the application. The underlying transport
-            protocol used to carry to the information elements is expected to
+            protocol used to carry the information elements is expected to
             provide the necessary service request/response semantics.</t>
           </section>
         </section>
@@ -495,12 +495,14 @@
           </section>
 
           <section title="Common encoding of common information elements">
-            <t>A companion document [ENCODING] covers recommended encoding
+            <t>A companion document [ID-FMD-ENCODE] covers recommended encoding
             rules that take the above aspects into account:<list
                 style="symbols">
                 <t>Compact binary encoding rules</t>
 
                 <t>Signaling for both sent and received traffic flows</t>
+
+                <t>Signaling of standard and vendor specific information elements</t>
 
                 <t>Minimizes the per-protocol definition required to define
                 purely advisory application to network traffic classification
@@ -532,7 +534,7 @@
 	        the common encoded information elements at least in signaling
 	        from hosts/application to the network.
 	        </t>
-	      
+
 	        <t>If the transport by itself does not already have
 	        a mechanism to indicate a purely informative protocol transaction,
 	        then a protocol specific indication for this is added.
@@ -554,7 +556,7 @@
 		be ships-in-the-night (triggering informative attribute based
 		services), or they may additionally be ued by the policy rules
 		of the protocol transaction itself which could be advisory or
-		service request.  All feedback of the transaction would still 
+		service request.  All feedback of the transaction would still
 		rely on protocol specific information element (common information
 		elements only used from host to network).
 		</t>
@@ -574,17 +576,17 @@
 	      the network to the host/application. The method to indicate
 	      informative only transaction, when sending to the network
 	      is used to indicate advisory only transaction when signaling
-	      from the network. 
+	      from the network.
 	      </t>
 	      <t>
-	      This option primarily enables informative and advisory usage 
+	      This option primarily enables informative and advisory usage
 	      models, but it can equally interact with pre-existing
 	      service-request options of the transport protocol and
 	      impact advisory feedback or the service request itself
 	      based on that interaction.
 	      </t>
 	    </section>
-  
+
 	  </section>
 
         </section>
@@ -620,36 +622,36 @@
             <t>This attribute is used to convey the maximum sustained bandwidth
             for the flow. It is a 64 bit value and is specified in bits per
             second.</t>
-  
+
             <t>Default Value: 0</t>
-  
+
             <t>Conflict Resolution: Minimum for the set of non default
             values</t>
           </section>
-  
+
           <section title="Minimum Bandwidth">
             <t>This attribute is used to convey the minimum sustained bandwidth
             for the flow. It is a 64 bit value and is specified in bits per
             second. Not sending the Minimum Bandwidth is equivalent to sending
 	    the same value as for Maximum Bandwidth.</t>
-  
+
             <t>Default Value: 0</t>
-  
+
             <t>Conflict Resolution: Minimum of the set of non default values</t>
           </section>
 
           <section title="Bandwidth Pool">
 	    <t>This attribute is used to convey that the traffic dynamically
-	    shares bandwidth with other traffic using the same Bandwidth Pool. 
-	    Variable length GUID (Global Unique ID) of at least 48 bits. The Maximum 
-	    Bandwidth used by the pool pool is the largest Maximum Bandwidth 
-	    indicated by any member, the Minimum Bandwidth of the Pool is the 
-	    largest Minimum Bandwidth indicated by any member. 
+	    shares bandwidth with other traffic using the same Bandwidth Pool.
+	    Variable length GUID (Global Unique ID) of at least 48 bits. The Maximum
+	    Bandwidth used by the pool pool is the largest Maximum Bandwidth
+	    indicated by any member, the Minimum Bandwidth of the Pool is the
+	    largest Minimum Bandwidth indicated by any member.
 	    </t>
 
           </section>
         </section>
-  
+
         <section title="Traffic Class Attributes">
 
           <section title="RFC4594-DSCP">
@@ -657,9 +659,9 @@
             the flow. It is an 8 bit value. Values signaled are assumed to be
 	    in compliance with RFC 4594 or backward compatible extensions thereof.
             Other values are undefined.</t>
-  
+
             <t>Default Value: 0xff</t>
-  
+
             <t>Conflict Resolution: tbd</t>
           </section>
 
@@ -670,17 +672,17 @@
             of that drafts standardization, the version carried as an
             information element may be slightly expanded over the its definition
             for SDP. The TCL is a structured string of the form:</t>
-  
+
             <t>&lt;category&gt;.&lt;application&gt;(.adjective)(.adjective)</t>
-  
+
             <t>category and application provide a base categorization of the
             traffic class that attempts to provide a simplified and extensible,
             framework for the traffic class definitions in RFC4594. These base
             classifications can be refined with zero or more adjectives.
             Examples of a TCL is "conversational.video.avconf".</t>
-  
+
             <t>Default Value: Empty string</t>
-  
+
             <t>Conflict Resolution: tbd</t>
           </section>
 
@@ -694,14 +696,14 @@
             network element, it indicates the delay tolerance expected of the
             application with respect to the associated flow. It is a 16 bit
             field defined in terms of milliseconds.</t>
-  
+
             <t>Default Value: 0</t>
-  
+
             <t>Conflict Resolution: For application to network, the minimum of
             the set of non default values. For network to application, the
             maximum of the set of non default values.</t>
           </section>
-  
+
           <section title="Loss Tolerance">
             <t>This attribute is used to convey the loss tolerance of an
             application with respect to the associated flow. When provided by a
@@ -709,16 +711,16 @@
             application with respect to the associated flow. It is a 16 bit
             field defined in terms of hundredths of a percent of dropped packets
             (e.g. 5 == 0.05%, 150 == 1.50%, etc.)</t>
-  
+
             <t>Default Value: 0</t>
-  
+
             <t>Conflict Resolution: For application to network, the minimum of
             the set of non default values. For network to application, the
             maximum of the set of non default values.</t>
           </section>
 
 	</section>
-  
+
         <section title="Application Identification">
 
           <t>Application identification is clearly one of the more difficult
@@ -728,7 +730,7 @@
           <section title="RFC 6759 style application identification">
             <t>RFC6759 defines the IPFIX IE-IDs that permit both IANA and
             vendor specific application identification. Though defined for
-            observation (aka: DPI), it could also be used with explicit
+            observation (a.k.a.: DPI), it could also be used with explicit
             signaling from applications.</t>
 
             <t>Applications that use one of the protocols for which there is
@@ -865,7 +867,7 @@ v03 2007-03-09  EBD   Added comments on null IANA sections and fixed heading cap
                       Fixed up the date specification comments to reflect current truth.
 v04 2007-03-09 AH     Major changes: shortened discussion of PIs,
                       added discussion of rfc include.
-v05 2007-03-10 EBD    Added preamble to C program example to tell about ABNF and alternative 
+v05 2007-03-10 EBD    Added preamble to C program example to tell about ABNF and alternative
                       images. Removed meta-characters from comments (causes problems).  -->
   </back>
 </rfc>

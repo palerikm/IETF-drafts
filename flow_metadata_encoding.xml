@@ -170,12 +170,12 @@
             protocol such as TCP or UDP. Port_src and Port_dst both refer to
             this protocol. Flow Metadata exposes key characteristics of the flow
             such as the originating application, the type of media in use (e.g.
-            audio, video) and others as defined in [RFC-FMD]. The flow
+            audio, video) and others as defined in [ID-FMD-FRAMEWORK]. The flow
             characteristics are captured through Metadata tags. The Metadata tags
             information is signaled either out of band or in band but always along
             the same path of the data flow transmitted by an application.</t>
 
-        <t>[RFC-FMD] defines the overall framework for Flow Metadata and the
+        <t>[ID-FMD-FRAMEWORK] defines the overall framework for Flow Metadata and the
             definition of the flow characteristics, whereas this document
             captures the flow characteristics encoding. The mapping of the Flow Metadata encoding to
             the different signaling protocols is outside the scope of this
@@ -191,16 +191,16 @@
             protocol such as TCP or UDP. Port_src and Port_dst both refer to
             this protocol. Flow Metadata exposes key characteristics of the flow
             such as the originating application, the type of media in use (e.g.
-            audio, video) and others as defined in [RFC-FMD]. The flow
+            audio, video) and others as defined in [ID-FMD-FRAMEWORK]. The flow
             characteristics are captured through Metadata tags. The Metadata tags
             information is signaled either out of band or in band but always along
             the same path of the data flow transmitted by an application. As flow
             characteristics across different signaling protocols are identical they
             benefit from a single definition and encoding irrespective of the
             signaling protocol in use. Examples of out of band and in band protocols
-            would be RSVP [RFC-RSVP-FMD], STUN [RFC-STUN-FMD], and PCP
-            [RFC-PCP-FMD]. Different network deployments call out for different
-            protocols or combination of protocols as described in [RFC-FMD]. The
+            would be RSVP [ID-FMD-RSVP], STUN [ID-FMD-STUN], and PCP
+            [ID-FMD-PCP]. Different network deployments call out for different
+            protocols or combination of protocols as described in [ID-FMD-FRAMEWORK]. The
             flow characteristics can be inspected by intermediate network nodes for
             the purpose of applying a particular treatment to the flow or simply for
             gathering insight on the nature of the traffic crossing the network
@@ -346,7 +346,7 @@
           <t>When an application includes Flow Metadata for a flow, the
           metadata is communicated from the application to the network. In
           some cases, it may be beneficial for the network to convey
-          information back to the application about the same flow. [RFC-FMD]
+          information back to the application about the same flow. [ID-FMD-FRAMEWORK]
           defines a mechanism by which flow metadata for the
           same flow may be communication both from the application to the
           network as well as from the network back to the application. The
@@ -429,7 +429,7 @@
                 <list style="symbols">
                     <t>How the application and network producers coexist using
                         sections in <xref target="encoding_section"/></t>
-                    <t>The subdivision of a section with standard and 
+                    <t>The subdivision of a section with standard and
                         vendor specific sub-sections and an optional
                         security token in
                         <xref target="encoding_section_content"/></t>
@@ -489,7 +489,7 @@
                 content.
             </t>
             <t>
-                A section MAY include at most one security token. The security token, 
+                A section MAY include at most one security token. The security token,
                 if present, MUST appear at the beginning of the section.
             </t>
             <figure align="center" anchor="encoding_section_content" title="Encoding section content">
@@ -556,7 +556,7 @@
                     The tags appearing in a standard and in a vendor sub-section are
                     managed by separate registries. A standard body will track the
                     standard tags allocation and separate vendor registries will
-                    track vendor specific tag allocations. See [RFC-RFMD] for a 
+                    track vendor specific tag allocations. See [ID-RFMD] for a
                     full coverage of the information model and how the registries
                     are handled.
                 </t>

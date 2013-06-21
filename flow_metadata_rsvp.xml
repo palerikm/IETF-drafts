@@ -196,8 +196,8 @@
       <t>This specification defines a new RSVP object with Class-Num from the
       0x11bbbbbb range. The object can be inserted into any message type 
       for IPv4 and IPv6 sessions. To support purely informational/advisory
-      metadata attributes from Sender to receiver, it is sufficient to insert
-      the object into Path messages (i.e. Path messages with SESSION Class
+      metadata attributes from sender to receiver, it is sufficient to insert
+      the object into PATH messages (i.e. PATH messages with SESSION Class
        = 1 and SENDER_TEMPLATE Class = 11). The Metadata object
       SHOULD appear only once in the message.
       </t>
@@ -208,13 +208,13 @@
       <section title="FLOW_METADATA Class ">
         <t>FLOW_METADATA Class = 234</t>
 
-	<t>We define two encodings, both of which can carry the same IPFIX registered
-	attributes. The first on (Basic IPFIX FLOW_METADATA) has less flexibility
-	and lower encoding efficiency. It does not suport a range of options 
-	that the second one does, including the signaling of sender and receiver
-	attributes, security elements, distinction of originator of the attributes
-	and ease of extensibility.
-	</t>
+        <t>We define two encodings, both of which can carry the same IPFIX registered
+            attributes. The first encoding (Basic IPFIX FLOW_METADATA) has less flexibility
+            and lower encoding efficiency. It does not suport a range of options
+            that the second one does, including the signaling of sender and receiver
+            attributes, security elements, distinction of originator of the attributes
+            and ease of extensibility.
+        </t>
 
         <section title="Basic IPFIX FLOW_METADATA Object">
 
@@ -254,24 +254,24 @@
       </section>
 
       <section title="Semantic of carrying the Metadata Object">
-        <t>
-	The Metadata Object included in the Path message carries attributes
-	from the sender of the flow towards the receiver. If the sender does
-	not support the Metadata attribute, it may instead be inserted by
-	a proxy for that sender along the path. Further network nodes may
-	modify the metadata attributes for purpose of policy or to provide
-	feedback (advisory metadata) toward the receiver.
-	</t>
+          <t>
+              The Metadata Object included in the PATH message carries attributes
+              from the sender of the flow towards the receiver. If the sender does
+              not support the Metadata attribute, they may instead be inserted by
+              a proxy along the path of the flow. Further network nodes may
+              modify the metadata attributes for purpose of policy or to provide
+              feedback (advisory metadata) toward the receiver.
+          </t>
 
-        <t>The node that originates Metadata information in a Path message
-	may do so for the sole purpose of signaling Metadata information only.
-	We call this an informational/advisory metadata transaction in RSVP. 
-	This transacation may consist only of the Path messages traveling towards
-	the receiver of the flow, and it not even necessary that the receiver supports RSVP
-	because the actions driven by the Metdata object are alredy triggered
-	purely by the Path message.  To indicate this case, the SENDER_TSPEC
-	objects fields (as defined by [RFC 2210]) should be set to 0:<list style="symbols">
-            <t>Token Bucket Rate [r]</t>
+          <t>The node that originates Metadata information in a PATH message
+              may do so for the sole purpose of signaling Metadata information only.
+              We call this an informational/advisory metadata transaction in RSVP. 
+              This transacation may consist only of the PATH messages traveling towards
+              the receiver of the flow, and it not even necessary that the receiver supports RSVP
+              because the actions driven by the Metdata object are alredy triggered
+              purely by the PATH message.  To indicate this case, the SENDER_TSPEC
+              objects fields (as defined by [RFC 2210]) should be set to 0:<list style="symbols">
+                  <t>Token Bucket Rate [r]</t>
 
             <t>Token Bucket Size [b]</t>
 
@@ -280,38 +280,38 @@
             <t>Minimum Policed Unit [m]</t>
           </list></t>
 
-	<t>If the Metadata object is inserted in a Path message with a different
-	TSPEC, then all the normal rules of RSVP transactions apply. In other
-	words, the RSVP resource reservation will take place and its behavior/policy
-	may be impacted by the metadata attributes. In addition any actions
-	driven purely by the metadata attributes (like in the informational/advisory
-	transaction) can equally take place but may be impacted also by the outcome
-	of the resource reservation.
-	</t>
+          <t>If the Metadata object is inserted in a PATH message with a different
+              TSPEC, then all the normal rules of RSVP transactions apply. In other
+              words, the RSVP resource reservation will take place and its behavior/policy
+              may be impacted by the metadata attributes. In addition any actions
+              driven purely by the metadata attributes (like in the informational/advisory
+              transaction) can equally take place but may be impacted also by the outcome
+              of the resource reservation.
+          </t>
 
-	<t>
-	If the Enhanced Protocol Independent FLOW_METADATA encoding is used,
-	the sender/proxy of the message can indicate attributes not only for
-	the flow it sends, but also for its return flow. Feedback from
-	further nodes along the path can be distinguished from the sender/proxy
-	attributes through the encoding. The specific processing rules for these
-	options are left for followup documents.
-	</t>
+          <t>
+              If the Enhanced Protocol Independent FLOW_METADATA encoding is used,
+              the sender/proxy of the message can indicate attributes not only for
+              the flow it sends, but also for its return flow. Feedback from
+              further nodes along the path can be distinguished from the sender/proxy
+              attributes through the encoding. The specific processing rules for these
+              options are left for followup documents.
+          </t>
 
-        <t>
-	A Metadata Object included in a  RESV message carries attributes
-	from the receiver of the flow towards the sender. This is primarily
-	to reflect advisory metadata (attributes inserted/modified by network
-	elements) back to the sender. The specific processing rules for
-	this option is left for followup documents.
-	</t>
+          <t>
+              A Metadata Object included in a RESV message carries attributes
+              from the receiver of the flow towards the sender. This is primarily
+              to reflect advisory metadata (attributes inserted/modified by network
+              elements) back to the sender. The specific processing rules for
+              this option is left for followup documents.
+          </t>
 
       </section>
 
       <section title="Processing by a Non-Metadata Capable RSVP Router">
         <t>As described in RFC2205, a node that does not understand the
         Metadata object, should ignore but forward it, unexamined and
-        unmodified. When received in Path or Resv messages, it should be saved
+        unmodified. When received in PATH or RESV messages, it should be saved
         with the corresponding state and forwarded in any refresh message
         resulting from that state.</t>
       </section>
@@ -319,28 +319,28 @@
 
       <section title="Processing by a Metadata Capable RSVP Router">
         <t>The Metadata object may be inserted by the data flow initiating
-        endpoint or network nodes along the path.  The means
+        endpoint or network nodes along the path. The means
         by which an implementation determines the content of the Metadata
         object is outside the scope of this document.</t>
 
         <t>Intermediate nodes that support this specification, decode the Flow
         Metadata information as indicated by the C-Type field only when
-        received in Path message. Depending on the attributes, local
+        received in PATH message. Depending on the attributes, local
         configuration and policies, the node may take some actions. The
-        Metadata attribute semantics are described in [I-D-FMD-FRAMEWORK]. The
+        Metadata attribute semantics are described in [ID-FMD-FRAMEWORK]. The
         received Flow Metadata object is stored against the Path state. When a
-        subsequent Path message is received with a modified Metadata object, the
+        subsequent PATH message is received with a modified Metadata object, the
         intermediate node determines the attributes that have been removed,
-        modified and/ or added by comparing the old and new objects, and takes
+        modified and/or added by comparing the old and new objects, and takes
         appropriate actions.</t>
 
         <t>As a result of these actions, an intermediate node may add new
-        attributes to the Metadata object received in the Path message and
+        attributes to the Metadata object received in the PATH message and
         signal them downstream. It can also modify some of the attributes
         present in the Flow Metadata object. RSVP does not have any transport
         protocol specific restrictions and the exact set of attributes that
         can be inserted and modified by intermediate nodes is described in
-        [I-D-FMD-FRAMEWORK]. Depending on local policies, an intermediate node
+        [ID-FMD-FRAMEWORK]. Depending on local policies, an intermediate node
         may also remove some of the attributes received in the Metadata object
         of a Path message before forwarding downstream.</t>
 
