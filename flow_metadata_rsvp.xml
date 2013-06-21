@@ -76,8 +76,6 @@
           <country>US</country>
         </postal>
 
-        <phone>+1 408 902 2043</phone>
-
         <email>eckert@cisco.com</email>
 
         <!-- uri and facsimile elements may also be added -->
@@ -185,12 +183,24 @@
       </section>
     </section>
 
+    <section title="WTF Heading1">
+      <section title="WTF Heading2">
+        <section title="WTF Heading3">
+          <section title="WTF Heading4">
+          </section>
+        </section>
+      </section>
+    </section>
+
     <section title="Flow Metadata Object">
       <t>This specification defines a new RSVP object with Class-Num from the
-      0x11bbbbbb range. The object can be inserted in Path, PathErr (?) and
-      PathTear messages for IPv4 and IPv6 sessions (i.e. Path messages with
-      SESSION Class = 1 and SENDER_TEMPLATE Class = 11). Metadata object
-      SHOULD appear only once in the message.</t>
+      0x11bbbbbb range. The object can be inserted into any message type 
+      for IPv4 and IPv6 sessions. To support purely informational/advisory
+      metadata attributes from Sender to receiver, it is sufficient to insert
+      the object into Path messages (i.e. Path messages with SESSION Class
+       = 1 and SENDER_TEMPLATE Class = 11). The Metadata object
+      SHOULD appear only once in the message.
+      </t>
 
       <t>The object definition is given in Section 2.1 while the details of
       processing are covered in Section 2.2</t>
@@ -198,49 +208,118 @@
       <section title="FLOW_METADATA Class ">
         <t>FLOW_METADATA Class = 234</t>
 
-        <t>Protocol Independent FLOW_METADATA Object: Class = 234, C-Type =
-        1</t>
+	<t>We define two encodings, both of which can carry the same IPFIX registered
+	attributes. The first on (Basic IPFIX FLOW_METADATA) has less flexibility
+	and lower encoding efficiency. It does not suport a range of options 
+	that the second one does, including the signaling of sender and receiver
+	attributes, security elements, distinction of originator of the attributes
+	and ease of extensibility.
+	</t>
 
-        <t><list style="symbols">
-            <t>The metadata attributes are encoded in IPFIX format, as
-            described in [RFC5101], with the following restrictions when
-            creating the object:<list style="symbols">
-                <t>Options Template Record MUST NOT be present</t>
+        <section title="Basic IPFIX FLOW_METADATA Object">
 
-                <t>One and only one Template Record MUST be present</t>
+          <t>Basic IPFIX FLOW_METADATA Object: Class = 234, C-Type =
+          1</t>
+  
+          <t><list style="symbols">
+              <t>The metadata attributes are encoded in IPFIX format, as
+              described in [RFC5101], with the following restrictions when
+              creating the object:<list style="symbols">
+                  <t>Options Template Record MUST NOT be present</t>
+  
+                  <t>One and only one Template Record MUST be present</t>
+  
+                  <t>One and only one Data Record MUST be included</t>
+                </list></t>
+  
+              <t>An intermediate node that supports this specification SHOULD
+              ignore any Options Template Record. It SHOULD only decode and
+              process the first occurring Template and Data Records.</t>
+            </list></t>
+  
+          <t/>
+        </section>
 
-                <t>One and only one Data Record MUST be included</t>
-              </list></t>
+        <section title="Enhanced Protocol Independent FLOW_METADATA Object">
 
-            <t>An intermediate node that supports this specification SHOULD
-            ignore any Options Template Record. It SHOULD only decode and
-            process the first occurring Template and Data Records.</t>
+          <t>Enhanced Protocol Independent FLOW_METADATA Object: Class = 234, C-Type =
+          2</t>
+  
+          <t><list style="symbols">
+              <t>The contents and encoding rules for this object are specified
+              in [ID-FMD-FRAMEWORK] and [ID-FMD-ENCODE].</t>
+            </list></t>
+        </section>
+
+      </section>
+
+      <section title="Semantic of carrying the Metadata Object">
+        <t>
+	The Metadata Object included in the Path message carries attributes
+	from the sender of the flow towards the receiver. If the sender does
+	not support the Metadata attribute, it may instead be inserted by
+	a proxy for that sender along the path. Further network nodes may
+	modify the metadata attributes for purpose of policy or to provide
+	feedback (advisory metadata) toward the receiver.
+	</t>
+
+        <t>The node that originates Metadata information in a Path message
+	may do so for the sole purpose of signaling Metadata information only.
+	We call this an informational/advisory metadata transaction in RSVP. 
+	This transacation may consist only of the Path messages traveling towards
+	the receiver of the flow, and it not even necessary that the receiver supports RSVP
+	because the actions driven by the Metdata object are alredy triggered
+	purely by the Path message.  To indicate this case, the SENDER_TSPEC
+	objects fields (as defined by [RFC 2210]) should be set to 0:<list style="symbols">
+            <t>Token Bucket Rate [r]</t>
+
+            <t>Token Bucket Size [b]</t>
+
+            <t>Peak Data Rate [p]</t>
+
+            <t>Minimum Policed Unit [m]</t>
           </list></t>
 
-        <t/>
+	<t>If the Metadata object is inserted in a Path message with a different
+	TSPEC, then all the normal rules of RSVP transactions apply. In other
+	words, the RSVP resource reservation will take place and its behavior/policy
+	may be impacted by the metadata attributes. In addition any actions
+	driven purely by the metadata attributes (like in the informational/advisory
+	transaction) can equally take place but may be impacted also by the outcome
+	of the resource reservation.
+	</t>
 
-        <t>Protocol Independent FLOW_METADATA Object: Class = 234, C-Type =
-        2</t>
+	<t>
+	If the Enhanced Protocol Independent FLOW_METADATA encoding is used,
+	the sender/proxy of the message can indicate attributes not only for
+	the flow it sends, but also for its return flow. Feedback from
+	further nodes along the path can be distinguished from the sender/proxy
+	attributes through the encoding. The specific processing rules for these
+	options are left for followup documents.
+	</t>
 
-        <t><list style="symbols">
-            <t>The contents and encoding rules for this object are specified
-            in [ID-FMD-FRAMEWORK] and [ID-FMD-ENCODE].</t>
-          </list></t>
+        <t>
+	A Metadata Object included in a  RESV message carries attributes
+	from the receiver of the flow towards the sender. This is primarily
+	to reflect advisory metadata (attributes inserted/modified by network
+	elements) back to the sender. The specific processing rules for
+	this option is left for followup documents.
+	</t>
+
       </section>
 
       <section title="Processing by a Non-Metadata Capable RSVP Router">
         <t>As described in RFC2205, a node that does not understand the
         Metadata object, should ignore but forward it, unexamined and
-        unmodified. When received in Path or Resv messages should be saved
+        unmodified. When received in Path or Resv messages, it should be saved
         with the corresponding state and forwarded in any refresh message
         resulting from that state.</t>
       </section>
 
+
       <section title="Processing by a Metadata Capable RSVP Router">
         <t>The Metadata object may be inserted by the data flow initiating
-        endpoint or network nodes along the path in the Path message only. The
-        Metadata object MUST NOT be inserted in the Resv message by any
-        implementation that conforms with this specification only. The means
+        endpoint or network nodes along the path.  The means
         by which an implementation determines the content of the Metadata
         object is outside the scope of this document.</t>
 
@@ -250,13 +329,13 @@
         configuration and policies, the node may take some actions. The
         Metadata attribute semantics are described in [I-D-FMD-FRAMEWORK]. The
         received Flow Metadata object is stored against the Path state. When a
-        subsequent Path message is received with modified Metadata object, an
+        subsequent Path message is received with a modified Metadata object, the
         intermediate node determines the attributes that have been removed,
         modified and/ or added by comparing the old and new objects, and takes
         appropriate actions.</t>
 
         <t>As a result of these actions, an intermediate node may add new
-        attributes to the Metadata object recevied in the Path message and
+        attributes to the Metadata object received in the Path message and
         signal them downstream. It can also modify some of the attributes
         present in the Flow Metadata object. RSVP does not have any transport
         protocol specific restrictions and the exact set of attributes that
@@ -266,27 +345,9 @@
         of a Path message before forwarding downstream.</t>
 
         <t>An intermediate node that receives a Resv message with a Metadata
-        Object SHOULD store the object against the sate and forward it
+        Object SHOULD store the object against the state and forward it
         unexamined and unmodified.</t>
 
-        <t>[AZ = not sure if we should mention anything about the encoding
-        when forwarded out wrt to the incoming. I can see that in general
-        cases it should be the same, unless explicitly configured to do
-        translation. Or instructed through other means.]</t>
-
-        <t>The node that originates the Path message may do so for the sole
-        purpose of signaling Metadata information only or also for requesting
-        bandwidth reservation for the flow. In the former case, the node
-        should include the SENDER_TSPEC object with the following fields (as
-        defined by [RFC 2210]) set to 0:<list style="symbols">
-            <t>Token Bucket Rate [r]</t>
-
-            <t>Token Bucket Size [b]</t>
-
-            <t>Peak Data Rate [p]</t>
-
-            <t>Minimum Policed Unit [m]</t>
-          </list></t>
       </section>
     </section>
   </middle>
