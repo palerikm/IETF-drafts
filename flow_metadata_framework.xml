@@ -35,7 +35,7 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="info" docName="cisco-internal-flow-metadata-framework-02"
+<rfc category="info" docName="cisco-internal-flow-metadata-framework-03"
      ipr="trust200902">
   <!-- category values: std, bcp
 , info, exp, and historic
@@ -204,22 +204,25 @@
       information elements can be conveyed using various signaling protocols,
       including PCP, RSVP, and STUN.</t>
 
-      <t>Identification and treatment of application flows is typically based
-      on heuristics. Heuristics may be based on port ranges, IP subnetting, or
-      deep packet inspection (DPI), e.g. application level gateway (ALG). Port
-      based solutions suffer from port overloading and inconsistent port
-      usage. IP subnetting solutions are error prone and result in network
-      management hassle. DPI is computationally expensive and becomes a
-      challenge with the wider adoption of encrypted signaling and secured
-      traffic. An additional drawback of DPI is that the resulting insights
-      are not available, or need to be recomputed at, network nodes further
-      down the application flow path.</t>
+      <t>The framework is built around the definition of four key
+      components:<list style="numbers">
+          <t>A set of application independent information elements (IEs)</t>
 
-      <t>The proposed solution allows applications to explicitly signal their
-      flow characteristics to the network. It also provides network nodes with
-      visibility of the application flow characteristics and enables them to
-      contribute to the flow description. The resulting flow description may
-      be communicated as feedback from the network to applications.</t>
+          <t>An encoding of these IEs that is independent of the signaling
+          protocol used as transport </t>
+
+          <t>Usages of these IEs to support various transactional
+          semantics</t>
+
+          <t>A mapping of one of more to these usages to an initial set of
+          signaling protocols, including PCP, RSVP, and STUN</t>
+        </list></t>
+
+      <t>This document defines an initial set of IEs, a set of encoding rules,
+      and initial usage models. The actual encoding is defined in
+      [ID-FMD-ENCODE]. Additional documents define the mapping to specific
+      signaling protocols (e.g. RSVP [ID-FMD-RSVP], STUN [ID-FMD-STUN], and
+      PCP [ID-FMD-PCP])</t>
     </section>
 
     <section title="Requirements Language">
@@ -229,7 +232,32 @@
       target="RFC2119">RFC 2119</xref></t>
     </section>
 
-    <section title="Overview">
+    <section title="Background">
+      <t>This section provides background on the motivation for the
+      framework.</t>
+
+      <t>Identification and treatment of application flows are critical for
+      the successful deployment and operation of applications based on a wide
+      range of signaling protocols. Historically, this functionality has been
+      accomplished to the extent possible using heuristics, which inspect and
+      infer flow characteristics.</t>
+
+      <t>Heuristics may be based on port ranges, IP subnetting, or deep packet
+      inspection (DPI), e.g. application level gateway (ALG). Port based
+      solutions suffer from port overloading and inconsistent port usage. IP
+      subnetting solutions are error prone and result in network management
+      hassle. DPI is computationally expensive and becomes a challenge with
+      the wider adoption of encrypted signaling and secured traffic. An
+      additional drawback of DPI is that the resulting insights are not
+      available, or need to be recomputed, at network nodes further down the
+      application flow path.</t>
+
+      <t>The proposed solution allows applications to explicitly signal their
+      flow characteristics to the network. It also provides network nodes with
+      visibility of the application flow characteristics and enables them to
+      contribute to the flow description. The resulting flow description may
+      be communicated as feedback from the network to applications.</t>
+
       <section title="Deep packet inspection">
         <section title="Benefits">
           <t>Deep Packet Inspection (DPI) and other traffic observation
@@ -237,16 +265,14 @@
           for two type of workflows:<list counter="1" style="numbers">
               <t>Provide network operators with visibility into traffic for
               troubleshooting, capacity planning, accounting/billing and other
-              off network workflows. This is done by exporting observed traffic
-              analysis via IPFIX.</t>
+              off network workflows. This is done by exporting observed
+              traffic analysis via IPFIX.</t>
 
               <t>Provide differentiated network services for the traffic
-              according to network operator defined rule sets. This includes
-              assignment of different QoS classes for different traffic
-              classes identified by DPI including policing/shaping of traffic,
-              providing admission control, impacting routing, permitting
-              passing of traffic (eg: firewall functions), assigning different
-              context in the network (VRF, VLAN,..) and so on.</t>
+              according to network operator defined rule sets, including
+              policing/shaping of traffic, providing admission control,
+              impacting routing, permitting passage of traffic (e.g. firewall
+              functions), etc.</t>
             </list>Note: For the context of this document, we consider that
           DPI starts as early into packets as using ACLs with UDP/TCP port
           numbers to classify traffic.</t>
@@ -254,22 +280,22 @@
 
         <section title="Limitation">
           <t>These two workflows, visibility and differentiated networks
-          services, are highly critical in many network. However, their
-          reliance on inspection/observation limits the ability to apply these
+          services, are critical in many networks. However, their reliance on
+          inspection/observation limits the ability to operationalize these
           workflows more widely.<list style="symbols">
-              <t>Simple observation based classification, especially the ones
-              relying on TCP/UDP ports will often result in incorrect results
-              because those ports are not only used by the applications that
-              once claimed them with IANA.</t>
+              <t>Simple observation based classification, especially ones
+              relying on TCP/UDP, ports often result in incorrect results due
+              to port overloading (i.e. ports used by applications other than
+              those claiming the port with IANA).</t>
 
-              <t>More and more traffic becomes encrypted and therefore renders
-              deep packet inspection impossible or much more complex - such as
-              when having to share encryption keys with network equipment.</t>
+              <t>More and more traffic becomes encrypted, rendering deep
+              packet inspection impossible or much more complex (e.g. needing
+              to share encryption keys with network equipment).</t>
 
               <t>Observation often needs to inspect control/signaling of
-              application traffic which may flow on different network paths
-              than the actual application media traffic whose behavior should
-              be impacted.</t>
+              application traffic that flows on different network paths than
+              the actual application media traffic whose behavior is to be
+              impacted.</t>
 
               <t>Observation of control/signaling and media traffic with DPI
               will in general result in less insight into the applications
@@ -282,26 +308,26 @@
               have a more difficult job in analyzing application layer
               authentication mechanisms (if they can)</t>
 
-              <t>Without explicit involvement of the application, feedback
-              from network services leveraging DPI traffic classification
-              impact the application behavior by impacting its traffic, but
-              cannot provide explicit feedback to the application in the form
-              of signaling.</t>
+              <t>Without explicit involvement of the application, network
+              services leveraging DPI traffic classification impact the
+              application behavior by impacting its traffic, but cannot
+              provide explicit feedback to the application in the form of
+              signaling.</t>
             </list></t>
         </section>
       </section>
 
       <section title="Explicit signaling methods">
-        <t>There is a variety of existing and evolving signaling options that
+        <t>There are a variety of existing and evolving signaling options that
         can provide explicit application to network signaling and serve the
-        differentiated network services and visibility workflows where DPI is
+        visibility and differentiated network services workflows where DPI is
         currently being used. It seems clear that there will be no single
         one-protocol-fits-all solution. Every protocol is currently defined in
-        its own silo, creating duplicate and/or inconsistent information
-        models. This results in duplicate work, more operational complexity
-        and an inability to easily convert information between protocols to
-        easily leverage the best protocol option for each specific use case.
-        Examples of existing signaling options include the following:<list
+        its own silo, creating duplicate or inconsistent information models.
+        This results in duplicate work, more operational complexity and an
+        inability to easily convert information between protocols to easily
+        leverage the best protocol option for each specific use case. Examples
+        of existing signaling options include the following:<list
             style="symbols">
             <t>RSVP is the original on path signaling protocol standardized by
             the IETF. It operates on path out-of-band and could support any
@@ -314,11 +340,10 @@
             standardized within the IETF.</t>
 
             <t>NSIS (next Steps in Signaling) is the next iteration of
-            RSVP-like signaling defined by the IETF. Because it still focused
-            on the same fundamental workflow as RSVP admission control as its
-            main driver, and because it did not provide significant enough
-            use-case benefits over RSVP, it has seen even less adoption than
-            RSVP.</t>
+            RSVP-like signaling defined by the IETF. Because it focused on the
+            same fundamental workflow as RSVP admission control as its main
+            driver, and because it did not provide significant enough use-case
+            benefits over RSVP, it has seen even less adoption than RSVP.</t>
 
             <t>STUN is an on path, in-band signaling protocol that could
             easily be extended to provide signaling to on path network devices
@@ -346,9 +371,14 @@
             often viable in high-touch network devices. Such inspection may
             provide explicit signaling if the application purposely keeps or
             inserts information elements that are meant to be signaled to the
-            network in the clear, or knowingly uses an encryption shared with
-            the network.</t>
+            network in the clear, or knowingly uses an encryption scheme
+            shared with the network.</t>
           </list></t>
+
+        <t>Rather than encourage independent, protocol specific solutions to
+        this problem, this document provides a protocol and application
+        independent framework that can be applied in a consistent fashion
+        across the various protocols.</t>
       </section>
     </section>
 
@@ -365,12 +395,12 @@
               <t>As outlined above, export of traffic information is one of
               the two big workflows. IPFIX is arguably the most flexible,
               extensible and best defined option for this. Leveraging the same
-              information model for flow characteristics allows the easy
-              export of this information via IPFIX.</t>
+              information model for flow characteristics facilitates export of
+              this information via IPFIX.</t>
 
-              <t>IPFIX allows both for IETF/IANA standardized information
-              elements, but also for unambiguous vendor-defined attributes by
-              including the so-called PEN (Private Enterprise Number) into the
+              <t>IPFIX allows for IETF/IANA standardized information elements,
+              but also for unambiguous vendor-defined attributes by including
+              the so-called PEN (Private Enterprise Number) into the
               information element type. Note that IPFIX has ongoing work to
               better disseminate vendor specific registration of attributes.
               The framework defined here expects to be able to leverage the
@@ -440,14 +470,14 @@
             this allows an application to ask a question and receive an answer
             from the network. Of course, a network element may provide similar
             feedback for cases in which an application communicated a non
-            default value as well. Network elements may also provide unsolicited
-	    Advisory feedback</t>
+            default value as well. Network elements may also provide
+            unsolicited advisory feedback</t>
 
-            <t>In all cases, applications are not guaranteered to receive an
-	    answer or any specific service from the network. In the event an answer
-	    is provided, that answer is similarly not a guarantee of any specific
-            service or treatment by the network. It is to be interpreted as
-            advisory only.</t>
+            <t>In all cases, applications are not guaranteed to receive an
+            answer or any specific service from the network. In the event an
+            answer is provided, that answer is similarly not a guarantee of
+            any specific service or treatment by the network. It is to be
+            interpreted as advisory only.</t>
 
             <t>As mentioned previously, the same information elements are used
             in the signaling from the application to the network as well as
@@ -464,7 +494,7 @@
             elements signalled by the application are interpreted by network
             elements within the context of a service request, and information
             elements signalled by the network back to the application are
-            interpreted within the context of a response to that request. </t>
+            interpreted within the context of a response to that request.</t>
 
             <t>As with the advisory usage, the same information elements are
             used in the signaling from the application to the network as well
@@ -474,40 +504,39 @@
           </section>
         </section>
 
-
         <section title="Considerations for signaling of common information elements">
-          <section title="Support for proxy originated information">
+          <section title="Proxy originated information">
             <t>While the goal of this framework is to enable applications to
             explicitly signal common information elements about their traffic
             flows (and optionally receive common information elements from the
-            network as feedback), it is clear that wide-range adoption of such
-            technology is improved by enabling also the use of proxies that
-            can provide or amend that information in the absence of support by
-            the application itself.</t>
+            network as feedback), it is clear that broad adoption of such
+            technology is improved by enabling the use of proxies that can
+            provide or amend that information in the absence of support by the
+            application itself.</t>
           </section>
 
-          <section title="Authentication of common information elements">
+          <section title="Authentication">
             <t>Common information elements should provide for cryptographic
             authentication by the sender. In general the authentication
             provides some form of identification of the sender and proves that
-            the common information elements covered by the authentication
-            where originated (or approved) by that identity.</t>
+            the common information elements covered by the authentication were
+            originated from, or approved by, that identity.</t>
           </section>
 
-          <section title="Common encoding of common information elements">
-            <t>A companion document [ID-FMD-ENCODE] covers recommended encoding
-            rules that take the above aspects into account:<list
+          <section title="Common encoding">
+            <t>A companion document [ID-FMD-ENCODE] covers recommended
+            encoding rules that take the following aspects into account:<list
                 style="symbols">
                 <t>Compact binary encoding rules</t>
 
                 <t>Signaling for both sent and received traffic flows</t>
 
-                <t>Signaling of standard and vendor specific information elements</t>
+                <t>Signaling of standard and vendor specific information
+                elements</t>
 
-                <t>Minimizes the per-protocol definition required to define
-                purely advisory application to network traffic classification
-                or to embed common information elements into existing
-                transactions</t>
+                <t>Minimizes protocol specific definition required to add
+                informational or advisory common information elements into
+                existing transactions</t>
 
                 <t>Signaling of feedback from the network</t>
 
@@ -520,95 +549,80 @@
           </section>
 
           <section title="Usage Model to Protocol integration">
-
-	    <t>
-	    There is a range of options of how much of this framework
-	    is integrated with a particular transport. We describe two
-	    examples we consider useful:
-	    </t>
+            <t>There is a range of options for how this framework is
+            integrated with a particular transport protocol. We describe two
+            examples we consider useful:</t>
 
             <section title="Common transport informative integration">
+              <t><list counter="1" style="numbers">
+                  <t>A transport protocol signaling method is defined to carry
+                  the common encoded information elements at least in
+                  signaling from hosts/application to the network.</t>
 
-	      <t> <list counter="1" style="numbers">
-	        <t>A transport protocol signaling method is defined to carry
-	        the common encoded information elements at least in signaling
-	        from hosts/application to the network.
-	        </t>
+                  <t>If the transport by itself does not already have a
+                  mechanism to indicate a purely informative protocol
+                  transaction, then a protocol specific indication for this is
+                  added.</t>
+                </list></t>
 
-	        <t>If the transport by itself does not already have
-	        a mechanism to indicate a purely informative protocol transaction,
-	        then a protocol specific indication for this is added.
-	        </t>
-	      </list>
-	      </t>
+              <t>In result, this integration achieves two option: <list
+                  counter="1" style="numbers">
+                  <t>Informative common information elements can be sent
+                  fromapplications to the network by using the protocols
+                  method to indicate the purely informational protocol
+                  transaction. This option effectively leverages the protocol
+                  as transport for additional informative attribute based
+                  services without impacting the services/transactions of the
+                  protocol otherwise.</t>
 
-	      <t> In result, this integration achieves two option: <list counter="1" style="numbers">
-	        <t>Informative common information elements can be sent from
-		hosts/applications to the network by using the protocols method
-		to indicate the purely informational protocol transaction. This
-		option effectively leverages the protocol as transport for
-		additional informative attribute based services without impacting
-		the services/transactions of the protocol otherwise.
-		</t>
+                  <t>Informative common information elements can be sent
+                  alongside an existing protocol transaction. In this case
+                  they may either be ships-in-the-night (triggering
+                  informative attribute based services), or they may
+                  additionally be used by the policy rules of the protocol
+                  transaction itself which could be advisory or service
+                  request. All feedback of the transaction would still rely on
+                  protocol specific information element (common information
+                  elements only used from host to network).</t>
+                </list></t>
 
-		<t>Informative common information elements can be sent alongside
-		an existing protocol transaction. In this case they may either
-		be ships-in-the-night (triggering informative attribute based
-		services), or they may additionally be ued by the policy rules
-		of the protocol transaction itself which could be advisory or
-		service request.  All feedback of the transaction would still
-		rely on protocol specific information element (common information
-		elements only used from host to network).
-		</t>
-	      </list>
-	      </t>
-
-	      <t>
-	      This integration is for example defined in [draft-flow-metadata-rsvp].
-	      </t>
-	    </section>
+              <t>This integration is for example defined in [ID-RMD-PCP],
+              [ID-FMD-RSVP], and [ID-FMD-STUN].</t>
+            </section>
 
             <section title="Common transport advisory integration">
-	      <t>
-	      In addition to the common transport informative integration,
-	      the transport encoding is extended to carry the common
-	      transport information element in feedback messages from
-	      the network to the host/application. The method to indicate
-	      informative only transaction, when sending to the network
-	      is used to indicate advisory only transaction when signaling
-	      from the network.
-	      </t>
-	      <t>
-	      This option primarily enables informative and advisory usage
-	      models, but it can equally interact with pre-existing
-	      service-request options of the transport protocol and
-	      impact advisory feedback or the service request itself
-	      based on that interaction.
-	      </t>
-	    </section>
+              <t>In addition to the common transport informative integration,
+              the transport encoding is extended to carry the common transport
+              information element in feedback messages from the network to the
+              host/application. The method to indicate informative only
+              transaction, when sending to the network is used to indicate
+              advisory only transaction when signaling from the network.</t>
 
-	  </section>
-
+              <t>This option primarily enables informative and advisory usage
+              models, but it can equally interact with pre-existing
+              service-request options of the transport protocol and impact
+              advisory feedback or the service request itself based on that
+              interaction.</t>
+            </section>
+          </section>
         </section>
       </section>
 
       <section title="Proposed common information elements">
         <t>The section defines an initial set of common information elements.
-        These information elements are intended to be added to the set
-        of IANA standardized information elements via followup documents.
-	They are listed here for informational purposes of the framework only.
-	Additional documents are expected to define additional addtributes that
-	can use either IANA or other vendor-PEN.
-	</t>
+        These information elements are intended to be added to the set of IANA
+        standardized information elements either by this or associated
+        documents. Additional documents are expected to define additional
+        attributes that can use either IANA or other vendor-PEN.</t>
 
-	<t>All information element
-        definition must include the following:<list counter="1"
-            style="numbers">
+        <t>All information element definition must include the following:<list
+            counter="1" style="numbers">
             <t>Default value to be provided by an application when it does not
             have an informative value to provide to the network, but is
             interested in receiving an advisory value of the attribute from
-            the network. If no advisory feedback is requested, and no informative
-	    value is known, the attribute may simply not be sent.</t>
+            the network. If no advisory feedback is requested, and no
+            informative value is known, the attribute may simply not be
+            sent.</t>
 
             <t>Conflict resolution in the presence of different values for the
             same information element (e.g. two peers signaling information
@@ -617,11 +631,10 @@
           </list></t>
 
         <section title="Bandwidth Attributes">
-
           <section title="Maximum Bandwidth">
-            <t>This attribute is used to convey the maximum sustained bandwidth
-            for the flow. It is a 64 bit value and is specified in bits per
-            second.</t>
+            <t>This attribute is used to convey the maximum sustained
+            bandwidth for the flow. It is a 64 bit value and is specified in
+            bits per second.</t>
 
             <t>Default Value: 0</t>
 
@@ -630,35 +643,33 @@
           </section>
 
           <section title="Minimum Bandwidth">
-            <t>This attribute is used to convey the minimum sustained bandwidth
-            for the flow. It is a 64 bit value and is specified in bits per
-            second. Not sending the Minimum Bandwidth is equivalent to sending
-	    the same value as for Maximum Bandwidth.</t>
+            <t>This attribute is used to convey the minimum sustained
+            bandwidth for the flow. It is a 64 bit value and is specified in
+            bits per second. Not sending the Minimum Bandwidth is equivalent
+            to sending the same value as for Maximum Bandwidth.</t>
 
             <t>Default Value: 0</t>
 
-            <t>Conflict Resolution: Minimum of the set of non default values</t>
+            <t>Conflict Resolution: Minimum of the set of non default
+            values</t>
           </section>
 
           <section title="Bandwidth Pool">
-	    <t>This attribute is used to convey that the traffic dynamically
-	    shares bandwidth with other traffic using the same Bandwidth Pool.
-	    Variable length GUID (Global Unique ID) of at least 48 bits. The Maximum
-	    Bandwidth used by the pool pool is the largest Maximum Bandwidth
-	    indicated by any member, the Minimum Bandwidth of the Pool is the
-	    largest Minimum Bandwidth indicated by any member.
-	    </t>
-
+            <t>This attribute is used to convey that the traffic dynamically
+            shares bandwidth with other traffic using the same Bandwidth Pool.
+            Variable length GUID (Global Unique ID) of at least 48 bits. The
+            Maximum Bandwidth used by the pool is the largest Maximum
+            Bandwidth indicated by any member, the Minimum Bandwidth of the
+            Pool is the largest Minimum Bandwidth indicated by any member.</t>
           </section>
         </section>
 
         <section title="Traffic Class Attributes">
-
           <section title="RFC4594-DSCP">
             <t>This attribute is used to convey the DSCP value appropriate for
             the flow. It is an 8 bit value. Values signaled are assumed to be
-	    in compliance with RFC 4594 or backward compatible extensions thereof.
-            Other values are undefined.</t>
+            in compliance with RFC 4594 or backward compatible extensions
+            thereof. Other values are undefined.</t>
 
             <t>Default Value: 0xff</t>
 
@@ -666,36 +677,36 @@
           </section>
 
           <section title="Traffic Class Label (TCL)">
-            <t>The data type of this information element is a string. It carries
-            the Traffic Class Label defined in
-            [draft-ietf-mmusic-traffic-class-for-sdp]. Depending on the outcome
-            of that drafts standardization, the version carried as an
-            information element may be slightly expanded over the its definition
-            for SDP. The TCL is a structured string of the form:</t>
+            <t>The data type of this information element is a string. It
+            carries the Traffic Class Label defined in
+            [draft-ietf-mmusic-traffic-class-for-sdp]. Depending on the
+            outcome of that drafts standardization, the version carried as an
+            information element may be slightly expanded over the its
+            definition for SDP. The TCL is a structured string of the
+            form:</t>
 
             <t>&lt;category&gt;.&lt;application&gt;(.adjective)(.adjective)</t>
 
             <t>category and application provide a base categorization of the
-            traffic class that attempts to provide a simplified and extensible,
-            framework for the traffic class definitions in RFC4594. These base
-            classifications can be refined with zero or more adjectives.
-            Examples of a TCL is "conversational.video.avconf".</t>
+            traffic class that attempts to provide a simplified and
+            extensible, framework for the traffic class definitions in
+            RFC4594. These base classifications can be refined with zero or
+            more adjectives. Examples of a TCL is
+            "conversational.video.avconf".</t>
 
             <t>Default Value: Empty string</t>
 
             <t>Conflict Resolution: tbd</t>
           </section>
-
         </section>
 
         <section title="Acceptable Path Attributes">
-
           <section title="Delay Tolerance">
             <t>This attribute is used to convey the delay tolerance of an
-            application with respect to the associated flow. When provided by a
-            network element, it indicates the delay tolerance expected of the
-            application with respect to the associated flow. It is a 16 bit
-            field defined in terms of milliseconds.</t>
+            application with respect to the associated flow. When provided by
+            a network element, it indicates the delay tolerance expected of
+            the application with respect to the associated flow. It is a 16
+            bit field defined in terms of milliseconds.</t>
 
             <t>Default Value: 0</t>
 
@@ -706,11 +717,11 @@
 
           <section title="Loss Tolerance">
             <t>This attribute is used to convey the loss tolerance of an
-            application with respect to the associated flow. When provided by a
-            network element, it indicates the loss tolerance expected of the
+            application with respect to the associated flow. When provided by
+            a network element, it indicates the loss tolerance expected of the
             application with respect to the associated flow. It is a 16 bit
-            field defined in terms of hundredths of a percent of dropped packets
-            (e.g. 5 == 0.05%, 150 == 1.50%, etc.)</t>
+            field defined in terms of hundredths of a percent of dropped
+            packets (e.g. 5 == 0.05%, 150 == 1.50%, etc.)</t>
 
             <t>Default Value: 0</t>
 
@@ -718,11 +729,9 @@
             the set of non default values. For network to application, the
             maximum of the set of non default values.</t>
           </section>
-
-	</section>
+        </section>
 
         <section title="Application Identification">
-
           <t>Application identification is clearly one of the more difficult
           classification goals. The proposals included here are as of yet not
           widely vetted:</t>
@@ -743,7 +752,7 @@
 
             <t>To avoid collision with DPI exported IANA-L4 classification, it
             is necessary to assign a new engine-id for application-self
-            assigned IANA-L4 classification (eg: new engine-id for
+            assigned IANA-L4 classification (e.g. new engine-id for
             IANA-L4-SELF-ASSIGNED). If an application vendor has a PEN, the
             application can use a PANA-L7-PEN classification with the PEN of
             the originating application vendor. Likewise, if applications are
@@ -757,7 +766,7 @@
             <t>One problem with RFC 6759 style application identification
             especially non-IANA registered ones is the complexity in making
             all network elements learn the semantic of the numeric encoding of
-            eg: the PANA-L7-PEN information element in signaling protocols
+            e.g. the PANA-L7-PEN information element in signaling protocols
             that only use the numeric encoding of information elements.
             Application identification via a URL encoded string information
             element is presumably easier to introduce and disseminate. Today,
