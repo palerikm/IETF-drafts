@@ -38,8 +38,8 @@
 <!-- Prevent automatic page break -->
 <!-- end of list of popular I-D processing instructions -->
 <rfc category="std" docName="draft-ietf-flow-metadata-encoding-00"
-    ipr="trust200902">
-    <!-- category values: std, bcp, info, exp, and historic
+     ipr="trust200902">
+  <!-- category values: std, bcp, info, exp, and historic
      ipr values: full3667, noModification3667, noDerivatives3667
      you can add the attributes updates="NNNN" and obsoletes="NNNN"
      they will automatically be output with "(if approved)" -->
@@ -47,96 +47,116 @@
   <!-- ***** FRONT MATTER ***** -->
 
   <front>
-      <!-- The abbreviated title is used in the page header - it is only necessary if the
+    <!-- The abbreviated title is used in the page header - it is only necessary if the
          full title is longer than 39 characters -->
 
-    <title abbrev="Flow Metadata Encoding">Protocol independent encoding for
-        signaling flow characteristics</title>
+    <title abbrev="Flow Metadata Encoding">Protocol Independent Encoding for
+    Signaling Flow Characteristics</title>
 
     <!-- add 'role="editor"' below for the editors if appropriate -->
 
     <!-- Another author who claims to be an editor-->
 
     <author fullname="Toerless Eckert" initials="T." role="editor"
-        surname="Eckert">
-        <organization>Cisco Systems, Inc.</organization>
+            surname="Eckert">
+      <organization>Cisco Systems, Inc.</organization>
 
-        <address>
-            <postal>
-                <street/>
+      <address>
+        <postal>
+          <street/>
 
-                <!-- Reorder these if your country does things differently -->
+          <!-- Reorder these if your country does things differently -->
 
-                <city>San Jose</city>
+          <city>San Jose</city>
 
-                <region/>
+          <region/>
 
-                <code/>
+          <code/>
 
-                <country>US</country>
-            </postal>
+          <country>US</country>
+        </postal>
 
-            <phone>+1 408 902 2043</phone>
+        <phone>+1 408 902 2043</phone>
 
-            <email>eckert@cisco.com</email>
+        <email>eckert@cisco.com</email>
 
-            <!-- uri and facsimile elements may also be added -->
-        </address>
+        <!-- uri and facsimile elements may also be added -->
+      </address>
     </author>
 
     <author fullname="Anca Zamfir" initials="A." surname="Zamfir">
-        <organization>Cisco Systems, Inc.</organization>
+      <organization>Cisco Systems, Inc.</organization>
 
-        <address>
-            <postal>
-                <street/>
+      <address>
+        <postal>
+          <street/>
 
-                <!-- Reorder these if your country does things differently -->
+          <!-- Reorder these if your country does things differently -->
 
-                <city>Lausanne</city>
+          <city>Lausanne</city>
 
-                <region/>
+          <region/>
 
-                <code/>
+          <code/>
 
-                <country>CH</country>
-            </postal>
+          <country>CH</country>
+        </postal>
 
-            <phone>+41 21 69 43 826</phone>
+        <phone>+41 21 69 43 826</phone>
 
-            <email>ancaz@cisco.com</email>
+        <email>ancaz@cisco.com</email>
 
-            <!-- uri and facsimile elements may also be added -->
-        </address>
+        <!-- uri and facsimile elements may also be added -->
+      </address>
     </author>
 
     <author fullname="Amine Choukir" initials="A." surname="Choukir">
-        <organization>Cisco Systems, Inc.</organization>
+      <organization>Cisco Systems, Inc.</organization>
 
-        <address>
-            <postal>
-                <street/>
+      <address>
+        <postal>
+          <street/>
 
-                <!-- Reorder these if your country does things differently -->
+          <!-- Reorder these if your country does things differently -->
 
-                <city>Lausanne</city>
+          <city>Lausanne</city>
 
-                <region/>
+          <region/>
 
-                <code/>
+          <code/>
 
-                <country>CH</country>
-            </postal>
+          <country>CH</country>
+        </postal>
 
-            <phone>+41 78 75 98 561</phone>
+        <phone>+41 78 75 98 561</phone>
 
-            <email>amchouki@cisco.com</email>
+        <email>amchouki@cisco.com</email>
 
-            <!-- uri and facsimile elements may also be added -->
-        </address>
+        <!-- uri and facsimile elements may also be added -->
+      </address>
     </author>
 
-    <date month="May" year="2013"/>
+    <author fullname="Charles Eckel" initials="C." surname="Eckel">
+      <organization>Cisco Systems, Inc.</organization>
+
+      <address>
+        <postal>
+          <street>170 West Tasman Drive</street>
+
+          <city>San Jose</city>
+
+          <region>CA</region>
+
+          <code>95134</code>
+
+          <country>US</country>
+        </postal>
+
+        <email>eckelcu@cisco.com</email>
+      </address>
+    </author>
+
+    <date month="June" year="2013"/>
 
     <!-- If the month and year are both specified and are the current ones, xml2rfc will fill
          in the current day for you. If only the current year is specified, xml2rfc will fill
@@ -164,294 +184,274 @@
          keywords will be used for the search engine. -->
 
     <abstract>
-        <t>This document describes a protocol independent encoding for Flow
-            Metadata. A flow in this context is defined as a 5-tuple (IP_src,
-            Port_src, IP_dst, Port_dst, Transport) where Transport is a layer 4
-            protocol such as TCP or UDP. Port_src and Port_dst both refer to
-            this protocol. Flow Metadata exposes key characteristics of the flow
-            such as the originating application, the type of media in use (e.g.
-            audio, video) and others as defined in [ID-FMD-FRAMEWORK]. The flow
-            characteristics are captured through Metadata tags. The Metadata tags
-            information is signaled either out of band or in band but always along
-            the same path of the data flow transmitted by an application.</t>
+      <t>This document describes a protocol independent encoding for flow
+      characteristics (a.k.a. metadata). A flow in this context is defined as
+      a 5-tuple (IP_src, Port_src, IP_dst, Port_dst, Transport), where
+      Transport is a layer 4 protocol such as TCP or UDP. Port_src and
+      Port_dst both refer to this protocol. Flow metadata exposes key
+      characteristics of the flow such as the originating application, the
+      type of media in use (e.g. audio, video) and others as defined in
+      [ID-FMD-FRAMEWORK]. The flow characteristics are expressed in terns of
+      information elements. These information elements are signaled either out
+      of band or in band but always along the same path of the flow associated
+      with the application.</t>
 
-        <t>[ID-FMD-FRAMEWORK] defines the overall framework for Flow Metadata and the
-            definition of the flow characteristics, whereas this document
-            captures the flow characteristics encoding. The mapping of the Flow Metadata encoding to
-            the different signaling protocols is outside the scope of this
-            document.</t>
+      <t>[ID-FMD-FRAMEWORK] defines the overall framework for flow metadata
+      and the definition of the flow characteristics, whereas this document
+      captures the encoding of these characteristics. The mapping of the flow
+      metadata encoding to the different signaling protocols is outside the
+      scope of this document.</t>
     </abstract>
-</front>
+  </front>
 
-<middle>
+  <middle>
     <section title="Introduction">
-      <t>This document describes a protocol independent encoding for Flow
-            Metadata. A flow in this context is defined as a 5-tuple (IP_src,
-            Port_src, IP_dst, Port_dst, Transport) where Transport is a layer 4
-            protocol such as TCP or UDP. Port_src and Port_dst both refer to
-            this protocol. Flow Metadata exposes key characteristics of the flow
-            such as the originating application, the type of media in use (e.g.
-            audio, video) and others as defined in [ID-FMD-FRAMEWORK]. The flow
-            characteristics are captured through Metadata tags. The Metadata tags
-            information is signaled either out of band or in band but always along
-            the same path of the data flow transmitted by an application. As flow
-            characteristics across different signaling protocols are identical they
-            benefit from a single definition and encoding irrespective of the
-            signaling protocol in use. Examples of out of band and in band protocols
-            would be RSVP [ID-FMD-RSVP], STUN [ID-FMD-STUN], and PCP
-            [ID-FMD-PCP]. Different network deployments call out for different
-            protocols or combination of protocols as described in [ID-FMD-FRAMEWORK]. The
-            flow characteristics can be inspected by intermediate network nodes for
-            the purpose of applying a particular treatment to the flow or simply for
-            gathering insight on the nature of the traffic crossing the network
-            node.</t>
+      <t>This document describes a protocol independent encoding for flow
+      characteristics (a.k.a. metadata). A flow in this context is defined as
+      a 5-tuple (IP_src, Port_src, IP_dst, Port_dst, Transport), where
+      Transport is a layer 4 protocol such as TCP or UDP. Port_src and
+      Port_dst both refer to this protocol. Flow metadata exposes key
+      characteristics of the flow such as the originating application, the
+      type of media in use (e.g. audio, video) and others as defined in
+      [ID-FMD-FRAMEWORK]. The flow characteristics are expressed in terns of
+      information elements. These information elements are signaled either out
+      of band or in band but always along the same path of the flow associated
+      with the application.</t>
 
-        <t>Flows, and the corresponding Flow Metadata, are inherently
-      unidirectional, in the direction from the source to the destination
-      (e.g. from Alice to Bob). In some cases, there may be a related flow in
-      the reverse direction (e.g. from Bob to Alice), but this is treated as a
-      separate flow, not a bidirectional flow.
-            The Metadata tags can characterise data in the same direction as the
-            flow (upstream) or in the opposite direction (downstream). The
-            encoding allows to signal for either direction or both at the same
-            time. The Metadata tags can be signaled by the application itself
-            and/or by network elements that have visibilty on the flow data.
-            The encoding clearly segregate between information coming
-            from the application and information coming from the network.
-        </t>
-        <section title="Requirements Language">
-            <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-                "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
-                document are to be interpreted as described in <xref
-                    target="RFC2119">RFC 2119</xref>.</t>
-        </section>
+      <t>As flow characteristics across different signaling protocols are
+      identical, they benefit from a single definition and encoding
+      irrespective of the signaling protocol in use (e.g. RSVP [ID-FMD-RSVP],
+      STUN [ID-FMD-STUN], and PCP [ID-FMD-PCP]). Different network deployments
+      call for different protocols or combination of protocols as described in
+      [ID-FMD-FRAMEWORK]. The flow characteristics can be inspected by
+      intermediate network nodes for the purpose of applying a particular
+      treatment to the flow or simply for gathering insight on the nature of
+      the traffic crossing the network node.</t>
+
+      <t>Flows, and the corresponding metadata, are inherently unidirectional,
+      in the direction from the source to the destination (e.g. from Alice to
+      Bob). In some cases, there may be a related flow in the reverse
+      direction (e.g. from Bob to Alice), but this is treated as a separate
+      flow, not a bidirectional flow. The Metadata tags can characterise data
+      in the same direction as the flow (upstream) or in the opposite
+      direction (downstream). The encoding allows to signal for either
+      direction or both at the same time. The Metadata tags can be signaled by
+      the application itself and/or by network elements that have visibilty on
+      the flow data. The encoding clearly segregates information coming from
+      the application from information coming from the network.</t>
+
+      <section title="Requirements Language">
+        <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+        "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+        document are to be interpreted as described in <xref
+        target="RFC2119">RFC 2119</xref>.</t>
+      </section>
     </section>
 
     <section title="Encoding Overview">
-        <section title="General Principles">
-            <t>This specification assumes that the flow 5-tuple is specified by
-                the transport protocol which carries the Metadata tags. As an example,
-                in STUN the 5-tuple is present in the layer 3 and 4 headers of the
-                message. In RSVP the 5-tuple is
-                obtained from the SESSION and SENDER-TEMPLATE objects. In PCP the
-                source IP is part of the request common header; the remainder of the
-                5-tuple needs to be embedded in the opcode data.
-            </t>
+      <section title="General Principles">
+        <t>This specification assumes that the flow 5-tuple is specified by
+        the transport protocol which carries the Metadata tags. As an example,
+        in STUN the 5-tuple is present in the layer 3 and 4 headers of the
+        message. In RSVP the 5-tuple is obtained from the SESSION and
+        SENDER-TEMPLATE objects. In PCP the source IP is part of the request
+        common header; the remainder of the 5-tuple needs to be embedded in
+        the opcode data.</t>
 
-            <t>The Flow Metadata characteristics are to be interpreted in the
-                context of the 5-tuple defined by the signaling protocol. The Flow
-                Metadata encoding does not carry any elements of the 5-tuple but
-                merely the flow characteristics.</t>
+        <t>The Flow Metadata characteristics are to be interpreted in the
+        context of the 5-tuple defined by the signaling protocol. The Flow
+        Metadata encoding does not carry any elements of the 5-tuple but
+        merely the flow characteristics.</t>
 
-            <t>The encoding defined herein does not relate to any specific
-                signaling but rather allows different signaling protocols to transport
-                flow characteristics. As the encoding is shared amongst several
-                protocols, it is versioned independently to allow, if needed, its
-                evolution without impacting the signaling protocol.</t>
+        <t>The encoding defined herein does not relate to any specific
+        signaling but rather allows different signaling protocols to transport
+        flow characteristics. As the encoding is shared amongst several
+        protocols, it is versioned independently to allow, if needed, its
+        evolution without impacting the signaling protocol.</t>
+      </section>
 
-        </section>
+      <section title="Encoding Goals">
+        <t>The following goals have been considered in the design of the
+        encoding:<list style="symbols">
+            <t>Transport independence</t>
 
-        <section title="Encoding Goals">
-            <t>The following goals have been considered in the design of the
-                encoding:<list style="symbols">
-                    <t>Transport independence</t>
+            <t>Allow for a standard namespace as well as vendor specific
+            namespaces</t>
 
-                    <t>Allow for a standard namespace as well as vendor specific
-                        namespaces</t>
+            <t>Support multiple producers of flow characteristics</t>
 
-                    <t>Support multiple producers of flow characteristics</t>
+            <t>Ability to encode flow characteristics for both the flow itself
+            (upstream) and the flow in the reverse direction (downstream).</t>
 
-                    <t>Ability to encode flow characteristics for both the flow itself
-                        (upstream) and the flow in the reverse direction (downstream).</t>
+            <t>Ability to communicate flow characteristics from an application
+            to the network as well as from the network back to the
+            application</t>
 
-                    <t>Ability to communicate flow characteristics from an
-                        application to the network as well as from the network back to the
-                        application</t>
+            <t>Extensibility while allowing for backwards compatibility</t>
 
-                    <t>Extensibility while allowing for backwards compatibility.</t>
-
-                    <t>Flexibility</t>
+            <t>Flexibility</t>
 
             <t>Support for integrity, authentication and authorization on a
             per producer basis</t>
 
-                    <t>Compact encoding</t>
-            </list></t>
+            <t>Compact encoding</t>
+          </list></t>
 
-            <section title="Transport independence">
-                <t>One goal of this proposal is to provide an encoding that can be
-                    used by more than one transport protocol. This should help with the
-                    future standardization effort and also implementations that make use
-                    of different protocols when transporting Flow Metadata. One example
-                    is an application that may use different signaling protocols depending
-                    on the environment, peer protocol support, etc. Another is a
-                    middlebox on an administrative boundary that may need to perform
-                    protocol interworking functions.</t>
+        <section title="Transport independence">
+          <t>One goal of this proposal is to provide an encoding that can be
+          used by more than one transport protocol. This should help maintain
+          consistency across standardization of flow metdata usage by various
+          signaling protocols, and it should simplify implementations that
+          make use of different signaling protocols when transporting flow
+          metadata. One example is an application that may use different
+          signaling protocols depending on the environment, peer protocol
+          support, etc. Another is a middlebox on an administrative boundary
+          that may need to perform protocol interworking functions.</t>
 
           <t>It is recommended that transport protocol implementations
           syntactically validate the encoded flow characteristics block, e.g.,
           verify that the length fields are correct. However, for
           extensibility and consistency reasons, transport protocols should
           not attempt to semantically interpret an encoded flow
-          characteristics block; this should be left to upper layers (e.g.,
-          the local Metadata module).</t>
-            </section>
+          characteristics block. This should be left to upper layers (e.g.,
+          the local metadata module).</t>
+        </section>
 
-            <section title="Standard and Vendor Specific Namespaces">
-                <t>Vendors need the ability to define and use proprietary Metadata
-                    when they are delivering a pre-standard feature or product or when
-                    the encoded information is of commercially sensitive nature. This
-                    specification provides support for both standard and vendor specific
-                    defined flow characteristics.</t>
-            </section>
+        <section title="Standard and Vendor Specific Namespaces">
+          <t>Vendors need the ability to define and use proprietary Metadata
+          when they are delivering a pre-standard feature or product or when
+          the encoded information is of commercially sensitive nature. This
+          specification provides support for both standard and vendor specific
+          defined flow characteristics.</t>
+        </section>
 
-            <section title="Multiple Producers">
+        <section title="Multiple Producers">
+          <t>Multiple producers may contribute flow characteristics to the
+          Flow Metadata information associated with a given flow.</t>
 
-                <t>Multiple producers may contribute flow characteristics to the
-                    Flow Metadata information associated with a given flow.
-                </t>
-
-                <t> Applications are one category of candidates for
-                    generating Flow Metadata as they have precise knowledge of
-                    the flows they insert into the network. Middleboxes
-                    constitute a second class of Metadata producers. Deep Packet
-                    Inspection engines are deployed to recognize the originator
-                    and nature of the flows traversing a network. Media
-                    Termination Points (e.g. MCU, Transcoders) are deployed to
-                    offer additional services to voice applications and
-                    applications. Media Termination Points have knowledge of the
-                    transformations they apply on the flow they receive and can
-          therefore update the characteristics of the flow. Other proxies and
-          gateways do exist for other applications and could produce
+          <t>Applications are one category of candidates for generating Flow
+          Metadata as they have precise knowledge of the flows they insert
+          into the network. Middleboxes constitute a second class of Metadata
+          producers. Deep Packet Inspection engines are deployed to recognize
+          the originator and nature of the flows traversing a network. Media
+          Termination Points (e.g. MCU, transcoders) are deployed to offer
+          additional services to applications. Media Termination Points have
+          knowledge of the transformations they apply on the flow they receive
+          and can therefore update the characteristics of the flow. Other
+          proxies and gateways exist for other applications and could produce
           information in relation to the flow.</t>
-
         </section>
 
         <section title="Upstream and Downstream">
-            <t>
-                As explained in the introduction a flow is unidirectional by
-                definition but some use cases and signaling protocols
-                require or allow to
-                signal both upstream and downstream flow characteristics.
-                For example in the context of a home user that need to
-                prioritize its upstream and downstream flow an end-to-edge
-                protocol can expose flow characteristics to the edge ISP
-                node controlling its access link for both its upstream and
-                dowstream flow. This allows the edge node to apply proper
-                treatment to both directions.
-          </t>
+          <t>As explained in the introduction, a flow is unidirectional by
+          definition, but some use cases and signaling protocols require or
+          allow to signal both upstream and downstream flow characteristics.
+          For example, in the context of a home user that needs to prioritize
+          its upstream and downstream flow an end-to-edge protocol can expose
+          flow characteristics to the edge ISP node controlling its access
+          link for both its upstream and dowstream flow. This allows the edge
+          node to apply proper treatment to both directions.</t>
         </section>
 
         <section title="Network to Application">
           <t>When an application includes Flow Metadata for a flow, the
           metadata is communicated from the application to the network. In
           some cases, it may be beneficial for the network to convey
-          information back to the application about the same flow. [ID-FMD-FRAMEWORK]
-          defines a mechanism by which flow metadata for the
-          same flow may be communication both from the application to the
+          information back to the application about the same flow.
+          [ID-FMD-FRAMEWORK] defines a mechanism by which flow metadata for
+          the same flow may be communication both from the application to the
           network as well as from the network back to the application. The
           flow metadata is encoded identically regardless of whether it is
           signalled from application to network or network back to
           application. It is assumed that the ability to differentiate between
           the two is provided by the transport protocol making use of this
-          specification of transport protocol independent Flow Metadata encoding.</t>
-            </section>
-
-            <section title="Extensibility">
-                <t> New use cases and new deployment scenarios will require the
-                    use of new flow characteristics. For this reason the encoding
-                    should support Metadata tag additions in a backwards compatible
-                    way.
-
-                    New Metadata tag addition supplement but do not redefine
-                    existing tags. An application or a network node always
-                    signals its currently supported tag set and devices leverage
-                    the subset they understand for the purpose of
-                    applying treatment to or gathering information about the
-                    application flows.
-                </t>
-            </section>
-
-            <section title="Flexibility">
-                <t>
-                    Distinct use cases and individual applications
-                    have a need for different subsets of Metadata tags.
-                    The encoding should support the signaling of any subset of
-                    Metadata tags for that purpose. For example, a video
-                    conferencing application might need to signal which of its flows
-                    are audio and video. Video surveillance cameras might only
-                    signal video flows but will need to indicate which one has
-                    priority based for example on embedded analytics.
-                </t>
-            </section>
-
-            <section title="Per Producer Security">
-                <t>
-                    Integrity protection and authentication of flow characteristics
-                    is a very important aspect for features using the Flow Metadata
-                    signaling.
-                    Indeed treatment applied on that basis can consume network
-                    resources and therefore lead to their exhaustion. But the integrity
-                    and authentication of the flow characteristics is not enough as
-                    genuine applications or users can on purpose or by error send flow
-                    chracteristics they are not authorized to send. To that end
-                    Authorization should be one of the goals of any security method
-                    used to secure the Metadata tags side by side with their
-                    authentication and integrity.
-                </t>
-                <t>
-                    This specification defines an optional Security element container
-                    to be used for this purpose. However the security method to be used
-                    is outside the scope of this specification.
-                </t>
-            </section>
-
-            <section title="Compact Encoding">
-                <t>
-                    One of the goals of the encoding described in this specification
-                    is to be compact and consume minimal space in the signaling protocol
-                    payload. Most of the protocols have limited space for Metadata
-                    purposes and do not support semantic fragmentation. The strategy
-                    of the encoding is to minimize the encoding structures used
-                    for the common signaling case. The common case is foreseen to
-                    be the application signaling standard flow characteristics.
-                </t>
-            </section>
+          specification of transport protocol independent Flow Metadata
+          encoding.</t>
         </section>
+
+        <section title="Extensibility">
+          <t>New use cases and new deployment scenarios will require the use
+          of new flow characteristics. For this reason the encoding should
+          support Metadata tag additions in a backwards compatible way. New
+          Metadata tag addition supplement but do not redefine existing tags.
+          An application or a network node always signals its currently
+          supported tag set and devices leverage the subset they understand
+          for the purpose of applying treatment to, or gathering information
+          about, the application flows.</t>
+        </section>
+
+        <section title="Flexibility">
+          <t>Distinct use cases and individual applications have a need for
+          different subsets of Metadata tags. The encoding should support the
+          signaling of any subset of Metadata tags for that purpose. For
+          example, a video conferencing application might need to signal
+          metadata for both its audio and video flows. A video surveillance
+          application might signal video flows only, but may need to indicate
+          which one has priority based on embedded analytics.</t>
+        </section>
+
+        <section title="Per Producer Security">
+          <t>Integrity protection and authentication of flow characteristics
+          are very important aspects for features using the flow metadata
+          signaling. Treatment applied on the basis of metadata may involve
+          the consumption of scarce network resources and therefore contribute
+          to their exhaustion. Integrity and authentication of the flow
+          characteristics is not sufficient, as genuine applications or users
+          can on purpose or by error send flow chracteristics they are not
+          authorized to send. To that end, authorization should be one of the
+          goals of any security method used to secure the metadata side by
+          side with their authentication and integrity.</t>
+
+          <t>This specification defines an optional security element container
+          to be used for this purpose. However the actual security mechanism
+          to be used is outside the scope of this specification.</t>
+        </section>
+
+        <section title="Compact Encoding">
+          <t>One of the goals of the encoding described in this specification
+          is to be compact and consume minimal space in the signaling protocol
+          payload. Most of the protocols have limited space for Metadata
+          purposes and do not support semantic fragmentation. The strategy of
+          the encoding is to minimize the encoding structures used for the
+          common signaling case. The common case is foreseen to be the
+          application signaling standard flow characteristics.</t>
+        </section>
+      </section>
     </section>
 
     <section title="Encoding specification">
-        <section title="Layout">
-            <t>
-                This section describes the encoding layout proposed by this
-                specification. We take a top down approach to show the encoding
-                layout, we show:
-                <list style="symbols">
-                    <t>How the application and network producers coexist using
-                        sections in <xref target="encoding_section"/></t>
-                    <t>The subdivision of a section with standard and
-                        vendor specific sub-sections and an optional
-                        security token in
-                        <xref target="encoding_section_content"/></t>
-                    <t>The subdivision of a sub-section in upstream
-                        and downstream block in
-                        <xref target="encoding_subsection_content"/></t>
-                    <t>A full example using all the encoding building
-                        blocks in <xref target="encoding_layout"/></t>
-                </list></t>
+      <section title="Layout">
+        <t>This section describes the encoding layout proposed by this
+        specification. It describes the following: <list style="symbols">
+            <t>How the application and network producers coexist using
+            sections in <xref target="encoding_section"/></t>
 
-            <t>
-                The flow characteristics are grouped in sections within the encoding.
-                A section pertains to an application or to a network producer. To segregate
-                application and network producer sections the encoding uses a network marker.
-                The application section does not use a network marker and therefore
-                must come first if present. The encoding MUST contain at least an application or a
-                network section. <xref target="encoding_section" /> shows an
-                example which combines an application section with two network
-                sections.
-            </t>
-            <figure align="center" anchor="encoding_section" title="Encoding section">
-                <artwork align="left"><![CDATA[
+            <t>Application of an optional security token to a section in <xref
+            target="encoding_security_token"/></t>
+
+            <t>The division of a section into standard and vendor specific
+            sub-sections in <xref target="encoding_section_content"/></t>
+
+            <t>The division of a sub-section into upstream and downstream
+            blocks in <xref target="encoding_subsection_content"/></t>
+
+            <t>A full example using all the encoding building blocks in <xref
+            target="encoding_layout"/></t>
+          </list></t>
+
+        <section title="Sections">
+          <t>The flow characteristics are grouped in sections within the
+          encoding. A section pertains to an application or to a network
+          producer. To segregate application and network producer sections the
+          encoding uses a network marker. The application section does not use
+          a network marker and therefore must come first if present. The
+          encoding MUST contain at least an application or a network section.
+          <xref target="encoding_section"/> shows an example that contains an
+          application section and two network sections.</t>
+
+          <figure align="center" anchor="encoding_section"
+                  title="Encoding section">
+            <artwork align="left">
 +--------------------------------+
 |      Application Section       |
 +--------------------------------+
@@ -475,39 +475,79 @@
 |                                |
 |                                |
 +--------------------------------+
-                    ]]></artwork>
-            </figure>
-            <t>
-                A section is divided into standard and vendor sub-sections. A section
-                MUST at least have one sub-section. A section MUST contain at most one
-                standard sub-section and can contain multiple vendor sub-sections for
-                different vendors. A standard and a vendor sub-section are
-                segregated through a vendor marker. The standard sub-section does not
-                use the vendor marker and therefore must come first if
-                present.
-                <xref target="encoding_section_content" /> shows a sample section
-                content.
-            </t>
-            <t>
-                A section MAY include at most one security token. The security token,
-                if present, MUST appear at the beginning of the section.
-            </t>
-            <figure align="center" anchor="encoding_section_content" title="Encoding section content">
-                <artwork align="left"><![CDATA[
+                    </artwork>
+          </figure>
+        </section>
+
+        <section title="Security Tokens">
+          <t>A section MAY include at most one security token. The security
+          token, if present, MUST appear at the beginning of the section. In
+          the following example, a separate secuirty token is added to each
+          section contained in the previous example.</t>
+
+          <figure align="center" anchor="encoding_security_token"
+                  title="Encoding security tokens">
+            <artwork align="left">
 +--------------------------------+
 |         Security Token         |
 +--------------------------------+
 +--------------------------------+
+|      Application Section       |
++--------------------------------+
++--------------------------------+
+|         Network-1 Marker       |
++--------------------------------+
++--------------------------------+
+|         Security Token N-1     |
++--------------------------------+
++--------------------------------+
 |                                |
 |                                |
-|      Standard Sub-Section      |
+|         Network-1 Section      |
+|                                |
++--------------------------------+
++--------------------------------+
+|         Network-2 Marker       |
++--------------------------------+
++--------------------------------+
+|         Security Token N-2     |
++--------------------------------+
++--------------------------------+
+|                                |
+|                                |
+|         Network-2 Section      |
+|                                |
+|                                |
+|                                |
++--------------------------------+
+                    </artwork>
+          </figure>
+        </section>
+
+        <section title="Subsections">
+          <t>A section may be divided into standard and vendor sub-sections. A
+          section MUST at least have one subsection. A section MUST contain at
+          most one standard sub-section and can contain multiple vendor
+          subsections for different vendors. A standard and a vendor
+          sub-section are segregated through a vendor marker. The standard
+          subsection does not use the vendor marker and therefore must come
+          first if present. <xref target="encoding_section_content"/> shows a
+          sample section content.</t>
+
+          <figure align="center" anchor="encoding_section_content"
+                  title="Encoding subsections">
+            <artwork align="left">
++--------------------------------+
+|                                |
+|                                |
+|      Standard Subsection       |
 |                                |
 +--------------------------------+
 +--------------------------------+
 |         Vendor-1 Marker        |
 +--------------------------------+
 +--------------------------------+
-|       Vendor-1 Sub-Section     |
+|       Vendor-1 Subsection      |
 |                                |
 |                                |
 |                                |
@@ -518,26 +558,28 @@
 |         Vendor-2 Marker        |
 +--------------------------------+
 +--------------------------------+
-|       Vendor-2 Sub-Section     |
+|       Vendor-2 Subsection      |
 |                                |
 |                                |
 |                                |
 |                                |
 |                                |
 +--------------------------------+
-                    ]]></artwork>
-            </figure>
-            <t>
-                A Sub-Section MUST contain at least one upstream or downstream
-                block.  A Sub-Section contains at most one upstream block,
-                and at most one downstream block. Upstream and downstream blocks
-                are composed of Metadata tags, each tag specifying a characteristic.
-                If the upstream and downstream blocks are both present the upstream
-                block MUST be first.
-            </t>
+                    </artwork>
+          </figure>
+        </section>
 
-            <figure align="center" anchor="encoding_subsection_content">
-                <artwork align="left"><![CDATA[
+        <section title="Upstream and Downstream  Blocks">
+          <t>A subsection MUST contain at least one upstream or downstream
+          block. A subsection contains at most one upstream block and at most
+          one downstream block. Upstream and downstream blocks are composed of
+          metadata tags, with each tag specifying a flow characteristic. If
+          the upstream and downstream blocks are both present, the upstream
+          block MUST come first.</t>
+
+          <figure align="center" anchor="encoding_subsection_content"
+                  title="Encoding upstream and downstream blocks">
+            <artwork align="left">
 +--------------------------------+
 |          Upstream block        |
 | +------------+  +------------+ |
@@ -550,48 +592,42 @@
 | |  MD tag    |  |  MD tag    | |
 | +------------+  +------------+ |
 +--------------------------------+
-                    ]]></artwork>
-            </figure>
-                <t>
-                    The tags appearing in a standard and in a vendor sub-section are
-                    managed by separate registries. A standard body will track the
-                    standard tags allocation and separate vendor registries will
-                    track vendor specific tag allocations. See [ID-RFMD] for a
-                    full coverage of the information model and how the registries
-                    are handled.
-                </t>
+                    </artwork>
+          </figure>
+        </section>
 
-                <t>
-                    <xref target="encoding_layout" /> shows a complete example
-                    combining the application and network sections together with
-                    their standard and vendor sub-sections.
-                </t>
-                <figure align="center" anchor="encoding_layout" title="">
-                    <artwork align="left"><![CDATA[
+        <section title="Complete Encoding Example">
+          <t><xref target="encoding_layout"/> shows a complete example
+          combining the application and network sections together with their
+          standard and vendor sub-sections.</t>
+
+          <figure align="center" anchor="encoding_layout"
+                  title="Complete encoding example">
+            <artwork align="left">
 +--------------------------------+
 |         Security Token         |
 +--------------------------------+
 +--------------------------------+ ^  ^
-|          Upstream block        | |  |E
-| +------------+  +------------+ | |  |N
-| |  MD tag    |  |  MD tag    | | |S |D
-| +------------+  +------------+ | |T |P
-+--------------------------------+ |D |O
-+--------------------------------+ |  |I
-|         Downstream block       | |S |N
+|          Upstream block        | |  |A
+| +------------+  +------------+ | |  |P
+| |  MD tag    |  |  MD tag    | | |S |P
+| +------------+  +------------+ | |T |L
++--------------------------------+ |D |I
++--------------------------------+ |  |C
+|         Downstream block       | |  |A
 | +------------+                 | |  |T
-| |  MD tag    |                 | |  |
-| +------------+                 | |  |S
-+--------------------------------+ v  |E
-+--------------------------------+    |C
-|     Vendor section marker      |    |T
-+--------------------------------+    |I
-+--------------------------------+ ^  |O
-|          Upstream block        | |V |N
-| +------------+  +------------+ | |N |
-| |  MD tag    |  |  MD tag    | | |D |
-| +------------+  +------------+ | |  |
-+--------------------------------+ vS v
+| |  MD tag    |                 | |  |I
+| +------------+                 | |  |O
++--------------------------------+ v  |N
++--------------------------------+    |
+|     Vendor section marker      |    |S
++--------------------------------+    |E
++--------------------------------+ ^  |C
+|          Upstream block        | |V |T
+| +------------+  +------------+ | |N |I
+| |  MD tag    |  |  MD tag    | | |D |O
+| +------------+  +------------+ | |  |N
++--------------------------------+ v  v
 +--------------------------------+    ^
 |     Network section marker     |    |
 +--------------------------------+    |
@@ -613,82 +649,76 @@
 | |  MD tag    |                 |    |N
 | +------------+                 |    |
 +--------------------------------+    v
-                        ]]></artwork>
-                </figure>
+                        </artwork>
+          </figure>
+        </section>
 
-                <t><xref target="encoding_layout_compact"/> shows an encoding example
-                    for Flow Metadata standard characteristics produced by an application for
-                    the upstream (same as 5-tuple) direction. As can be seen in the figure
-                    no network marker is used as we are signaling for the application. In
-                    the same way there is no vendor marker as we are signaling standard
-                    flow characteristics. This example also assumes a use case where no
-                    security token is needed. Further examples are given in
-                    <xref target="examples"/>.</t>
+        <section title="Compact Encoding Example">
+          <t><xref target="encoding_layout_compact"/> shows an encoding
+          example for flow metadata standard characteristics produced by an
+          application for the upstream (same as 5-tuple) direction. As can be
+          seen in the figure no network marker is used as we are signaling for
+          the application. In the same way there is no vendor marker as we are
+          signaling standard flow characteristics. This example also assumes a
+          use case where no security token is needed. Further examples are
+          given in <xref target="examples"/>.</t>
 
-                <figure align="center" anchor="encoding_layout_compact">
-                    <artwork align="left"><![CDATA[
+          <figure align="center" anchor="encoding_layout_compact"
+                  title="Compact encoding example">
+            <artwork align="left">
 +--------------------------------+
 |          Upstream block        |
 | +------------+  +------------+ |
 | |  MD tag    |  |  MD tag    | |
 | +------------+  +------------+ |
 +--------------------------------+
-                        ]]></artwork>
-                </figure>
-            </section>
+                        </artwork>
+          </figure>
+        </section>
+      </section>
 
-            <section title="Encoding Structures">
-                <t>
-                    This section explores the encoding looking more closely at the
-                    encoding structures.
-                    <list>
-                        <t><xref
-                        target="encoding_ep_std_struct"/> shows the encoding used by an
-                    application using only standard tags.</t>
-                <t><xref
-                        target="encoding_ep_vnd_struct"/> shows the encoding used by an
-                    application using only vendor specifc tags.</t>
-                <t><xref
-                        target="encoding_nt_std_struct"/> shows the encoding for network
-                    producers using only standard tags.</t>
-                </list>
-                    The three scenarios expose all the encoding structures, other
-                    applications can be derived. The encoding makes use of Type Length
-                    Value (TLV) as the base building block and some level of nesting to
-                    create the different encoding structures. The type allows to indicate
-                    which encoding structure is in use. In case of a marker, the length
-                    gives the size of the marker but not of the delimited section or
-                    sub-section.
-                </t>
+      <section title="Encoding Structures">
+        <t>This section explores the encoding looking more closely at the
+        encoding structures. <list>
+            <t><xref target="encoding_ep_std_struct"/> shows the encoding used
+            by an application using only standard tags.</t>
 
-                <t>
-                    As explained earlier application and network sections MUST contain at
-                    least one standard or vendor sub-section and MAY contain a
-                    security token.
-                    The value of the security token TLV is broken down in two parts, a
-                    security-scheme indicating the security method used and the
-                    security-value holding the security payload specific to the security
-                    scheme. The definition of the different security schemes and their
-                    payloads are left to a separate document.
-                </t>
+            <t><xref target="encoding_ep_vnd_struct"/> shows the encoding used
+            by an application using only vendor specifc tags.</t>
 
-                <t>
-                    The value of the upstream and downstream block TLVs are subdivided in
-                    Metadata tags. Each tag is itself a TLV specifying a flow
-                    characteristic. A metadata tag MUST appear only once in an
-                    upstream or a downstream block.
-                    On the one hand the security token, the upstream and the
-                    downstream block, the vendor and network marker types are defined
-                    within the same registry. On the other hand the tag types are
-                    defined in a separate registry from the enclosing encoding structures.
-                    The separation of the registries is possible as the tags are part of
-                    the upstream and downstream block TLV value and therefore do
-                    not collide with the encoding structures.
-                </t>
+            <t><xref target="encoding_nt_std_struct"/> shows the encoding for
+            network producers using only standard tags.</t>
+          </list>The three scenarios expose all the encoding structures. These
+        structures may be combined in various ways to support other
+        scenarios.</t>
 
+        <t>The encoding makes use of Type Length Value (TLV) as the base
+        building block, plus some level of nesting to create the different
+        encoding structures. The type indicates which encoding structure is in
+        use. In case of a marker, the length gives the size of the marker but
+        not of the delimited section or sub-section.</t>
 
-                <figure align="center" anchor="encoding_ep_std_struct">
-                    <artwork align="left"><![CDATA[
+        <t>As explained previously, application and network sections MUST
+        contain at least one standard or vendor sub-section and MAY contain a
+        security token. The value of the security token TLV is broken down in
+        two parts, a security-scheme indicating the security method used and
+        the security-value holding the security payload specific to the
+        security scheme. The definition of the different security schemes and
+        their payloads are left to a separate document.</t>
+
+        <t>The value of the upstream and downstream block TLVs are subdivided
+        in metadata tags. Each tag is itself a TLV specifying a flow
+        characteristic. A metadata tag MUST appear only once in an upstream or
+        a downstream block. On the one hand the security token, the upstream
+        and the downstream block, the vendor and network marker types are
+        defined within the same registry. On the other hand the tag types are
+        defined in a separate registry from the enclosing encoding structures.
+        The separation of the registries is possible as the tags are part of
+        the upstream and downstream block TLV value and therefore do not
+        collide with the encoding structures.</t>
+
+        <figure align="center" anchor="encoding_ep_std_struct">
+          <artwork align="left">
  0                   1                   2                   3
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ ^S
@@ -714,22 +744,20 @@
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+     |O
 :                            ...                                :     |C
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+     vK
-                        ]]></artwork>
-                </figure>
+                        </artwork>
+        </figure>
 
-                <t>
-                    <xref target="encoding_ep_vnd_struct"/> adds the vendor sub-ection
-                    marker which starts a vendor section. The vendor marker is a TLV whose
-                    type is defined in the same registry as the security token. Its value
-                    is the vendor's Private Enterprise Number (PEN) allocated by IANA. The
-                    vendor marker does not include the downstream and the upstream block
-                    but rather sets the context to interpret them. Multiple vendor
-                    sub-sections within the same application or network section are allowed as
-                    long as they pertain to different vendors.
-                </t>
+        <t><xref target="encoding_ep_vnd_struct"/> adds the vendor sub-ection
+        marker which starts a vendor section. The vendor marker is a TLV whose
+        type is defined in the same registry as the security token. Its value
+        is the vendor's Private Enterprise Number (PEN) allocated by IANA. The
+        vendor marker does not include the downstream and the upstream block
+        but rather sets the context to interpret them. Multiple vendor
+        sub-sections within the same application or network section are
+        allowed as long as they pertain to different vendors.</t>
 
-                <figure align="center" anchor="encoding_ep_vnd_struct">
-                    <artwork align="left"><![CDATA[
+        <figure align="center" anchor="encoding_ep_vnd_struct">
+          <artwork align="left">
  0                   1                   2                   3
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -759,19 +787,19 @@
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |
 :                            ...                                : |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ v
-                        ]]></artwork>
-                </figure>
+                        </artwork>
+        </figure>
 
-                <t><xref target="encoding_nt_std_struct"/> adds the network marker
-                    that starts a network section. The network marker is a TLV whose
-                    type is defined within the same registry as the security token. The
-                    value of the network marker is the network precedence that indicates
-                    the administrative preference for the network producer flow characteristics.
-                    The precedence allows to merge information from different network producers and
-                    retain only the preferred one.</t>
+        <t><xref target="encoding_nt_std_struct"/> adds the network marker
+        that starts a network section. The network marker is a TLV whose type
+        is defined within the same registry as the security token. The value
+        of the network marker is the network precedence that indicates the
+        administrative preference for the network producer flow
+        characteristics. The precedence allows to merge information from
+        different network producers and retain only the preferred one.</t>
 
-                <figure align="center" anchor="encoding_nt_std_struct">
-                    <artwork align="left"><![CDATA[
+        <figure align="center" anchor="encoding_nt_std_struct">
+          <artwork align="left">
  0                   1                   2                   3
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ ^
@@ -801,18 +829,17 @@
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |
 :                            ...                                : |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ v
-                        ]]></artwork>
-                </figure>
+                        </artwork>
+        </figure>
 
-                <t>All the constructs above can be combined to signal standard and
-                    vendor specific tags for different producers and allow to secure each
-                    producer's information independently.</t>
+        <t>All the constructs above can be combined to signal standard and
+        vendor specific tags for different producers and allow to secure each
+        producer's information independently.</t>
+      </section>
 
-            </section>
-
-            <section title="ABNF">
-                <figure align="left" anchor="abnf">
-                    <artwork align="left"><![CDATA[
+      <section title="ABNF">
+        <figure align="left" anchor="abnf">
+          <artwork align="left">
 MD-block = Version (Application-block / 1*Network-block /
 (Application-block 1*Network-block))
 
@@ -890,34 +917,30 @@ Network-type = Zero %x04
 Attribute-value = *(OCTET) ;
 
 Zero = %x00
-                        ]]></artwork>
-                </figure>
-            </section>
-        </section>
+                        </artwork>
+        </figure>
+      </section>
+    </section>
 
-        <section anchor="Acknowledgements" title="Acknowledgements">
-            <t>
-                We would like to thank Yann Poupet, Davide Cuda, Charles Eckel for reviewing
-                this document and helping us proof its content. We would also
-                like to express our gratitude to Sergio Mena de la Cruz for
-                contributing ideas, proofing the text and for his work on
-                validating the grammar.
-            </t>
-
-        </section>
+    <section anchor="Acknowledgements" title="Acknowledgements">
+      <t>We would like to thank Yann Poupet, Davide Cuda, Charles Eckel for
+      reviewing this document and helping us proof its content. We would also
+      like to express our gratitude to Sergio Mena de la Cruz for contributing
+      ideas, proofing the text and for his work on validating the grammar.</t>
+    </section>
 
     <section anchor="Security" title="Security Considerations">
       <t>All drafts are required to have a security considerations section.
       See <xref target="RFC3552">RFC 3552</xref> for a guide.</t>
     </section>
-    </middle>
+  </middle>
 
-    <!--  *****BACK MATTER ***** -->
+  <!--  *****BACK MATTER ***** -->
 
-    <back>
-        <!-- References split into informative and normative -->
+  <back>
+    <!-- References split into informative and normative -->
 
-        <!-- There are 2 ways to insert reference entries from the citation libraries:
+    <!-- There are 2 ways to insert reference entries from the citation libraries:
      1. define an ENTITY at the top, and use "ampersand character"RFC2629; here (as shown)
      2. simply use a PI "less than character"?rfc include="reference.RFC.2119.xml"?> here
         (for I-Ds: include="reference.I-D.narten-iana-considerations-rfc2434bis.xml")
@@ -929,39 +952,39 @@ Zero = %x00
      filing system or remote ones accessed by http (http://domain/dir/... ).-->
 
     <references title="Normative References">
-        <!--?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml"?-->
+      <!--?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml"?-->
 
-        &RFC2119;
+      &RFC2119;
 
-        <reference anchor="min_ref">
-            <!-- the following is the minimum to make xml2rfc happy -->
+      <reference anchor="min_ref">
+        <!-- the following is the minimum to make xml2rfc happy -->
 
-            <front>
-                <title>Minimal Reference</title>
+        <front>
+          <title>Minimal Reference</title>
 
-                <author initials="authInitials" surname="authSurName">
-                    <organization/>
-                </author>
+          <author initials="authInitials" surname="authSurName">
+            <organization/>
+          </author>
 
-                <date year="2006"/>
-            </front>
-        </reference>
+          <date year="2006"/>
+        </front>
+      </reference>
     </references>
 
     <references title="Informative References">
-        <!-- Here we use entities that we defined at the beginning. -->
+      <!-- Here we use entities that we defined at the beginning. -->
 
-        &RFC2629;
+      &RFC2629;
 
-        &RFC3552;
+      &RFC3552;
 
-        &I-D.narten-iana-considerations-rfc2434bis;
+      &I-D.narten-iana-considerations-rfc2434bis;
 
-        <!-- A reference written by by an organization not a person. -->
+      <!-- A reference written by by an organization not a person. -->
     </references>
 
     <section anchor="examples" title="Encoding usage examples">
-        <t>TBD</t>
+      <t>TBD</t>
     </section>
-</back>
+  </back>
 </rfc>
