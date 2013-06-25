@@ -163,32 +163,24 @@
 
   <middle>
     <section title="Introduction">
-      <t>Flow Metadata attributes are elements that identify flow
-      characteristics, such as the type of media carried by the flow (e.g.
-      video), the service class, the application that originated the flow,
-      etc. The technology that makes use of Flow Metadata and some of the
-      attributes are defined in [ID-FMD-FRAMEWORK]. The flow attributes can be
-      inspected by intermediate network nodes and policies may be applied to
-      the flow or network analytics could be collected. This specification
-      proposes the use of RSVP as signaling protocol to carry the Flow
-      Metadata. A new object is defined to carry the Flow Metadata
-      information. Two C-Type values are proposed for this object to allow for
-      two possible encodings.</t>
+        <t> Flow Metadata attributes are information elements (attributes) that
+            identify flow characteristics, such as the type of media carried by
+            application flows (e.g. video), the service class, the application
+            that originated the flow, and others. The definition of the
+            Flow Metadata technology and some of the attributes are defined in
+            [ID-FMD-FRAMEWORK]. The flow attributes can be inspected by
+            intermediate network nodes for the purpose of applying
+            differentiated flow treatment or collect network analytics.
+            This specification proposes the use of RSVP as signaling protocol
+            to carry the Flow Metadata using a new RSVP object. Two C-Type
+            values are proposed for this object to allow for
+            two possible encodings.</t>
 
       <section title="Requirements Language">
         <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
         "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
         document are to be interpreted as described in <xref
         target="RFC2119">RFC 2119</xref>.</t>
-      </section>
-    </section>
-
-    <section title="WTF Heading1">
-      <section title="WTF Heading2">
-        <section title="WTF Heading3">
-          <section title="WTF Heading4">
-          </section>
-        </section>
       </section>
     </section>
 
@@ -209,8 +201,10 @@
         <t>FLOW_METADATA Class = 234</t>
 
         <t>We define two encodings, both of which can carry the same IPFIX registered
-            attributes. The first encoding (Basic IPFIX FLOW_METADATA) has less flexibility
-            and lower encoding efficiency. It does not suport a range of options
+            attributes as defined in [ID-FMD-FRAMEWORK]. The first encoding
+            (Basic IPFIX FLOW_METADATA) has less flexibility
+            and lower encoding efficiency. This first version of the encoding is
+            refrenced here for legacy reasons. It does not suport a range of options
             that the second one does, including the signaling of sender and receiver
             attributes, security elements, distinction of originator of the attributes
             and ease of extensibility.
