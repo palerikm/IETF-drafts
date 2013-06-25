@@ -76,7 +76,7 @@
           <country>US</country>
         </postal>
 
-        <phone>+1 408 902 2043</phone>
+        <phone />
 
         <email>eckert@cisco.com</email>
 
@@ -126,7 +126,7 @@
           <country>CH</country>
         </postal>
 
-        <phone>+41 78 75 98 561</phone>
+        <phone />
 
         <email>amchouki@cisco.com</email>
 
@@ -151,7 +151,7 @@
 
           <country>US</country>
         </postal>
-
+        <phone />
         <email>eckelcu@cisco.com</email>
 
         <!-- uri and facsimile elements may also be added -->
@@ -219,7 +219,7 @@
         </list></t>
 
       <t>This document defines an initial set of IEs, a set of encoding rules,
-      and initial usage models. The actual encoding is defined in
+      and initial usage model. The actual encoding is defined in
       [ID-FMD-ENCODE]. Additional documents define the mapping to specific
       signaling protocols (e.g. RSVP [ID-FMD-RSVP], STUN [ID-FMD-STUN], and
       PCP [ID-FMD-PCP])</t>
@@ -258,30 +258,32 @@
       contribute to the flow description. The resulting flow description may
       be communicated as feedback from the network to applications.</t>
 
-      <section title="Deep packet inspection">
-        <section title="Benefits">
+  <section title="Deep packet inspection">
+      <section title="Benefits">
           <t>Deep Packet Inspection (DPI) and other traffic observation
-          methods (such as performance monitoring) are successfully being used
-          for two type of workflows:<list counter="1" style="numbers">
-              <t>Provide network operators with visibility into traffic for
-              troubleshooting, capacity planning, accounting/billing and other
-              off network workflows. This is done by exporting observed
-              traffic analysis via IPFIX.</t>
+              methods (such as performance monitoring) are successfully being used
+              for two type of workflows:
+              <list counter="1" style="numbers">
+                  <t>Provide network operators with visibility into traffic for
+                      troubleshooting, capacity planning, accounting and billing
+                      and other off network workflows. This is done by exporting
+                      observed traffic analysis via protocol such as IPFIX and
+                      SNMP.</t>
 
-              <t>Provide differentiated network services for the traffic
-              according to network operator defined rule sets, including
-              policing/shaping of traffic, providing admission control,
-              impacting routing, permitting passage of traffic (e.g. firewall
-              functions), etc.</t>
-            </list>Note: For the context of this document, we consider that
-          DPI starts as early into packets as using ACLs with UDP/TCP port
-          numbers to classify traffic.</t>
-        </section>
+                  <t>Provide differentiated network services for the traffic
+                      according to network operator defined rule sets, including
+                      policing and shaping of traffic, providing admission control,
+                      impacting routing, permitting passage of traffic (e.g. firewall
+                      functions), etc.</t>
+              </list>Note: For the context of this document, we consider that
+              DPI starts as early into packets as using ACLs with UDP/TCP port
+              numbers to classify traffic.</t>
+      </section>
 
         <section title="Limitation">
-          <t>These two workflows, visibility and differentiated networks
+          <t>These two workflows, visibility and differentiated network
           services, are critical in many networks. However, their reliance on
-          inspection/observation limits the ability to operationalize these
+          inspection and observation limits the ability to enable these
           workflows more widely.<list style="symbols">
               <t>Simple observation based classification, especially ones
               relying on TCP/UDP, ports often result in incorrect results due
@@ -292,21 +294,22 @@
               packet inspection impossible or much more complex (e.g. needing
               to share encryption keys with network equipment).</t>
 
-              <t>Observation often needs to inspect control/signaling of
-              application traffic that flows on different network paths than
-              the actual application media traffic whose behavior is to be
-              impacted.</t>
+          <t>Observation often needs to inspect the control and signaling
+              traffic of applications. This traffic can flow through a
+              different network path than the actual application data traffic.
+              Impacting the traffic behavior is ineffective in those scenarios.
+          </t>
 
-              <t>Observation of control/signaling and media traffic with DPI
+              <t>Observation of control, signaling and data traffic with DPI
               will in general result in less insight into the applications
               intent than if the application was explicitly signaling its
               intent to the network.</t>
 
               <t>Without explicit desire by the application to signal its
               intent to the network, it will also not consider to explicitly
-              provide authentication to the network, so DPI mechanism also
-              have a more difficult job in analyzing application layer
-              authentication mechanisms (if they can)</t>
+              provide authentication to the network. DPI mechanism
+              have a more difficult job in analyzing application traffic
+              when authentication mechanisms are in use (if they even can)</t>
 
               <t>Without explicit involvement of the application, network
               services leveraging DPI traffic classification impact the
@@ -352,12 +355,12 @@
             extensions TURN and ICE, it is becoming quite popular in
             application signaling driven by the initial use-case of
             automatically opening up firewall pinholes and determining the
-            best local/remote addresses for peer-to-peer connectivity
+            best local and remote addresses for peer-to-peer connectivity
             (ICE).</t>
 
             <t>PCP is a protocol designed to support use cases similar to UPnP
             firewall traversal. It also can easily be extended to provide more
-            generic application/network signaling for traffic flows. Unlike
+            generic application to network signaling for traffic flows. Unlike
             the prior protocols, it is not meant to be used on path end-to-end
             but rather independently on one "edge" of a traffic flow. It is
             therefore an attractive alternative (albeit with challenges under
@@ -390,7 +393,7 @@
           <t>An application media flow may be expressed as a set of
           information elements that are defined and registered like
           observation-based IPFIX attributes. We propose leveraging IPFIX as
-          the information model (not necessary as the transport signaling) for
+          the information model (not necessarily as the transport signaling) for
           the following reasons:<list style="symbols">
               <t>As outlined above, export of traffic information is one of
               the two big workflows. IPFIX is arguably the most flexible,
@@ -410,7 +413,7 @@
 
         <section title="Cross-protocol information element encoding rules">
           <t>The majority of the protocols listed previously (RSVP, NSIS,
-          STUN/ICE, PCP) require (or favor) compact, binary encoding of
+          STUN/ICE, PCP) require (or favor) compact binary encoding of
           information elements. This is natively supported by the information
           element registration of IPFIX.</t>
 
@@ -506,13 +509,13 @@
 
         <section title="Considerations for signaling of common information elements">
           <section title="Proxy originated information">
-            <t>While the goal of this framework is to enable applications to
+            <t>The goal of this framework is to enable applications to
             explicitly signal common information elements about their traffic
-            flows (and optionally receive common information elements from the
-            network as feedback), it is clear that broad adoption of such
-            technology is improved by enabling the use of proxies that can
-            provide or amend that information in the absence of support by the
-            application itself.</t>
+            flows and optionally receive common information elements from the
+            network as feedback. Nevertheless, it is clear that broad adoption of such
+            technology is improved by enabling the use of proxies. The proxies
+            can provide or amend the flow description information in the absence
+            of Flow Metadata support by the application itself.</t>
           </section>
 
           <section title="Authentication">
@@ -557,7 +560,7 @@
               <t><list counter="1" style="numbers">
                   <t>A transport protocol signaling method is defined to carry
                   the common encoded information elements at least in
-                  signaling from hosts/application to the network.</t>
+                  signaling from application to network.</t>
 
                   <t>If the transport by itself does not already have a
                   mechanism to indicate a purely informative protocol
@@ -565,15 +568,16 @@
                   added.</t>
                 </list></t>
 
-              <t>In result, this integration achieves two option: <list
+                <t>In result, this integration achieves two option: 
+                    <list
                   counter="1" style="numbers">
                   <t>Informative common information elements can be sent
-                  fromapplications to the network by using the protocols
+                  from application to network by using the protocol's
                   method to indicate the purely informational protocol
                   transaction. This option effectively leverages the protocol
                   as transport for additional informative attribute based
-                  services without impacting the services/transactions of the
-                  protocol otherwise.</t>
+                  services without impacting the services and transactions
+                  of the protocol otherwise.</t>
 
                   <t>Informative common information elements can be sent
                   alongside an existing protocol transaction. In this case
@@ -586,7 +590,7 @@
                   elements only used from host to network).</t>
                 </list></t>
 
-              <t>This integration is for example defined in [ID-RMD-PCP],
+              <t>This integration is for example defined in [ID-FMD-PCP],
               [ID-FMD-RSVP], and [ID-FMD-STUN].</t>
             </section>
 
