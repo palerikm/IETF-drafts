@@ -6,9 +6,7 @@
      There has to be one entity for each item to be referenced.
      An alternate method (rfc include) is described in the references. -->
 <!ENTITY RFC2119 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
-<!ENTITY RFC2629 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2629.xml">
 <!ENTITY RFC3552 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3552.xml">
-<!ENTITY I-D.narten-iana-considerations-rfc2434bis SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.narten-iana-considerations-rfc2434bis.xml">
 ]>
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 <!-- used by XSLT processors -->
@@ -37,7 +35,7 @@
 <?rfc autobreaks="yes"?>
 <!-- Prevent automatic page break -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="std" docName="draft-ietf-flow-metadata-encoding-00"
+<rfc category="std" docName="cisco-internal-flow-metadata-encoding-00"
      ipr="trust200902">
   <!-- category values: std, bcp, info, exp, and historic
      ipr values: full3667, noModification3667, noDerivatives3667
@@ -184,43 +182,39 @@
          keywords will be used for the search engine. -->
 
     <abstract>
-        <t>
-            This document describes a protocol independent encoding for flow
-            characteristics (a.k.a. metadata). A flow is defined as a set of
-            IP packets passing through a network in a given direction.  All
-            packets belonging to a particular flow have a set of common
-            properties (e.g. ip, port, transport). Flow metadata exposes key
-            characteristics of the flow such as the originating application, the
-            type of media in use (e.g. audio, video) and others as defined in
-            [ID-FMD-FRAMEWORK]. The flow characteristics are expressed in terms of
-            information elements. These information elements are signaled either out
-            of band or in band but always along the same path of the flow associated
-            with the application.
-        </t>
+      <t>This document describes a protocol independent encoding for flow
+      characteristics (a.k.a. metadata). A flow is defined as a set of IP
+      packets passing through a network in a given direction. All packets
+      belonging to a particular flow have a set of common properties (e.g. IP,
+      port, transport). Flow metadata exposes key characteristics of the flow
+      such as the originating application, the type of media in use (e.g.
+      audio, video) and others as defined in [ID-FMD-FRAMEWORK]. The flow
+      characteristics are expressed in terms of information elements. These
+      information elements are signaled either out of band or in band but
+      always along the same path of the flow associated with the
+      application.</t>
 
       <t>[ID-FMD-FRAMEWORK] defines the overall framework for flow metadata
       and the definition of the flow characteristics, whereas this document
       captures the encoding of these characteristics. The mapping of flow
-      metadata encoding to different signaling protocols is outside the
-      scope of this document.</t>
+      metadata encoding to different signaling protocols is outside the scope
+      of this document.</t>
     </abstract>
   </front>
 
   <middle>
     <section title="Introduction">
-        <t>
-            This document describes a protocol independent encoding for flow
-            characteristics (a.k.a. metadata). A flow is defined as a set of
-            IP packets passing through a network in a given direction.  All
-            packets belonging to a particular flow have a set of common
-            properties (e.g. ip, port, transport). Flow metadata exposes key
-            characteristics of the flow such as the originating application, the
-            type of media in use (e.g. audio, video) and others as defined in
-            [ID-FMD-FRAMEWORK]. The flow characteristics are expressed in terms of
-            information elements. These information elements are signaled either out
-            of band or in band but always along the same path of the flow associated
-            with the application.
-        </t>
+      <t>This document describes a protocol independent encoding for flow
+      characteristics (a.k.a. metadata). A flow is defined as a set of IP
+      packets passing through a network in a given direction. All packets
+      belonging to a particular flow have a set of common properties (e.g. IP,
+      port, transport). Flow metadata exposes key characteristics of the flow
+      such as the originating application, the type of media in use (e.g.
+      audio, video) and others as defined in [ID-FMD-FRAMEWORK]. The flow
+      characteristics are expressed in terms of information elements. These
+      information elements are signaled either out of band or in band but
+      always along the same path of the flow associated with the
+      application.</t>
 
       <t>As flow characteristics across different signaling protocols are
       identical, they benefit from a single definition and encoding
@@ -232,8 +226,7 @@
       treatment to the flow or simply for gathering insight on the nature of
       the traffic crossing the network node.</t>
 
-  <t>
-      Flows, and the corresponding metadata, are inherently unidirectional,
+      <t>Flows, and the corresponding metadata, are inherently unidirectional,
       in the direction from the source to the destination (e.g. from Alice to
       Bob). In some cases, there may be a related flow in the reverse
       direction (e.g. from Bob to Alice), but this is treated as a separate
@@ -241,13 +234,12 @@
       in the same direction as the flow (upstream) or in the opposite
       direction (downstream). The encoding allows to signal for either
       direction or both at the same time. The Metadata tags can be signaled by
-      the application itself and/or by network elements that have visibilty on
-      the flow data. The encoding supports distinguishing between attribute information
-      originated by an application from attribute information originated
-      by a network device.
-
-      The encoding allows to segregates information coming from
-      the application from information coming from the network.</t>
+      the application itself and/or by network elements that have visibility
+      of the flow data. The encoding supports distinguishing between attribute
+      information originated by an application from attribute information
+      originated by a network device. The encoding allows to segregates
+      information coming from the application from information coming from the
+      network.</t>
 
       <section title="Requirements Language">
         <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
@@ -259,21 +251,20 @@
 
     <section title="Encoding Overview">
       <section title="General Principles">
-        <t>This specification assumes that the flow is specified by
-        the transport protocol which carries the Metadata tags. As an example,
-        in STUN flow identifiers such as IP addreses and ports are present in
-        layer 3 and 4 headers of STUN
-        messages see [ID-FMD-STUN]. In RSVP the same is obtained from the SESSION and
-        SENDER-TEMPLATE objects see [ID-FMD-RSVP]. In PCP the source IP is part of the request
-        common header; other flow identifiers need to be embedded in
-        an opcode data or an option see [ID-FMD-PCP].</t>
+        <t>This specification assumes that the flow is specified by the
+        transport protocol which carries the Metadata tags. As an example, in
+        STUN flow identifiers such as IP addresses and ports are present in
+        layer 3 and 4 headers of STUN messages see [ID-FMD-STUN]. In RSVP the
+        same is obtained from the SESSION and SENDER-TEMPLATE objects see
+        [ID-FMD-RSVP]. In PCP the source IP is part of the request common
+        header; other flow identifiers need to be embedded in an opcode data
+        or an option see [ID-FMD-PCP].</t>
 
         <t>The Flow Metadata characteristics are to be interpreted in the
-            context of the flow defined by the signaling protocol. In this
-            specification Flow Metadata encoding does not carry any flow
-            identifiers but merely the flow characteristics. The specification
-            could be extended to carry the flow identifiers if needed.
-    </t>
+        context of the flow defined by the signaling protocol. In this
+        specification Flow Metadata encoding does not carry any flow
+        identifiers but merely the flow characteristics. The specification
+        could be extended to carry the flow identifiers if needed.</t>
 
         <t>The encoding defined herein does not relate to any specific
         signaling but rather allows different signaling protocols to transport
@@ -312,21 +303,13 @@
         <section title="Transport independence">
           <t>One goal of this proposal is to provide an encoding that can be
           used by more than one transport protocol. This should help maintain
-          consistency across standardization of flow metdata usage by various
+          consistency across standardization of flow metadata usage by various
           signaling protocols, and it should simplify implementations that
           make use of different signaling protocols when transporting flow
           metadata. One example is an application that may use different
           signaling protocols depending on the environment, peer protocol
           support, etc. Another is a middlebox on an administrative boundary
           that may need to perform protocol interworking functions.</t>
-
-          <t>It is recommended that transport protocol implementations
-          syntactically validate the encoded flow characteristics block, e.g.,
-          verify that the length fields are correct. However, for
-          extensibility and consistency reasons, transport protocols should
-          not attempt to semantically interpret an encoded flow
-          characteristics block. This should be left to upper layers (e.g.,
-          the local metadata module).</t>
         </section>
 
         <section title="Standard and Vendor Specific Namespaces">
@@ -365,6 +348,17 @@
           node to apply proper treatment to both directions.</t>
         </section>
 
+        <section title="Application to Network and Network to Application">
+          <t>In accordance with [ID-FMD-FRAMEWORK], flow characteristics may
+          be communication both from application to network as well as from
+          network to application. The encoding rules are the same regardless
+          of the direction of the communication. The ability to differentiate
+          between the two is provided by the transport protocol. For example,
+          when using PCP, application to network communication is via a PCP
+          request, and network to application communication is via a PCP
+          response.</t>
+        </section>
+
         <section title="Extensibility">
           <t>New use cases and new deployment scenarios will require the use
           of new flow characteristics. For this reason the encoding should
@@ -387,20 +381,15 @@
         </section>
 
         <section title="Per Producer Security">
-          <t>Integrity protection and authentication of flow characteristics
-          are very important aspects for features using the flow metadata
-          signaling. Treatment applied on the basis of metadata may involve
-          the consumption of scarce network resources and therefore contribute
-          to their exhaustion. Integrity and authentication of the flow
-          characteristics is not sufficient, as genuine applications or users
-          can on purpose or by error send flow characteristics they are not
-          authorized to send. To that end, authorization should be one of the
-          goals of any security method used to secure the metadata side by
-          side with their authentication and integrity.</t>
+          <t>Treatment applied on the basis of metadata may involve the
+          consumption of scarce network resources and therefore contribute to
+          their exhaustion. Consequently, integrity, authentication, and
+          authorization are all important aspects of any security mechanism
+          used to secure the metadata.</t>
 
-          <t>This specification defines an optional security element container
-          to be used for this purpose. However the actual security mechanism
-          to be used is outside the scope of this specification.</t>
+          <t>This specification defines an optional security element
+          container; however, the actual security mechanism to be used is
+          outside the scope of this specification.</t>
         </section>
 
         <section title="Compact Encoding">
@@ -475,7 +464,7 @@
           </figure>
         </section>
 
-        <section title="Security Tokens">
+        <section anchor="security_tokens" title="Security Tokens">
           <t>A section MAY include at most one security token. The security
           token, if present, MUST appear at the beginning of the section. In
           the following example, a separate security token is added to each
@@ -590,12 +579,17 @@
 +--------------------------------+
                     </artwork>
           </figure>
+
+          <t/>
         </section>
 
         <section title="Complete Encoding Example">
           <t><xref target="encoding_layout"/> shows a complete example
           combining the application and network sections together with their
-          standard and vendor sub-sections.</t>
+          standard and vendor sub-sections. The tags appearing in a standard
+          and in a vendor sub-section are managed by separate registries. See
+          [ID-FMD-FRAMEWORK] for a full coverage of the information model and
+          how the registries are handled.</t>
 
           <figure align="center" anchor="encoding_layout"
                   title="Complete encoding example">
@@ -680,7 +674,7 @@
             by an application using only standard tags.</t>
 
             <t><xref target="encoding_ep_vnd_struct"/> shows the encoding used
-            by an application using only vendor specifc tags.</t>
+            by an application using only vendor specific tags.</t>
 
             <t><xref target="encoding_nt_std_struct"/> shows the encoding for
             network producers using only standard tags.</t>
@@ -743,7 +737,7 @@
                         </artwork>
         </figure>
 
-        <t><xref target="encoding_ep_vnd_struct"/> adds the vendor sub-ection
+        <t><xref target="encoding_ep_vnd_struct"/> adds the vendor sub-section
         marker which starts a vendor section. The vendor marker is a TLV whose
         type is defined in the same registry as the security token. Its value
         is the vendor's Private Enterprise Number (PEN) allocated by IANA. The
@@ -918,16 +912,20 @@ Zero = %x00
       </section>
     </section>
 
-    <section anchor="Acknowledgements" title="Acknowledgements">
-      <t>We would like to thank Yann Poupet, Davide Cuda, Charles Eckel for
-      reviewing this document and helping us proof its content. We would also
-      like to express our gratitude to Sergio Mena de la Cruz for contributing
-      ideas, proofing the text and for his work on validating the grammar.</t>
+    <section anchor="Security" title="Security Considerations">
+      <t>A security token, as described in <xref target="security_tokens"/>,
+      is a mechanism provided as part of the encoding to protect flow
+      characteristics. A signaling protocol used to transport the encoded
+      metadata may provide additional security mechanisms. The protocol
+      specific and encoding specific security mechanisms may be used in
+      combination to achieve the required level of security.</t>
     </section>
 
-    <section anchor="Security" title="Security Considerations">
-      <t>All drafts are required to have a security considerations section.
-      See <xref target="RFC3552">RFC 3552</xref> for a guide.</t>
+    <section anchor="Acknowledgements" title="Acknowledgements">
+      <t>We would like to thank Yann Poupet and Davide Cuda for reviewing this
+      document and helping us proof its content. We would also like to express
+      our gratitude to Sergio Mena de la Cruz for contributing ideas, proofing
+      the text and for his work on validating the grammar.</t>
     </section>
   </middle>
 
@@ -951,30 +949,12 @@ Zero = %x00
       <!--?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml"?-->
 
       &RFC2119;
-
-      <reference anchor="min_ref">
-        <!-- the following is the minimum to make xml2rfc happy -->
-
-        <front>
-          <title>Minimal Reference</title>
-
-          <author initials="authInitials" surname="authSurName">
-            <organization/>
-          </author>
-
-          <date year="2006"/>
-        </front>
-      </reference>
     </references>
 
     <references title="Informative References">
       <!-- Here we use entities that we defined at the beginning. -->
 
-      &RFC2629;
-
       &RFC3552;
-
-      &I-D.narten-iana-considerations-rfc2434bis;
 
       <!-- A reference written by by an organization not a person. -->
     </references>
