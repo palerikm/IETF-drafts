@@ -168,12 +168,12 @@
       application flows (e.g. video), the service class, the application that
       originated the flow, and others. The definition of the Flow Metadata
       technology and some of the attributes are defined in [ID-FMD-FRAMEWORK].
-      The flow attributes can be inspected by intermediate network nodes for
-      the purpose of applying differentiated flow treatment or collect network
-      analytics. This specification proposes the use of RSVP as signaling
-      protocol to carry the Flow Metadata using a new RSVP object. Two C-Type
-      values are proposed for this object to allow for two possible
-      encodings.</t>
+      The flow attributes can be signaled over the flow path and inspected by
+      intermediate network nodes for the purpose of applying differentiated
+      flow treatment or collect network analytics. This specification proposes
+      the use of RSVP as signaling protocol to carry the Flow Metadata using a
+      new RSVP object. Two C-Type values are proposed for this object to allow
+      for two possible encodings.</t>
 
       <section title="Requirements Language">
         <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
@@ -185,12 +185,11 @@
 
     <section title="Flow Metadata Object">
       <t>This specification proposes a new RSVP object with Class-Num from the
-      0x11bbbbbb range. The object can be inserted into any message type for
-      IPv4 and IPv6 sessions. To support purely informational metadata
-      attributes from sender to receiver, it is sufficient to insert the
-      object into PATH messages (i.e. Path messages with SESSION Class = 1 and
-      SENDER_TEMPLATE Class = 11). The Metadata object SHOULD appear only once
-      in the message.</t>
+      0x11bbbbbb range. To support informational metadata attribute processing
+      on the path to the receiver, the sender inserts the Metadata object into
+      an IPv4 or IPv6 Path message (i.e. Path messages with SESSION Class = 1
+      and SENDER_TEMPLATE Class = 11). The Metadata object SHOULD appear only
+      once in the message.</t>
 
       <t>The object definition is given in Section 2.1 while the details of
       processing are covered in Section 2.2</t>
@@ -242,8 +241,9 @@
         <t>The Metadata Object included in the Path message carries attributes
         from the sender of the flow towards the receiver. If the sender does
         not support the Metadata attribute, they may instead be inserted by a
-        proxy along the path of the flow. Further network nodes may modify the
-        metadata attributes for purpose of policy toward the receiver.</t>
+        proxy along the path of the flow. Metadata RSVP nodes on path may
+        modify the metadata attributes for purpose of influencing policy
+        toward the receiver.</t>
 
         <t>The node that originates Metadata information in a Path message may
         do so for the sole purpose of signaling Metadata information only. To
@@ -259,8 +259,8 @@
           </list></t>
 
         <t>If the Metadata object is inserted in a Path message used for <xref
-        target="RFC2210"/> reservation requests, then all the normal rules of
-        RSVP transactions apply and in addition any actions driven purely by
+        target="RFC2210"/> reservation requests, then all the rules of RSVP
+        reservation request apply and in addition any actions driven purely by
         the metadata attributes may equally take place.</t>
 
         <t>While the Metadata Object may be included in a Resv message, the
