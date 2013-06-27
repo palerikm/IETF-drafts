@@ -327,8 +327,6 @@
      filing system or remote ones accessed by http (http://domain/dir/... ).-->
 
     <references title="Normative References">
-      <!--?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml"?-->
-
       <?rfc include="reference.RFC.2119"?>
 
       <?rfc include="reference.RFC.2205"?>
@@ -336,12 +334,6 @@
       <?rfc include="reference.RFC.2210"?>
 
       <?rfc include="reference.RFC.5101"?>
-    </references>
-
-    <references title="Informative References">
-      <!-- Here we use entities that we defined at the beginning. -->
-
-      <!-- A reference written by by an organization not a person. -->
     </references>
 
     <section anchor="examples" title="Encoding usage examples">
