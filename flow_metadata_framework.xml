@@ -776,13 +776,17 @@
             complexity in making all network elements learn the semantic of
             the numeric encoding of e.g. the PANA-L7-PEN information element
             in signaling protocols that only use the numeric encoding of
-            information elements. Application identification via a URL encoded
-            string information element is presumably easier to introduce and
-            disseminate. Today, almost all application have some web-page
-            associated with them, so one simple form of self assigned
-            application identification is a new IPFIX information element:
-            UrlAppId The value of this information element is an abbreviated
-            URL of the form:</t>
+            information elements. The second problem may be to determine what
+            PEN to use, because not every developer of an application may
+            be a company that has a PEN or otherwise would intend to apply
+            for one. Application identification via a URL encoded
+            string information element is a way to overcome both issues. 
+            Today, almost all applications have some DNS domain associated with
+            them through which they are being marketed or that belongs to the
+            company developing the application. Therefore, one simple
+            form of self assigned application identification is a new IPFIX 
+            information element: UrlAppId. The value of this information element
+            is an abbreviated URL of the following form:</t>
 
             <t>&lt;fqdn&gt; / &lt;app-name&gt; /[ &lt;version&gt; |
             &lt;other-details&gt; ]</t>
@@ -791,15 +795,39 @@
             domain name) is assigning an &lt;app-name&gt;, and by signaling
             both &lt;domain-name&gt; and &lt;app-name&gt;, this information
             element provides a self-identifying, unambiguous application
-            identification. As necessary further distinctions for different
-            traffic flows in an application that are not better covered by
-            other information elements can be added after another "/". It
-            should be noted that in the context of DPI, classification of
+            identification.</t>
+
+            <t>Example:</t>
+            <t>example.com/network-lemmings/sdn-edition
+            </t>
+
+            <t>A game publishing house or application market operator with
+            the domain name example.com is initially allocating the UrlAppId 
+            example.com/network-lemmings to that application. After 35 years, 
+            a new variant of the game is released, the SDN edition, and
+            the app-developer decides that it would best like to distinguish
+            this application variant by the above UrlAppId example.com/network-lemmings/sdn-edition.
+            </t>
+           
+            <t>In general, different traffic flows within a
+            single application should best not be distinguished via the
+            UrlAppId, but instead rely on attributes more specifically
+            targeted for that purpose (such as the TrafficClassLabel).
+            If there is no adequate better attribute defined, application
+            developers may choose to use the other-details section of the
+            UrlAppId to distinguish flows within the same application.</t>
+
+            <t>Formally, the only requirement against the UrlAppId is that the
+            fqdn part is a DNS domain owned by the assigner, and that the rest
+            of the string after the first / is as self explanatory as
+            possible.</t>
+            
+            <t>It should be noted that in the context of DPI, classification of
             web-based application traffic is very often performed by URL
             inspection of HTTP traffic. This proposed intent based information
-            element leverages that model and makes it usable where it was
-            currently not working: encrypted HTTP, non-HTTP applications, HTTP
-            applications with useless URLs, etc.</t>
+            element leverages that model and makes it usable where it can not
+            be currently used with just DPI: encrypted HTTP, non-HTTP applications,
+            HTTP applications with non-descriptive URLs, etc.</t>
           </section>
         </section>
       </section>
