@@ -6,9 +6,10 @@
      There has to be one entity for each item to be referenced.
      An alternate method (rfc include) is described in the references. -->
 <!ENTITY RFC2119 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
-<!ENTITY RFC2629 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2629.xml">
-<!ENTITY RFC3552 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3552.xml">
-<!ENTITY I-D.narten-iana-considerations-rfc2434bis SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.narten-iana-considerations-rfc2434bis.xml">
+<!ENTITY RFC4594 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4594.xml">
+<!ENTITY RFC6759 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6759.xml">
+<!ENTITY I-D.martinsen-mmusic-malice SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.martinsen-mmusic-malice.xml">
+<!ENTITY I-D.ietf-mmusic-traffic-class-for-sdp SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-mmusic-traffic-class-for-sdp.xml">
 ]>
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 <!-- used by XSLT processors -->
@@ -35,7 +36,7 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="info" docName="cisco-internal-flow-metadata-framework-03"
+<rfc category="info" docName="draft-eckert-intarea-flow-metadata-framework-00"
      ipr="trust200902">
   <!-- category values: std, bcp
 , info, exp, and historic
@@ -76,7 +77,7 @@
           <country>US</country>
         </postal>
 
-        <phone />
+        <phone/>
 
         <email>eckert@cisco.com</email>
 
@@ -126,7 +127,7 @@
           <country>CH</country>
         </postal>
 
-        <phone />
+        <phone/>
 
         <email>amchouki@cisco.com</email>
 
@@ -151,7 +152,9 @@
 
           <country>US</country>
         </postal>
-        <phone />
+
+        <phone/>
+
         <email>eckelcu@cisco.com</email>
 
         <!-- uri and facsimile elements may also be added -->
@@ -209,7 +212,7 @@
           <t>A set of application independent information elements (IEs)</t>
 
           <t>An encoding of these IEs that is independent of the signaling
-          protocol used as transport </t>
+          protocol used as transport</t>
 
           <t>Usages of these IEs to support various transactional
           semantics</t>
@@ -219,17 +222,18 @@
         </list></t>
 
       <t>This document defines an initial set of IEs, a set of encoding rules,
-      and initial usage model. The actual encoding is defined in
-      [ID-FMD-ENCODE]. Additional documents define the mapping to specific
-      signaling protocols (e.g. RSVP [ID-FMD-RSVP], STUN [ID-FMD-STUN], and
-      PCP [ID-FMD-PCP])</t>
+      and initial usage model. The actual encoding is defined in <xref
+      target="ID-FMD-ENCODE"/>. Additional documents define the mapping to
+      specific signaling protocols (e.g. RSVP <xref target="ID-FMD-RSVP"/>,
+      STUN <xref target="I-D.martinsen-mmusic-malice"/>, and PCP <xref
+      target="ID-FMD-PCP"/>)</t>
     </section>
 
     <section title="Requirements Language">
       <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
       "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
       document are to be interpreted as described in <xref
-      target="RFC2119">RFC 2119</xref></t>
+      target="RFC2119"/>.</t>
     </section>
 
     <section title="Background">
@@ -258,27 +262,25 @@
       contribute to the flow description. The resulting flow description may
       be communicated as feedback from the network to applications.</t>
 
-  <section title="Deep packet inspection">
-      <section title="Benefits">
+      <section title="Deep packet inspection">
+        <section title="Benefits">
           <t>Deep Packet Inspection (DPI) and other traffic observation
-              methods (such as performance monitoring) are successfully being used
-              for two type of workflows:
-              <list counter="1" style="numbers">
-                  <t>Provide network operators with visibility into traffic for
-                      troubleshooting, capacity planning, accounting and billing
-                      and other off network workflows. This is done by exporting
-                      observed traffic analysis via protocol such as IPFIX and
-                      SNMP.</t>
+          methods (such as performance monitoring) are successfully being used
+          for two type of workflows: <list counter="1" style="numbers">
+              <t>Provide network operators with visibility into traffic for
+              troubleshooting, capacity planning, accounting and billing and
+              other off network workflows. This is done by exporting observed
+              traffic analysis via protocol such as IPFIX and SNMP.</t>
 
-                  <t>Provide differentiated network services for the traffic
-                      according to network operator defined rule sets, including
-                      policing and shaping of traffic, providing admission control,
-                      impacting routing, permitting passage of traffic (e.g. firewall
-                      functions), etc.</t>
-              </list>Note: For the context of this document, we consider that
-              DPI starts as early into packets as using ACLs with UDP/TCP port
-              numbers to classify traffic.</t>
-      </section>
+              <t>Provide differentiated network services for the traffic
+              according to network operator defined rule sets, including
+              policing and shaping of traffic, providing admission control,
+              impacting routing, permitting passage of traffic (e.g. firewall
+              functions), etc.</t>
+            </list>Note: For the context of this document, we consider that
+          DPI starts as early into packets as using ACLs with UDP/TCP port
+          numbers to classify traffic.</t>
+        </section>
 
         <section title="Limitation">
           <t>These two workflows, visibility and differentiated network
@@ -294,11 +296,11 @@
               packet inspection impossible or much more complex (e.g. needing
               to share encryption keys with network equipment).</t>
 
-          <t>Observation often needs to inspect the control and signaling
+              <t>Observation often needs to inspect the control and signaling
               traffic of applications. This traffic can flow through a
               different network path than the actual application data traffic.
-              Impacting the traffic behavior is ineffective in those scenarios.
-          </t>
+              Impacting the traffic behavior is ineffective in those
+              scenarios.</t>
 
               <t>Observation of control, signaling and data traffic with DPI
               will in general result in less insight into the applications
@@ -307,9 +309,9 @@
 
               <t>Without explicit desire by the application to signal its
               intent to the network, it will also not consider to explicitly
-              provide authentication to the network. DPI mechanism
-              have a more difficult job in analyzing application traffic
-              when authentication mechanisms are in use (if they even can)</t>
+              provide authentication to the network. DPI mechanism have a more
+              difficult job in analyzing application traffic when
+              authentication mechanisms are in use (if they even can)</t>
 
               <t>Without explicit involvement of the application, network
               services leveraging DPI traffic classification impact the
@@ -393,8 +395,8 @@
           <t>An application media flow may be expressed as a set of
           information elements that are defined and registered like
           observation-based IPFIX attributes. We propose leveraging IPFIX as
-          the information model (not necessarily as the transport signaling) for
-          the following reasons:<list style="symbols">
+          the information model (not necessarily as the transport signaling)
+          for the following reasons:<list style="symbols">
               <t>As outlined above, export of traffic information is one of
               the two big workflows. IPFIX is arguably the most flexible,
               extensible and best defined option for this. Leveraging the same
@@ -512,10 +514,11 @@
             <t>The goal of this framework is to enable applications to
             explicitly signal common information elements about their traffic
             flows and optionally receive common information elements from the
-            network as feedback. Nevertheless, it is clear that broad adoption of such
-            technology is improved by enabling the use of proxies. The proxies
-            can provide or amend the flow description information in the absence
-            of Flow Metadata support by the application itself.</t>
+            network as feedback. Nevertheless, it is clear that broad adoption
+            of such technology is improved by enabling the use of proxies. The
+            proxies can provide or amend the flow description information in
+            the absence of Flow Metadata support by the application
+            itself.</t>
           </section>
 
           <section title="Authentication">
@@ -527,9 +530,9 @@
           </section>
 
           <section title="Common encoding">
-            <t>A companion document [ID-FMD-ENCODE] covers recommended
-            encoding rules that take the following aspects into account:<list
-                style="symbols">
+            <t>A companion document <xref target="ID-FMD-ENCODE"/> covers
+            recommended encoding rules that take the following aspects into
+            account:<list style="symbols">
                 <t>Compact binary encoding rules</t>
 
                 <t>Signaling for both sent and received traffic flows</t>
@@ -568,16 +571,15 @@
                   added.</t>
                 </list></t>
 
-                <t>In result, this integration achieves two option: 
-                    <list
+              <t>In result, this integration achieves two option: <list
                   counter="1" style="numbers">
-                  <t>Informative common information elements can be sent
-                  from application to network by using the protocol's
-                  method to indicate the purely informational protocol
-                  transaction. This option effectively leverages the protocol
-                  as transport for additional informative attribute based
-                  services without impacting the services and transactions
-                  of the protocol otherwise.</t>
+                  <t>Informative common information elements can be sent from
+                  application to network by using the protocol's method to
+                  indicate the purely informational protocol transaction. This
+                  option effectively leverages the protocol as transport for
+                  additional informative attribute based services without
+                  impacting the services and transactions of the protocol
+                  otherwise.</t>
 
                   <t>Informative common information elements can be sent
                   alongside an existing protocol transaction. In this case
@@ -590,8 +592,9 @@
                   elements only used from host to network).</t>
                 </list></t>
 
-              <t>This integration is for example defined in [ID-FMD-PCP],
-              [ID-FMD-RSVP], and [ID-FMD-STUN].</t>
+              <t>This integration is for example defined in <xref
+              target="ID-FMD-PCP"/>, <xref target="ID-FMD-RSVP"/>, and <xref
+              target="I-D.martinsen-mmusic-malice"/>.</t>
             </section>
 
             <section title="Common transport advisory integration">
@@ -672,8 +675,8 @@
           <section title="RFC4594-DSCP">
             <t>This attribute is used to convey the DSCP value appropriate for
             the flow. It is an 8 bit value. Values signaled are assumed to be
-            in compliance with RFC 4594 or backward compatible extensions
-            thereof. Other values are undefined.</t>
+            in compliance with <xref target="RFC4594"/> or backward compatible
+            extensions thereof. Other values are undefined.</t>
 
             <t>Default Value: 0xff</t>
 
@@ -682,8 +685,8 @@
 
           <section title="Traffic Class Label (TCL)">
             <t>The data type of this information element is a string. It
-            carries the Traffic Class Label defined in
-            [draft-ietf-mmusic-traffic-class-for-sdp]. Depending on the
+            carries the Traffic Class Label defined in <xref
+            target="I-D.ietf-mmusic-traffic-class-for-sdp"/>. Depending on the
             outcome of that drafts standardization, the version carried as an
             information element may be slightly expanded over the its
             definition for SDP. The TCL is a structured string of the
@@ -693,9 +696,9 @@
 
             <t>category and application provide a base categorization of the
             traffic class that attempts to provide a simplified and
-            extensible, framework for the traffic class definitions in
-            RFC4594. These base classifications can be refined with zero or
-            more adjectives. Examples of a TCL is
+            extensible, framework for the traffic class definitions in <xref
+            target="RFC4594"/>. These base classifications can be refined with
+            zero or more adjectives. Examples of a TCL is
             "conversational.video.avconf".</t>
 
             <t>Default Value: Empty string</t>
@@ -741,10 +744,10 @@
           widely vetted:</t>
 
           <section title="RFC 6759 style application identification">
-            <t>RFC6759 defines the IPFIX IE-IDs that permit both IANA and
-            vendor specific application identification. Though defined for
-            observation (a.k.a.: DPI), it could also be used with explicit
-            signaling from applications.</t>
+            <t><xref target="RFC6759"/> defines the IPFIX IE-IDs that permit
+            both IANA and vendor specific application identification. Though
+            defined for observation (a.k.a.: DPI), it could also be used with
+            explicit signaling from applications.</t>
 
             <t>Applications that use one of the protocols for which there is
             an IANA port allocation could explicitly indicate this port via
@@ -767,17 +770,18 @@
           </section>
 
           <section title="URL style application identification">
-            <t>One problem with RFC 6759 style application identification
-            especially non-IANA registered ones is the complexity in making
-            all network elements learn the semantic of the numeric encoding of
-            e.g. the PANA-L7-PEN information element in signaling protocols
-            that only use the numeric encoding of information elements.
-            Application identification via a URL encoded string information
-            element is presumably easier to introduce and disseminate. Today,
-            almost all application have some web-page associated with them, so
-            one simple form of self assigned application identification is a
-            new IPFIX information element: UrlAppId The value of this
-            information element is an abbreviated URL of the form:</t>
+            <t>One problem with <xref target="RFC6759"/> style application
+            identification especially non-IANA registered ones is the
+            complexity in making all network elements learn the semantic of
+            the numeric encoding of e.g. the PANA-L7-PEN information element
+            in signaling protocols that only use the numeric encoding of
+            information elements. Application identification via a URL encoded
+            string information element is presumably easier to introduce and
+            disseminate. Today, almost all application have some web-page
+            associated with them, so one simple form of self assigned
+            application identification is a new IPFIX information element:
+            UrlAppId The value of this information element is an abbreviated
+            URL of the form:</t>
 
             <t>&lt;fqdn&gt; / &lt;app-name&gt; /[ &lt;version&gt; |
             &lt;other-details&gt; ]</t>
@@ -821,43 +825,55 @@
       <!--?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml"?-->
 
       &RFC2119;
-
-      <reference anchor="min_ref">
-        <!-- the following is the minimum to make xml2rfc happy -->
-
-        <front>
-          <title>Minimal Reference</title>
-
-          <author initials="authInitials" surname="authSurName">
-            <organization/>
-          </author>
-
-          <date year="2006"/>
-        </front>
-      </reference>
     </references>
 
     <references title="Informative References">
       <!-- Here we use entities that we defined at the beginning. -->
 
-      &RFC2629;
+      &RFC4594;
 
-      &RFC3552;
+      &RFC6759;
 
-      &I-D.narten-iana-considerations-rfc2434bis;
+      &I-D.martinsen-mmusic-malice;
+
+      &I-D.ietf-mmusic-traffic-class-for-sdp;
 
       <!-- A reference written by by an organization not a person. -->
 
-      <reference anchor="DOMINATION"
-                 target="http://www.example.com/dominator.html">
+      <reference anchor="ID-FMD-ENCODE" target="http://www.ietf.org">
         <front>
-          <title>Ultimate Plan for Taking Over the World</title>
+          <title>Protocol Independent Encoding for Signaling Flow
+          Characteristics</title>
 
-          <author>
-            <organization>Mad Dominators, Inc.</organization>
+          <author fullname="Amine Choukir" initials="A." surname="Choukir">
+            <organization/>
           </author>
 
-          <date year="1984"/>
+          <date year="2013"/>
+        </front>
+      </reference>
+
+      <reference anchor="ID-FMD-PCP" target="http://www.ietf.org">
+        <front>
+          <title>PCP Flowdata Option</title>
+
+          <author fullname="Dan Wing" initials="D." surname="Wing">
+            <organization/>
+          </author>
+
+          <date year="2013"/>
+        </front>
+      </reference>
+
+      <reference anchor="ID-FMD-RSVP" target="http://www.ietf.org">
+        <front>
+          <title>Signaling Flow Characteristics in RSVP</title>
+
+          <author fullname="Anca Zamfir" initials="A." surname="Zamfir">
+            <organization/>
+          </author>
+
+          <date year="2013"/>
         </front>
       </reference>
     </references>
