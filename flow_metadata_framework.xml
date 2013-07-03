@@ -9,6 +9,7 @@
 <!ENTITY RFC4594 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4594.xml">
 <!ENTITY RFC6759 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6759.xml">
 <!ENTITY I-D.martinsen-mmusic-malice SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.martinsen-mmusic-malice.xml">
+<!ENTITY I-D.wing-pcp-flowdata SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.wing-pcp-flowdata.xml">
 <!ENTITY I-D.ietf-mmusic-traffic-class-for-sdp SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-mmusic-traffic-class-for-sdp.xml">
 ]>
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
@@ -226,7 +227,7 @@
       target="ID-FMD-ENCODE"/>. Additional documents define the mapping to
       specific signaling protocols (e.g. RSVP <xref target="ID-FMD-RSVP"/>,
       STUN <xref target="I-D.martinsen-mmusic-malice"/>, and PCP <xref
-      target="ID-FMD-PCP"/>)</t>
+      target="I-D.wing-pcp-flowdata"/>)</t>
     </section>
 
     <section title="Requirements Language">
@@ -593,8 +594,8 @@
                 </list></t>
 
               <t>This integration is for example defined in <xref
-              target="ID-FMD-PCP"/>, <xref target="ID-FMD-RSVP"/>, and <xref
-              target="I-D.martinsen-mmusic-malice"/>.</t>
+              target="I-D.wing-pcp-flowdata"/>, <xref target="ID-FMD-RSVP"/>,
+              and <xref target="I-D.martinsen-mmusic-malice"/>.</t>
             </section>
 
             <section title="Common transport advisory integration">
@@ -803,6 +804,11 @@
         </section>
       </section>
     </section>
+
+    <section anchor="Acknowledgements" title="Acknowledgements">
+      <t>The authors would like to thank Dan Wing and Anca Zamfir for their
+      valuable contributions to this document.</t>
+    </section>
   </middle>
 
   <!--  *****BACK MATTER ***** -->
@@ -836,6 +842,8 @@
 
       &I-D.martinsen-mmusic-malice;
 
+      &I-D.wing-pcp-flowdata;
+
       &I-D.ietf-mmusic-traffic-class-for-sdp;
 
       <!-- A reference written by by an organization not a person. -->
@@ -846,18 +854,6 @@
           Characteristics</title>
 
           <author fullname="Amine Choukir" initials="A." surname="Choukir">
-            <organization/>
-          </author>
-
-          <date year="2013"/>
-        </front>
-      </reference>
-
-      <reference anchor="ID-FMD-PCP" target="http://www.ietf.org">
-        <front>
-          <title>PCP Flowdata Option</title>
-
-          <author fullname="Dan Wing" initials="D." surname="Wing">
             <organization/>
           </author>
 
@@ -877,10 +873,6 @@
         </front>
       </reference>
     </references>
-
-    <section anchor="app-additional" title="Additional Stuff">
-      <t>This becomes an Appendix.</t>
-    </section>
 
     <!-- Change Log
 
