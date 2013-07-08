@@ -7,6 +7,9 @@
      An alternate method (rfc include) is described in the references. -->
 <!ENTITY RFC2119 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
 <!ENTITY RFC3552 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3552.xml">
+<!ENTITY I-D.martinsen-mmusic-malice SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.martinsen-mmusic-malice.xml">
+<!ENTITY I-D.wing-pcp-flowdata SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.wing-pcp-flowdata.xml">
+<!ENTITY I-D.eckert-intarea-flow-metadata-framework SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.eckert-intarea-flow-metadata-framework.xml">
 ]>
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 <!-- used by XSLT processors -->
@@ -35,7 +38,7 @@
 <?rfc autobreaks="yes"?>
 <!-- Prevent automatic page break -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="std" docName="cisco-internal-flow-metadata-encoding-00"
+<rfc category="std" docName="draft-choukir-tsvwg-flow-metadata-encoding-00"
      ipr="trust200902">
   <!-- category values: std, bcp, info, exp, and historic
      ipr values: full3667, noModification3667, noDerivatives3667
@@ -74,8 +77,6 @@
           <country>US</country>
         </postal>
 
-        <phone>+1 408 902 2043</phone>
-
         <email>eckert@cisco.com</email>
 
         <!-- uri and facsimile elements may also be added -->
@@ -100,8 +101,6 @@
           <country>CH</country>
         </postal>
 
-        <phone>+41 21 69 43 826</phone>
-
         <email>ancaz@cisco.com</email>
 
         <!-- uri and facsimile elements may also be added -->
@@ -125,8 +124,6 @@
 
           <country>CH</country>
         </postal>
-
-        <phone>+41 78 75 98 561</phone>
 
         <email>amchouki@cisco.com</email>
 
@@ -154,7 +151,7 @@
       </address>
     </author>
 
-    <date month="June" year="2013"/>
+    <date month="July" year="2013"/>
 
     <!-- If the month and year are both specified and are the current ones, xml2rfc will fill
          in the current day for you. If only the current year is specified, xml2rfc will fill
@@ -188,17 +185,18 @@
       belonging to a particular flow have a set of common properties (e.g. IP,
       port, transport). Flow metadata exposes key characteristics of the flow
       such as the originating application, the type of media in use (e.g.
-      audio, video) and others as defined in [ID-FMD-FRAMEWORK]. The flow
+      audio, video) and others as defined in <xref
+      target="I-D.eckert-intarea-flow-metadata-framework"/>. The flow
       characteristics are expressed in terms of information elements. These
       information elements are signaled either out of band or in band but
       always along the same path of the flow associated with the
       application.</t>
 
-      <t>[ID-FMD-FRAMEWORK] defines the overall framework for flow metadata
-      and the definition of the flow characteristics, whereas this document
-      captures the encoding of these characteristics. The mapping of flow
-      metadata encoding to different signaling protocols is outside the scope
-      of this document.</t>
+      <t><xref target="I-D.eckert-intarea-flow-metadata-framework"/> defines
+      the overall framework for flow metadata and the definition of the flow
+      characteristics, whereas this document captures the encoding of these
+      characteristics. The mapping of flow metadata encoding to different
+      signaling protocols is outside the scope of this document.</t>
     </abstract>
   </front>
 
@@ -210,7 +208,8 @@
       belonging to a particular flow have a set of common properties (e.g. IP,
       port, transport). Flow metadata exposes key characteristics of the flow
       such as the originating application, the type of media in use (e.g.
-      audio, video) and others as defined in [ID-FMD-FRAMEWORK]. The flow
+      audio, video) and others as defined in <xref
+      target="I-D.eckert-intarea-flow-metadata-framework"/>. The flow
       characteristics are expressed in terms of information elements. These
       information elements are signaled either out of band or in band but
       always along the same path of the flow associated with the
@@ -218,13 +217,16 @@
 
       <t>As flow characteristics across different signaling protocols are
       identical, they benefit from a single definition and encoding
-      irrespective of the signaling protocol in use (e.g. RSVP [ID-FMD-RSVP],
-      STUN [ID-FMD-STUN], and PCP [ID-FMD-PCP]). Different network deployments
-      call for different protocols or combination of protocols as described in
-      [ID-FMD-FRAMEWORK]. The flow characteristics can be processed by
-      intermediate network nodes for the purpose of applying a particular
-      treatment to the flow or simply for gathering insight on the nature of
-      the traffic crossing the network node.</t>
+      irrespective of the signaling protocol in use (e.g. RSVP <xref
+      target="ID-FMD-RSVP"/>, STUN <xref
+      target="I-D.martinsen-mmusic-malice"/>, and PCP <xref
+      target="I-D.wing-pcp-flowdata"/>). Different network deployments call
+      for different protocols or combination of protocols as described in
+      <xref target="I-D.eckert-intarea-flow-metadata-framework"/>. The flow
+      characteristics can be processed by intermediate network nodes for the
+      purpose of applying a particular treatment to the flow or simply for
+      gathering insight on the nature of the traffic crossing the network
+      node.</t>
 
       <t>Flows, and the corresponding metadata, are inherently unidirectional,
       in the direction from the source to the destination (e.g. from Alice to
@@ -245,7 +247,7 @@
         <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
         "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
         document are to be interpreted as described in <xref
-        target="RFC2119">RFC 2119</xref>.</t>
+        target="RFC2119"/>.</t>
       </section>
     </section>
 
@@ -253,12 +255,13 @@
       <section title="General Principles">
         <t>This specification assumes that the flow is specified by the
         transport protocol which carries the Metadata tags. As an example, in
-        STUN flow identifiers such as IP addresses and ports are present in
-        layer 3 and 4 headers of STUN messages see [ID-FMD-STUN]. In RSVP the
-        same is obtained from the SESSION and SENDER-TEMPLATE objects see
-        [ID-FMD-RSVP]. In PCP the source IP is part of the request common
-        header; other flow identifiers need to be embedded in an opcode data
-        or an option see [ID-FMD-PCP].</t>
+        STUN, flow identifiers such as IP addresses and ports are present in
+        layer 3 and 4 headers of STUN messages (see <xref
+        target="I-D.martinsen-mmusic-malice"/>). In RSVP, the same is obtained
+        from the SESSION and SENDER-TEMPLATE objects (see <xref
+        target="ID-FMD-RSVP"/>). In PCP the source IP is part of the request
+        common header; other flow identifiers need to be embedded in an opcode
+        data or an option (see<xref target="I-D.wing-pcp-flowdata"/>).</t>
 
         <t>The Flow Metadata characteristics are to be interpreted in the
         context of the flow defined by the signaling protocol. In this
@@ -349,14 +352,15 @@
         </section>
 
         <section title="Application to Network and Network to Application">
-          <t>In accordance with [ID-FMD-FRAMEWORK], flow characteristics may
-          be communication both from application to network as well as from
-          network to application. The encoding rules are the same regardless
-          of the direction of the communication. The ability to differentiate
-          between the two is provided by the transport protocol. For example,
-          when using PCP, application to network communication is via a PCP
-          request, and network to application communication is via a PCP
-          response.</t>
+          <t>In accordance with <xref
+          target="I-D.eckert-intarea-flow-metadata-framework"/>, flow
+          characteristics may be communication both from application to
+          network as well as from network to application. The encoding rules
+          are the same regardless of the direction of the communication. The
+          ability to differentiate between the two is provided by the
+          transport protocol. For example, when using PCP, application to
+          network communication is via a PCP request, and network to
+          application communication is via a PCP response.</t>
         </section>
 
         <section title="Extensibility">
@@ -588,8 +592,9 @@
           combining the application and network sections together with their
           standard and vendor sub-sections. The tags appearing in a standard
           and in a vendor sub-section are managed by separate registries. See
-          [ID-FMD-FRAMEWORK] for a full coverage of the information model and
-          how the registries are handled.</t>
+          <xref target="I-D.eckert-intarea-flow-metadata-framework"/> for a
+          full coverage of the information model and how the registries are
+          handled.</t>
 
           <figure align="center" anchor="encoding_layout"
                   title="Complete encoding example">
@@ -711,29 +716,29 @@
           <artwork align="left">
  0                   1                   2                   3
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ ^S
-|        Security-type          |             Length            | |E
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |C
-|       Security-scheme         |                               : |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               : |T
-:                       Security-value                          : |O
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ vK
-|        Upstream-type          |             Length            |     ^U
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ ^M  |P
-|           Tag-type            |             Length            | |D  |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |   |B
-:                           Tag-value                           : |T  |L
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ v   |O
-:                            ...                                :     |C
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+     vK
-|        Downstream-type        |             Length            |     ^D
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+     |N
-|           Tag-type            |             Length            |     |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+     |B
-:                           Tag-value                           :     |L
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+     |O
-:                            ...                                :     |C
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+     vK
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+^S
+|        Security-type          |             Length            ||E
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+|C
+|       Security-scheme         |                               :|
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               :|T
+:                       Security-value                          :|O
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+vK
+|        Upstream-type          |             Length            |  ^U
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+^M|P
+|           Tag-type            |             Length            ||D|
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+| |B
+:                           Tag-value                           :|T|L
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+v |O
+:                            ...                                :  |C
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+  vK
+|        Downstream-type        |             Length            |  ^D
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+  |N
+|           Tag-type            |             Length            |  |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+  |B
+:                           Tag-value                           :  |L
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+  |O
+:                            ...                                :  |C
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+  vK
                         </artwork>
         </figure>
 
@@ -954,7 +959,23 @@ Zero = %x00
     <references title="Informative References">
       <!-- Here we use entities that we defined at the beginning. -->
 
-      &RFC3552;
+      &I-D.eckert-intarea-flow-metadata-framework;
+
+      &I-D.martinsen-mmusic-malice;
+
+      &I-D.wing-pcp-flowdata;
+
+      <reference anchor="ID-FMD-RSVP" target="http://www.ietf.org">
+        <front>
+          <title>Signaling Flow Characteristics in RSVP</title>
+
+          <author fullname="Anca Zamfir" initials="A." surname="Zamfir">
+            <organization/>
+          </author>
+
+          <date year="2013"/>
+        </front>
+      </reference>
 
       <!-- A reference written by by an organization not a person. -->
     </references>
