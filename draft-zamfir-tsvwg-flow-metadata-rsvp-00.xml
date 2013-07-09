@@ -37,7 +37,7 @@
 <?rfc autobreaks="yes"?>
 <!-- Prevent automatic page break -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="std" docName="draft-ietf-flow-metadata-rsvp-00"
+<rfc category="std" docName="draft-zamfir-tsvwg-flow-metadata-rsvp-00"
      ipr="trust200902">
   <!-- category values: std, bcp, info, exp, and historic
      ipr values: full3667, noModification3667, noDerivatives3667
@@ -50,8 +50,7 @@
     <!-- The abbreviated title is used in the page header - it is only necessary if the
          full title is longer than 39 characters -->
 
-    <title abbrev="Flow Metadata Encoding">Protocol independent encoding for
-    signaling flow characteristics</title>
+    <title abbrev="FMD-RSVP">Flow Metadata Signaling with RSVP</title>
 
     <!-- add 'role="editor"' below for the editors if appropriate -->
 
@@ -156,8 +155,8 @@
          keywords will be used for the search engine. -->
 
     <abstract>
-      <t>This specification describes the use of the RSVP resource reservation
-      protocol for signaling flow metadata attributes.</t>
+      <t>This specification proposes RSVP protocol extensions for signaling
+      flow metadata attributes.</t>
     </abstract>
   </front>
 
@@ -166,8 +165,8 @@
       <t>Flow Metadata attributes are information elements (attributes) that
       identify flow characteristics, such as the type of media carried by
       application flows (e.g. video), the service class, the application that
-      originated the flow, and others. The definition of the Flow Metadata
-      technology and some of the attributes are defined in <xref
+      originated the flow, and others. The description of the Flow Metadata
+      technology and some of the attribute definitions can be found in <xref
       target="I-D.eckert-intarea-flow-metadata-framework"/>. The flow
       attributes can be signaled over the flow path and inspected by
       intermediate network nodes for the purpose of applying differentiated
@@ -198,7 +197,7 @@
       <section title="FLOW_METADATA Class ">
         <t>FLOW_METADATA Class = 234</t>
 
-        <t>Two encodings are defined, both of which can carry the same IPFIX
+        <t>Two encodings are defined, both of which carry the same IPFIX
         registered attributes as defined in <xref
         target="I-D.eckert-intarea-flow-metadata-framework"/>. The first
         encoding (Basic IPFIX FLOW_METADATA) has less flexibility and lower
@@ -243,16 +242,17 @@
 
       <section title="Semantic of carrying the Metadata Object">
         <t>The Metadata Object included in the Path message carries attributes
-        from the sender of the flow towards the receiver. If the sender does
-        not support the Metadata attribute, they may instead be inserted by a
-        proxy along the path of the flow. Metadata RSVP nodes on path may
-        modify the metadata attributes for purpose of influencing policy
-        toward the receiver.</t>
+        from the sender of the flow towards the receiver. In some cases, e.g.
+        if the sender does not support the generation and signaling of
+        Metadata attribute, these attributes may be inserted by a proxy along
+        the path of the flow. Metadata RSVP nodes on path may modify the
+        metadata attributes for purpose of influencing policy toward the
+        receiver.</t>
 
         <t>The node that originates Metadata information in a Path message may
-        do so for the sole purpose of signaling Metadata information only. To
-        indicate this case, the SENDER_TSPEC objects fields (as defined by
-        <xref target="RFC2210"/>) should be set to 0:<list style="symbols">
+        do so for the sole purpose of signaling Metadata information. In this
+        case, the SENDER_TSPEC objects fields (as defined by <xref
+        target="RFC2210"/>) should be set to 0:<list style="symbols">
             <t>Token Bucket Rate [r]</t>
 
             <t>Token Bucket Size [b]</t>
@@ -262,10 +262,11 @@
             <t>Minimum Policed Unit [m]</t>
           </list></t>
 
-        <t>If the Metadata object is inserted in a Path message used for <xref
-        target="RFC2210"/> reservation requests, then all the rules of RSVP
-        reservation request apply and in addition any actions driven purely by
-        the metadata attributes may equally take place.</t>
+        <t>If the Metadata object is inserted in a Path message used for
+        IntServ service [<xref target="RFC2210"/>] reservation requests, then
+        all the rules of RSVP reservation request apply and in addition any
+        actions driven purely by the metadata attributes may equally take
+        place.</t>
 
         <t>While the Metadata Object may be included in a Resv message, the
         specific processing rules for this option is left for followup
