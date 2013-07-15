@@ -5,9 +5,10 @@
 <!-- One method to get references from the online citation libraries.
      There has to be one entity for each item to be referenced.
      An alternate method (rfc include) is described in the references. -->
-<!ENTITY RFC2119 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
 <!ENTITY RFC4594 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4594.xml">
 <!ENTITY RFC6759 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6759.xml">
+<!ENTITY I-D.choukir-tsvwg-flow-metadata-encoding SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.choukir-tsvwg-flow-metadata-encoding.xml">
+<!ENTITY I-D.zamfir-tsvwg-flow-metadata-rsvp SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.zamfir-tsvwg-flow-metadata-rsvp.xml">
 <!ENTITY I-D.martinsen-mmusic-malice SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.martinsen-mmusic-malice.xml">
 <!ENTITY I-D.wing-pcp-flowdata SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.wing-pcp-flowdata.xml">
 <!ENTITY I-D.ietf-mmusic-traffic-class-for-sdp SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-mmusic-traffic-class-for-sdp.xml">
@@ -37,7 +38,7 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="info" docName="draft-eckert-intarea-flow-metadata-framework-00"
+<rfc category="info" docName="draft-eckert-intarea-flow-metadata-framework-01"
      ipr="trust200902">
   <!-- category values: std, bcp
 , info, exp, and historic
@@ -78,8 +79,6 @@
           <country>US</country>
         </postal>
 
-        <phone/>
-
         <email>eckert@cisco.com</email>
 
         <!-- uri and facsimile elements may also be added -->
@@ -101,8 +100,6 @@
 
           <country>USA</country>
         </postal>
-
-        <phone/>
 
         <email>repenno@cisco.com</email>
 
@@ -128,8 +125,6 @@
           <country>CH</country>
         </postal>
 
-        <phone/>
-
         <email>amchouki@cisco.com</email>
 
         <!-- uri and facsimile elements may also be added -->
@@ -143,8 +138,6 @@
         <postal>
           <street>170 West Tasman Drive</street>
 
-          <!-- Reorder these if your country does things differently -->
-
           <city>San Jose</city>
 
           <region>CA</region>
@@ -154,15 +147,13 @@
           <country>US</country>
         </postal>
 
-        <phone/>
-
         <email>eckelcu@cisco.com</email>
 
         <!-- uri and facsimile elements may also be added -->
       </address>
     </author>
 
-    <date month="June" year="2013"/>
+    <date/>
 
     <!-- If the month and year are both specified and are the current ones, xml2rfc will fill
          in the current day for you. If only the current year is specified, xml2rfc will fill
@@ -224,17 +215,11 @@
 
       <t>This document defines an initial set of IEs, a set of encoding rules,
       and initial usage model. The actual encoding is defined in <xref
-      target="ID-FMD-ENCODE"/>. Additional documents define the mapping to
-      specific signaling protocols (e.g. RSVP <xref target="ID-FMD-RSVP"/>,
-      STUN <xref target="I-D.martinsen-mmusic-malice"/>, and PCP <xref
+      target="I-D.choukir-tsvwg-flow-metadata-encoding"/>. Additional
+      documents define the mapping to specific signaling protocols (e.g. RSVP
+      <xref target="I-D.zamfir-tsvwg-flow-metadata-rsvp"/>, STUN <xref
+      target="I-D.martinsen-mmusic-malice"/>, and PCP <xref
       target="I-D.wing-pcp-flowdata"/>)</t>
-    </section>
-
-    <section title="Requirements Language">
-      <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-      "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
-      document are to be interpreted as described in <xref
-      target="RFC2119"/>.</t>
     </section>
 
     <section title="Background">
@@ -293,14 +278,14 @@
               to port overloading (i.e. ports used by applications other than
               those claiming the port with IANA).</t>
 
-              <t>More and more traffic becomes encrypted, rendering deep
-              packet inspection impossible or much more complex (e.g. needing
-              to share encryption keys with network equipment).</t>
+              <t>More and more traffic is encrypted, rendering deep packet
+              inspection impossible or much more complex (e.g. needing to
+              share encryption keys with network equipment).</t>
 
-              <t>Observation often needs to inspect the control and signaling
-              traffic of applications. This traffic can flow through a
-              different network path than the actual application data traffic.
-              Impacting the traffic behavior is ineffective in those
+              <t>Observation generally requires inspecting the control and
+              signaling traffic of applications. This traffic may flow through
+              a different network path than the actual application data
+              traffic. Impacting the traffic behavior is ineffective in those
               scenarios.</t>
 
               <t>Observation of control, signaling and data traffic with DPI
@@ -338,12 +323,11 @@
             <t>RSVP is the original on path signaling protocol standardized by
             the IETF. It operates on path out-of-band and could support any
             transport protocol traffic (it currently supports TCP and UDP).
-            Its original goal was to provide admission control. It gained only
-            limited success with that service. Arguably, its success was
-            impacted by its reliance on router-alert because this often leads
-            to RSVP packets being filtered by intervening networks. To date,
-            more lightweight signaling workflows utilizing RSVP have not been
-            standardized within the IETF.</t>
+            Its original goal was to provide admission control. Arguably, its
+            success was impacted by its reliance on router-alert because this
+            often leads to RSVP packets being filtered by intervening
+            networks. To date, more lightweight signaling workflows utilizing
+            RSVP have not been standardized within the IETF.</t>
 
             <t>NSIS (next Steps in Signaling) is the next iteration of
             RSVP-like signaling defined by the IETF. Because it focused on the
@@ -369,7 +353,7 @@
             therefore an attractive alternative (albeit with challenges under
             path redundancy) because it allows the introduction of application
             to network signaling without relying on the remote peer. This is
-            specially useful in multi-domain communications.</t>
+            especially useful in multi-domain communications.</t>
 
             <t>In addition to these, depending on the devices where it is
             performed, different degrees of DPI may be used to achieve
@@ -475,9 +459,9 @@
             the network to provide a value back to it in response. In essence,
             this allows an application to ask a question and receive an answer
             from the network. Of course, a network element may provide similar
-            feedback for cases in which an application communicated a non
-            default value as well. Network elements may also provide
-            unsolicited advisory feedback</t>
+            feedback for cases in which an application communicated a
+            non-default value as well. Network elements may also provide
+            unsolicited advisory feedback.</t>
 
             <t>In all cases, applications are not guaranteed to receive an
             answer or any specific service from the network. In the event an
@@ -531,7 +515,8 @@
           </section>
 
           <section title="Common encoding">
-            <t>A companion document <xref target="ID-FMD-ENCODE"/> covers
+            <t>A companion document <xref
+            target="I-D.choukir-tsvwg-flow-metadata-encoding"/> covers
             recommended encoding rules that take the following aspects into
             account:<list style="symbols">
                 <t>Compact binary encoding rules</t>
@@ -584,7 +569,7 @@
 
                   <t>Informative common information elements can be sent
                   alongside an existing protocol transaction. In this case
-                  they may either be ships-in-the-night (triggering
+                  they may either be ships in the night (triggering
                   informative attribute based services), or they may
                   additionally be used by the policy rules of the protocol
                   transaction itself which could be advisory or service
@@ -594,8 +579,9 @@
                 </list></t>
 
               <t>This integration is for example defined in <xref
-              target="I-D.wing-pcp-flowdata"/>, <xref target="ID-FMD-RSVP"/>,
-              and <xref target="I-D.martinsen-mmusic-malice"/>.</t>
+              target="I-D.wing-pcp-flowdata"/>, <xref
+              target="I-D.zamfir-tsvwg-flow-metadata-rsvp"/>, and <xref
+              target="I-D.martinsen-mmusic-malice"/>.</t>
             </section>
 
             <section title="Common transport advisory integration">
@@ -646,7 +632,7 @@
 
             <t>Default Value: 0</t>
 
-            <t>Conflict Resolution: Minimum for the set of non default
+            <t>Conflict Resolution: Minimum for the set of non-default
             values</t>
           </section>
 
@@ -658,7 +644,7 @@
 
             <t>Default Value: 0</t>
 
-            <t>Conflict Resolution: Minimum of the set of non default
+            <t>Conflict Resolution: Minimum of the set of non-default
             values</t>
           </section>
 
@@ -719,8 +705,8 @@
             <t>Default Value: 0</t>
 
             <t>Conflict Resolution: For application to network, the minimum of
-            the set of non default values. For network to application, the
-            maximum of the set of non default values.</t>
+            the set of non-default values. For network to application, the
+            maximum of the set of non-default values.</t>
           </section>
 
           <section title="Loss Tolerance">
@@ -734,8 +720,8 @@
             <t>Default Value: 0</t>
 
             <t>Conflict Resolution: For application to network, the minimum of
-            the set of non default values. For network to application, the
-            maximum of the set of non default values.</t>
+            the set of non-default values. For network to application, the
+            maximum of the set of non-default values.</t>
           </section>
         </section>
 
@@ -777,16 +763,16 @@
             the numeric encoding of e.g. the PANA-L7-PEN information element
             in signaling protocols that only use the numeric encoding of
             information elements. The second problem may be to determine what
-            PEN to use, because not every developer of an application may
-            be a company that has a PEN or otherwise would intend to apply
-            for one. Application identification via a URL encoded
-            string information element is a way to overcome both issues. 
-            Today, almost all applications have some DNS domain associated with
-            them through which they are being marketed or that belongs to the
-            company developing the application. Therefore, one simple
-            form of self assigned application identification is a new IPFIX 
-            information element: UrlAppId. The value of this information element
-            is an abbreviated URL of the following form:</t>
+            PEN to use, because not every developer of an application may be a
+            company that has a PEN or otherwise would intend to apply for one.
+            Application identification via a URL encoded string information
+            element is a way to overcome both issues. Today, almost all
+            applications have some DNS domain associated with them through
+            which they are being marketed or that belongs to the company
+            developing the application. Therefore, one simple form of self
+            assigned application identification is a new IPFIX information
+            element: UrlAppId. The value of this information element is an
+            abbreviated URL of the following form:</t>
 
             <t>&lt;fqdn&gt; / &lt;app-name&gt; /[ &lt;version&gt; |
             &lt;other-details&gt; ]</t>
@@ -798,44 +784,46 @@
             identification.</t>
 
             <t>Example:</t>
-            <t>example.com/network-lemmings/sdn-edition
-            </t>
 
-            <t>A game publishing house or application market operator with
-            the domain name example.com is initially allocating the UrlAppId 
-            example.com/network-lemmings to that application. After 35 years, 
-            a new variant of the game is released, the SDN edition, and
-            the app-developer decides that it would best like to distinguish
-            this application variant by the above UrlAppId example.com/network-lemmings/sdn-edition.
-            </t>
-           
-            <t>In general, different traffic flows within a
-            single application should best not be distinguished via the
-            UrlAppId, but instead rely on attributes more specifically
-            targeted for that purpose (such as the TrafficClassLabel).
-            If there is no adequate better attribute defined, application
-            developers may choose to use the other-details section of the
-            UrlAppId to distinguish flows within the same application.</t>
+            <t>example.com/network-lemmings/sdn-edition</t>
+
+            <t>A game publishing house or application market operator with the
+            domain name example.com is initially allocating the UrlAppId
+            example.com/network-lemmings to that application. After 35 years,
+            a new variant of the game is released, the SDN edition, and the
+            app-developer decides that it would best like to distinguish this
+            application variant by the above UrlAppId
+            example.com/network-lemmings/sdn-edition.</t>
+
+            <t>In general, different traffic flows within a single application
+            should best not be distinguished via the UrlAppId, but instead
+            rely on attributes more specifically targeted for that purpose
+            (such as the TrafficClassLabel). If there is no adequate better
+            attribute defined, application developers may choose to use the
+            other-details section of the UrlAppId to distinguish flows within
+            the same application.</t>
 
             <t>Formally, the only requirement against the UrlAppId is that the
             fqdn part is a DNS domain owned by the assigner, and that the rest
             of the string after the first / is as self explanatory as
             possible.</t>
-            
-            <t>It should be noted that in the context of DPI, classification of
-            web-based application traffic is very often performed by URL
+
+            <t>It should be noted that in the context of DPI, classification
+            of web-based application traffic is very often performed by URL
             inspection of HTTP traffic. This proposed intent based information
             element leverages that model and makes it usable where it can not
-            be currently used with just DPI: encrypted HTTP, non-HTTP applications,
-            HTTP applications with non-descriptive URLs, etc.</t>
+            be currently used with just DPI: encrypted HTTP, non-HTTP
+            applications, HTTP applications with non-descriptive URLs,
+            etc.</t>
           </section>
         </section>
       </section>
     </section>
 
     <section anchor="Acknowledgements" title="Acknowledgements">
-      <t>The authors would like to thank Dan Wing and Anca Zamfir for their
-      valuable contributions to this document.</t>
+      <t>The authors would like to thank Dan Wing, Anca Zamfir, Paul Jones,
+      and Tirumaleswar Reddy for their valuable contributions to this
+      document.</t>
     </section>
   </middle>
 
@@ -855,18 +843,16 @@
      with a value containing a set of directories to search.  These can be either in the local
      filing system or remote ones accessed by http (http://domain/dir/... ).-->
 
-    <references title="Normative References">
-      <!--?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml"?-->
-
-      &RFC2119;
-    </references>
-
     <references title="Informative References">
       <!-- Here we use entities that we defined at the beginning. -->
 
       &RFC4594;
 
       &RFC6759;
+
+      &I-D.choukir-tsvwg-flow-metadata-encoding;
+
+      &I-D.zamfir-tsvwg-flow-metadata-rsvp;
 
       &I-D.martinsen-mmusic-malice;
 
@@ -875,31 +861,6 @@
       &I-D.ietf-mmusic-traffic-class-for-sdp;
 
       <!-- A reference written by by an organization not a person. -->
-
-      <reference anchor="ID-FMD-ENCODE" target="http://www.ietf.org">
-        <front>
-          <title>Protocol Independent Encoding for Signaling Flow
-          Characteristics</title>
-
-          <author fullname="Amine Choukir" initials="A." surname="Choukir">
-            <organization/>
-          </author>
-
-          <date year="2013"/>
-        </front>
-      </reference>
-
-      <reference anchor="ID-FMD-RSVP" target="http://www.ietf.org">
-        <front>
-          <title>Signaling Flow Characteristics in RSVP</title>
-
-          <author fullname="Anca Zamfir" initials="A." surname="Zamfir">
-            <organization/>
-          </author>
-
-          <date year="2013"/>
-        </front>
-      </reference>
     </references>
 
     <!-- Change Log
