@@ -10,6 +10,7 @@
 <!ENTITY I-D.martinsen-mmusic-malice SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.martinsen-mmusic-malice.xml">
 <!ENTITY I-D.wing-pcp-flowdata SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.wing-pcp-flowdata.xml">
 <!ENTITY I-D.eckert-intarea-flow-metadata-framework SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.eckert-intarea-flow-metadata-framework.xml">
+<!ENTITY I-D.zamfir-tsvwg-flow-metadata-rsvp SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.zamfir-tsvwg-flow-metadata-rsvp.xml">
 ]>
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 <!-- used by XSLT processors -->
@@ -38,7 +39,7 @@
 <?rfc autobreaks="yes"?>
 <!-- Prevent automatic page break -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="std" docName="draft-choukir-tsvwg-flow-metadata-encoding-00"
+<rfc category="std" docName="draft-choukir-tsvwg-flow-metadata-encoding-01"
      ipr="trust200902">
   <!-- category values: std, bcp, info, exp, and historic
      ipr values: full3667, noModification3667, noDerivatives3667
@@ -151,7 +152,7 @@
       </address>
     </author>
 
-    <date month="July" year="2013"/>
+    <date/>
 
     <!-- If the month and year are both specified and are the current ones, xml2rfc will fill
          in the current day for you. If only the current year is specified, xml2rfc will fill
@@ -218,7 +219,7 @@
       <t>As flow characteristics across different signaling protocols are
       identical, they benefit from a single definition and encoding
       irrespective of the signaling protocol in use (e.g. RSVP <xref
-      target="ID-FMD-RSVP"/>, STUN <xref
+      target="I-D.zamfir-tsvwg-flow-metadata-rsvp"/>, STUN <xref
       target="I-D.martinsen-mmusic-malice"/>, and PCP <xref
       target="I-D.wing-pcp-flowdata"/>). Different network deployments call
       for different protocols or combination of protocols as described in
@@ -232,16 +233,15 @@
       in the direction from the source to the destination (e.g. from Alice to
       Bob). In some cases, there may be a related flow in the reverse
       direction (e.g. from Bob to Alice), but this is treated as a separate
-      flow, not a bidirectional flow. The Metadata tags can characterize data
-      in the same direction as the flow (upstream) or in the opposite
-      direction (downstream). The encoding allows to signal for either
-      direction or both at the same time. The Metadata tags can be signaled by
-      the application itself and/or by network elements that have visibility
-      of the flow data. The encoding supports distinguishing between attribute
-      information originated by an application from attribute information
-      originated by a network device. The encoding allows to segregates
-      information coming from the application from information coming from the
-      network.</t>
+      flow, not a bidirectional flow. The metadata can characterize data in
+      the same direction as the flow (upstream) or in the opposite direction
+      (downstream). The encoding mechanism enabling signaling for either or
+      both directions. The metadata can be signaled by the application itself
+      and/or by network elements that have visibility of the flow data. The
+      encoding supports distinguishing between attribute information
+      originated by an application from attribute information originated by a
+      network device. The encoding allows to segregates information coming
+      from the application from information coming from the network.</t>
 
       <section title="Requirements Language">
         <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
@@ -254,14 +254,15 @@
     <section title="Encoding Overview">
       <section title="General Principles">
         <t>This specification assumes that the flow is specified by the
-        transport protocol which carries the Metadata tags. As an example, in
-        STUN, flow identifiers such as IP addresses and ports are present in
-        layer 3 and 4 headers of STUN messages (see <xref
+        transport protocol which carries the metadata. As an example, in STUN,
+        flow identifiers such as IP addresses and ports are present in layer 3
+        and 4 headers of STUN messages (see <xref
         target="I-D.martinsen-mmusic-malice"/>). In RSVP, the same is obtained
         from the SESSION and SENDER-TEMPLATE objects (see <xref
-        target="ID-FMD-RSVP"/>). In PCP the source IP is part of the request
-        common header; other flow identifiers need to be embedded in an opcode
-        data or an option (see<xref target="I-D.wing-pcp-flowdata"/>).</t>
+        target="I-D.zamfir-tsvwg-flow-metadata-rsvp"/>). In PCP the source IP
+        is part of the request common header; other flow identifiers need to
+        be embedded in an opcode data or an option (see<xref
+        target="I-D.wing-pcp-flowdata"/>).</t>
 
         <t>The Flow Metadata characteristics are to be interpreted in the
         context of the flow defined by the signaling protocol. In this
@@ -354,34 +355,35 @@
         <section title="Application to Network and Network to Application">
           <t>In accordance with <xref
           target="I-D.eckert-intarea-flow-metadata-framework"/>, flow
-          characteristics may be communication both from application to
-          network as well as from network to application. The encoding rules
-          are the same regardless of the direction of the communication. The
-          ability to differentiate between the two is provided by the
-          transport protocol. For example, when using PCP, application to
-          network communication is via a PCP request, and network to
-          application communication is via a PCP response.</t>
+          characteristics may be communicated both from application to network
+          as well as from network to application. The encoding rules are the
+          same regardless of the direction of the communication. The ability
+          to differentiate between the two is provided by the transport
+          protocol. For example, when using PCP, application to network
+          communication is via a PCP request, and network to application
+          communication is via a PCP response.</t>
         </section>
 
         <section title="Extensibility">
           <t>New use cases and new deployment scenarios will require the use
           of new flow characteristics. For this reason the encoding should
-          support Metadata tag additions in a backwards compatible way. New
-          Metadata tag addition supplement but do not redefine existing tags.
-          An application or a network node always signals its currently
-          supported tag set and devices leverage the subset they understand
-          for the purpose of applying treatment to, or gathering information
-          about, the application flows.</t>
+          support new metadata (i.e. new information elements) in a backwards
+          compatible way. New information element definitions supplement but
+          do not redefine existing definitions. An application or a network
+          node always signals its currently supported set of information
+          elements and devices leverage the subset they understand for the
+          purpose of applying treatment to, or gathering information about,
+          the application flows.</t>
         </section>
 
         <section title="Flexibility">
           <t>Distinct use cases and individual applications have a need for
-          different subsets of Metadata tags. The encoding should support the
-          signaling of any subset of Metadata tags for that purpose. For
-          example, a video conferencing application might need to signal
-          metadata for both its audio and video flows. A video surveillance
-          application might signal video flows only, but may need to indicate
-          which one has priority based on embedded analytics.</t>
+          different subsets of information elements. The encoding should
+          support the signaling of any subset of information elements for that
+          purpose. For example, a video conferencing application might need to
+          signal metadata for both its audio and video flows. A video
+          surveillance application might signal video flows only, but may need
+          to indicate which one has priority based on embedded analytics.</t>
         </section>
 
         <section title="Per Producer Security">
@@ -562,9 +564,9 @@
           <t>A subsection MUST contain at least one upstream or downstream
           block. A subsection contains at most one upstream block and at most
           one downstream block. Upstream and downstream blocks are composed of
-          metadata tags, with each tag specifying a flow characteristic. If
-          the upstream and downstream blocks are both present, the upstream
-          block MUST come first.</t>
+          metadata tags, with each tag representing an encoding of a specific
+          information element. If the upstream and downstream blocks are both
+          present, the upstream block MUST come first.</t>
 
           <figure align="center" anchor="encoding_subsection_content"
                   title="Encoding upstream and downstream blocks">
@@ -590,10 +592,11 @@
         <section title="Complete Encoding Example">
           <t><xref target="encoding_layout"/> shows a complete example
           combining the application and network sections together with their
-          standard and vendor sub-sections. The tags appearing in a standard
-          and in a vendor sub-section are managed by separate registries. See
-          <xref target="I-D.eckert-intarea-flow-metadata-framework"/> for a
-          full coverage of the information model and how the registries are
+          standard and vendor sub-sections. The metadata tags appearing in a
+          standard and in a vendor sub-section are managed by separate
+          registries. See <xref
+          target="I-D.eckert-intarea-flow-metadata-framework"/> for a full
+          coverage of the information model and how the registries are
           handled.</t>
 
           <figure align="center" anchor="encoding_layout"
@@ -676,13 +679,13 @@
         <t>This section explores the encoding looking more closely at the
         encoding structures. <list>
             <t><xref target="encoding_ep_std_struct"/> shows the encoding used
-            by an application using only standard tags.</t>
+            by an application using only standard metadata tags.</t>
 
             <t><xref target="encoding_ep_vnd_struct"/> shows the encoding used
-            by an application using only vendor specific tags.</t>
+            by an application using only vendor specific metadata tags.</t>
 
             <t><xref target="encoding_nt_std_struct"/> shows the encoding for
-            network producers using only standard tags.</t>
+            network producers using only standard metadata tags.</t>
           </list>The three scenarios expose all the encoding structures. These
         structures may be combined in various ways to support other
         scenarios.</t>
@@ -708,9 +711,9 @@
         and the downstream block, the vendor and network marker types are
         defined within the same registry. On the other hand the tag types are
         defined in a separate registry from the enclosing encoding structures.
-        The separation of the registries is possible as the tags are part of
-        the upstream and downstream block TLV value and therefore do not
-        collide with the encoding structures.</t>
+        The separation of the registries is possible as the metadata tags are
+        part of the upstream and downstream block TLV value and therefore do
+        not collide with the encoding structures.</t>
 
         <figure align="center" anchor="encoding_ep_std_struct">
           <artwork align="left">
@@ -828,8 +831,8 @@
         </figure>
 
         <t>All the constructs above can be combined to signal standard and
-        vendor specific tags for different producers and allow to secure each
-        producer's information independently.</t>
+        vendor specific metadata tags for different producers and allow to
+        secure each producer's information independently.</t>
       </section>
 
       <section title="ABNF">
@@ -849,7 +852,7 @@ Producer-block = [Security-tlv] (Standard-block / 1*Vendor-block /
 Vendor-blocks = PEN-tlv Flow-block
 
 Standard-block = Flow-block; We do not require the PEN-tlv
-; for the standard tags
+; for the standard metadata tags
 
 Flow-block = Upstream-tlv / Downstream-tlv /
 (Upstream-tlv Downstream-tlv)
@@ -892,7 +895,7 @@ Security-scheme = OCTET; Type of security used
 Security-value =  *(OCTET)
 ; length of this field must match Length of Security-tlv + 2
 
-Tag-type = 2(OCTET) ; Value according to IANA / Vendor-specific registry
+Tag-type = 2(OCTET); Value according to IANA/Vendor-specific registry
 
 Producer-type = Zero %x01; The first foreseen producer is MD-NETWORK
 ; to cover for DPI engines, gateways and others
@@ -965,17 +968,7 @@ Zero = %x00
 
       &I-D.wing-pcp-flowdata;
 
-      <reference anchor="ID-FMD-RSVP" target="http://www.ietf.org">
-        <front>
-          <title>Signaling Flow Characteristics in RSVP</title>
-
-          <author fullname="Anca Zamfir" initials="A." surname="Zamfir">
-            <organization/>
-          </author>
-
-          <date year="2013"/>
-        </front>
-      </reference>
+      &I-D.zamfir-tsvwg-flow-metadata-rsvp;
 
       <!-- A reference written by by an organization not a person. -->
     </references>
