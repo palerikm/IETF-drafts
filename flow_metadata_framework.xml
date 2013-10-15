@@ -11,6 +11,7 @@
 <!ENTITY I-D.zamfir-tsvwg-flow-metadata-rsvp SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.zamfir-tsvwg-flow-metadata-rsvp.xml">
 <!ENTITY I-D.martinsen-mmusic-malice SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.martinsen-mmusic-malice.xml">
 <!ENTITY I-D.wing-pcp-flowdata SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.wing-pcp-flowdata.xml">
+<!ENTITY I-D.penno-pcp-mobile-qos SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.penno-pcp-mobile-qos.xml">
 <!ENTITY I-D.ietf-mmusic-traffic-class-for-sdp SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-mmusic-traffic-class-for-sdp.xml">
 ]>
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
@@ -38,7 +39,8 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="info" docName="draft-eckert-intarea-flow-metadata-framework-01"
+<rfc category="info"
+     docName="draft-eckert-intarea-flow-metadata-framework-01.01"
      ipr="trust200902">
   <!-- category values: std, bcp
 , info, exp, and historic
@@ -627,8 +629,8 @@
         <section title="Bandwidth Attributes">
           <section title="Maximum Bandwidth">
             <t>This attribute is used to convey the maximum sustained
-            bandwidth for the flow. It is a 64 bit value and is specified in
-            bits per second.</t>
+            bandwidth for the flow. It is an unsigned 64 bit value and is
+            specified in bits per second.</t>
 
             <t>Default Value: 0</t>
 
@@ -638,9 +640,9 @@
 
           <section title="Minimum Bandwidth">
             <t>This attribute is used to convey the minimum sustained
-            bandwidth for the flow. It is a 64 bit value and is specified in
-            bits per second. Not sending the Minimum Bandwidth is equivalent
-            to sending the same value as for Maximum Bandwidth.</t>
+            bandwidth for the flow. It is an unsigned 64 bit value and is
+            specified in bits per second. Not sending the Minimum Bandwidth is
+            equivalent to sending the same value as for Maximum Bandwidth.</t>
 
             <t>Default Value: 0</t>
 
@@ -661,9 +663,10 @@
         <section title="Traffic Class Attributes">
           <section title="RFC4594-DSCP">
             <t>This attribute is used to convey the DSCP value appropriate for
-            the flow. It is an 8 bit value. Values signaled are assumed to be
-            in compliance with <xref target="RFC4594"/> or backward compatible
-            extensions thereof. Other values are undefined.</t>
+            the flow. It is an unsigned 8 bit value. Values signaled are
+            assumed to be in compliance with <xref target="RFC4594"/> or
+            backward compatible extensions thereof. Other values are
+            undefined.</t>
 
             <t>Default Value: 0xff</t>
 
@@ -695,33 +698,90 @@
         </section>
 
         <section title="Acceptable Path Attributes">
+          <t>The following set of attributes deal with tolerance to various
+          path impairments. A discrete and ordered set of values is defined
+          for each. This way the values are applicable on a per hop basis as
+          well as end to end. The values may be mapped to relevant metrics
+          within a given network, such as the mapping of delay tolerance and
+          loss tolerance to QCI values as defined in <xref
+          target="I-D.penno-pcp-mobile-qos"/></t>
+
           <section title="Delay Tolerance">
             <t>This attribute is used to convey the delay tolerance of an
             application with respect to the associated flow. When provided by
             a network element, it indicates the delay tolerance expected of
-            the application with respect to the associated flow. It is a 16
-            bit field defined in terms of milliseconds.</t>
+            the application with respect to the associated flow. It is a 3 bit
+            field for which values are assigned as follows:</t>
+
+            <t>0 = no information available</t>
+
+            <t>1 = very low</t>
+
+            <t>2 = low</t>
+
+            <t>3 = medium</t>
+
+            <t>4 = high</t>
+
+            <t>5-7: reserved</t>
 
             <t>Default Value: 0</t>
 
-            <t>Conflict Resolution: For application to network, the minimum of
-            the set of non-default values. For network to application, the
-            maximum of the set of non-default values.</t>
+            <t>Conflict Resolution: For application to network, the most
+            strict of non-default values. For network to application, the
+            least strict of the set of non-default values.</t>
           </section>
 
           <section title="Loss Tolerance">
             <t>This attribute is used to convey the loss tolerance of an
             application with respect to the associated flow. When provided by
             a network element, it indicates the loss tolerance expected of the
-            application with respect to the associated flow. It is a 16 bit
-            field defined in terms of hundredths of a percent of dropped
-            packets (e.g. 5 == 0.05%, 150 == 1.50%, etc.)</t>
+            application with respect to the associated flow. It is a 3 bit
+            field doe which values are assigned as follows:</t>
+
+            <t>0 = no information available</t>
+
+            <t>1 = very low</t>
+
+            <t>2 = low</t>
+
+            <t>3 = medium</t>
+
+            <t>4 = high</t>
+
+            <t>5-7: reserved</t>
 
             <t>Default Value: 0</t>
 
-            <t>Conflict Resolution: For application to network, the minimum of
-            the set of non-default values. For network to application, the
-            maximum of the set of non-default values.</t>
+            <t>Conflict Resolution: For application to network, the most
+            strict of non-default values. For network to application, the
+            least strict of the set of non-default values.</t>
+          </section>
+
+          <section title="Jitter Tolerance">
+            <t>This attribute is used to convey the jitter tolerance of an
+            application with respect to the associated flow. When provided by
+            a network element, it indicates the jitter tolerance expected of
+            the application with respect to the associated flow. It is a 3 bit
+            field doe which values are assigned as follows:</t>
+
+            <t>0 = no information available</t>
+
+            <t>1 = very low</t>
+
+            <t>2 = low</t>
+
+            <t>3 = medium</t>
+
+            <t>4 = high</t>
+
+            <t>5-7: reserved</t>
+
+            <t>Default Value: 0</t>
+
+            <t>Conflict Resolution: For application to network, the most
+            strict of non-default values. For network to application, the
+            least strict of the set of non-default values.</t>
           </section>
         </section>
 
@@ -857,6 +917,8 @@
       &I-D.martinsen-mmusic-malice;
 
       &I-D.wing-pcp-flowdata;
+
+      &I-D.penno-pcp-mobile-qos;
 
       &I-D.ietf-mmusic-traffic-class-for-sdp;
 
