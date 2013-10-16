@@ -737,7 +737,7 @@
             application with respect to the associated flow. When provided by
             a network element, it indicates the loss tolerance expected of the
             application with respect to the associated flow. It is a 3 bit
-            field doe which values are assigned as follows:</t>
+            field for which values are assigned as follows:</t>
 
             <t>0 = no information available</t>
 
@@ -763,7 +763,7 @@
             application with respect to the associated flow. When provided by
             a network element, it indicates the jitter tolerance expected of
             the application with respect to the associated flow. It is a 3 bit
-            field doe which values are assigned as follows:</t>
+            field for which values are assigned as follows:</t>
 
             <t>0 = no information available</t>
 
