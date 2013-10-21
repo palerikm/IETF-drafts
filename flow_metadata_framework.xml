@@ -39,8 +39,7 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="info"
-     docName="draft-eckert-intarea-flow-metadata-framework-01.01"
+<rfc category="info" docName="draft-eckert-intarea-flow-metadata-framework-02"
      ipr="trust200902">
   <!-- category values: std, bcp
 , info, exp, and historic
@@ -249,6 +248,11 @@
       visibility of the application flow characteristics and enables them to
       contribute to the flow description. The resulting flow description may
       be communicated as feedback from the network to applications.</t>
+
+      <t>The proposed solution does not enhance existing heuristic based
+      mechanisms, nor does it preclude the use of such mechansims. Rather, it
+      proposes a new mechanism that does not suffer the drawbacks of heuristic
+      based mechanisms.</t>
 
       <section title="Deep packet inspection">
         <section title="Benefits">
