@@ -14,7 +14,7 @@
      ipr="trust200902">
   <front>
     <title abbrev="Happy Eyeballs for ICE ">
-      Happy Eyeballs Extension forICE
+      Happy Eyeballs Extension for ICE
     </title>
 
     <author fullname="Tirumaleswar Reddy" initials="T." surname="Reddy">
@@ -95,7 +95,7 @@
       <t>
         By introducing more fairness into ICE dual-stack
         implementations it will hopefully lead to better IPv6
-        deployment as it will enable implementors to prioritize IPv6
+        deployment as it will enable implementers to prioritize IPv6
         with just a small penalty for the IPv4 connectivity checks.
       </t>
       
@@ -137,9 +137,9 @@
         ICE <xref target="RFC5245"/> section 4.1.2 states that the
         formula in section 4.1.2.1 SHOULD be used. Failing to do so
         may lead to ICE taking longer to converge as the checklist no
-        longer will be cordinated. Therefore responsiveness of ICE
-        candidate checks are improved when bothsides support
-        Happy-Eyeballs. Ther might be a penaly if only one end
+        longer will be coordinated. Therefore responsiveness of ICE
+        candidate checks are improved when both sides support
+        Happy-Eyeballs. There might be a penalty if only one end
         supports it.
       </t>
 
