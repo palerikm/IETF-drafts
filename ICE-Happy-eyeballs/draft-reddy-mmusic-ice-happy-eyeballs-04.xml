@@ -76,27 +76,25 @@
     <section anchor="introduction" title="Introduction">
       <t>
         There is a need to introduce more fairness in the handling of
-        connectivity checks in dual-stack IPv4/IPv6 ICE
-        scenarios. Section 4.1.2.1 of ICE <xref target="RFC5245"/>
-        points to <xref target="RFC3484"/> for prioritizing among the
-        different IP families. <xref target="RFC3484"/> is obsoleted
-        by <xref target="RFC6724"/> but following the recommendations
+        connectivity checks in dual-stack IPv4/IPv6 ICE scenarios.
+        Section 4.1.2.1 of ICE <xref target="RFC5245"/> points to
+        <xref target="RFC3484"/> for prioritizing among the different
+        IP families.  <xref target="RFC3484"/> is obsoleted by
+        <xref target="RFC6724"/> but following the recommendations
         from the updated RFC will still lead to prioritization of IPv6
-        over IPv4 with the same candidate type.
+        over IPv4 with the same candidate type. There can be a lot of
+        ICE candidates belonging to one address family which results
+        in user-noticable setup delays if the path for that address
+        family is broken.
       </t>
       <t>
-        As IPv6 is preferred over IPv4, recommendations made in this
-        document help avoid user-noticeable delays when the IPv6 path
-        is broken or excessively slow. This is achieved by making sure
-        both address families are given a more "fair" treatment when
-        prioritizing candidates, forming checklists or conducting
-        connectivity checks.
-      </t>
-      <t>
-        By introducing more fairness into ICE dual-stack
-        implementations it will hopefully lead to better IPv6
-        deployment as it will enable implementers to prioritize IPv6
-        with just a small penalty for the IPv4 connectivity checks.
+        To avoid such user-noticable delays when the IPv6 path or IPv4
+        path is broken, this specification encourages earlier checking
+        of the other address family. Greater IP address family
+        fairness into ICE connectivity checks will lead to more
+        sustained IPv6 deployment (so users will no longer have an
+        incentive to disable IPv6), with incurs only a small penalty
+        for the IPv4 connectivity checks.
       </t>
       
       <section anchor="notation" title="Notational Conventions">
@@ -135,35 +133,26 @@
     <section title="Compatibility">
       <t>
         ICE <xref target="RFC5245"/> section 4.1.2 states that the
-        formula in section 4.1.2.1 SHOULD be used. Failing to do so
+        formula in section 4.1.2.1 SHOULD be used.  Failing to do so
         may lead to ICE taking longer to converge as the checklist no
-        longer will be coordinated. Therefore responsiveness of ICE
+        longer will be coordinated.  Therefore responsiveness of ICE
         candidate checks are improved when both sides support
-        Happy-Eyeballs. There might be a penalty if only one end
-        supports it.
+        Happy-Eyeballs, both sides have the same number of candidate
+        pairs, and both sides use the same Happy Eyeballs promotion
+        algorithm.
       </t>
-
       <t>
-        <list style="symbols">
-          <t>
-            It is optimal when both agents support the same technique
-            to promote IPv4 candidates in the candidate-list.
-          </t>
-          <t>
-            If each happens to use a different technique to promote
-            IPv4 candidates, ICE connectivity checks will be as
-            responsive as the least aggressive algorithm. This is due
-            to the fact that MAX/MIN logic used for calculating
-            candidate-pair priority ensures that for a particular
-            agent, lower-priority candidate is never used until all
-            higher-priority candidates have been tried
-          </t>
-          <t>
-            If only one agent supports Happy-Eyeballs, there is
-            potentially no change in pacing of ICE connectivity checks
-            and the situation is no worse than what exists today.
-          </t>
-        </list>
+        If each ICE agent uses a different algorithm to promote IPv4
+        candidates, ICE connectivity checks will be as responsive as
+        the least aggressive algorithm.  This is because the MAX/MIN
+        candiate-pair logic ensures that for a particular agent, a
+        lower-priority candidate is never used (for media) until all
+        higher-priority candidates have been tried.
+      </t>
+      <t>
+        If only one ICE agent supports Happy-Eyeballs, there is
+        potentially no change in pacing of ICE connectivity checks and
+        the situation is no worse than what exists today
       </t>
     </section>
 
