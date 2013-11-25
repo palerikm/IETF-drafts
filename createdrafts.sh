@@ -1,6 +1,5 @@
 #!/bin/bash
 
-mkdir docs
 
 for FILE in `ls -l`
 do
@@ -11,7 +10,8 @@ do
       for XMLFILE in `ls *.xml 2>/dev/null`
       do
           echo "Procsessing file: $XMLFILE"
-          xml2rfc -b ../docs $XMLFILE --text --raw --html
+          mkdir ../Drafts/$FILE
+          xml2rfc -b ../Drafts/$FILE $XMLFILE --text --raw --html
       done
       cd ..
     fi
