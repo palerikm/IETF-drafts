@@ -104,7 +104,7 @@
       is broken, this specification encourages earlier checking of the other
       address family. Greater IP address family fairness into ICE connectivity
       checks will lead to more sustained IPv6 deployment (so users will no
-      longer have an incentive to disable IPv6), with incurs only a small
+      longer have an incentive to disable IPv6), which incurs only a small
       penalty for the IPv4 connectivity checks.</t>
 
       <section anchor="notation" title="Notational Conventions">
