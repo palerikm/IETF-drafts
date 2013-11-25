@@ -5,8 +5,8 @@
 MMUSIC                                                          T. Reddy
 Internet-Draft                                                  P. Patil
 Intended status: Standards Track                            P. Martinsen
-Expires: May 26, 2014                                              Cisco
-                                                       November 22, 2013
+Expires: May 29, 2014                                              Cisco
+                                                       November 25, 2013
 
 
                     Happy Eyeballs Extension for ICE
@@ -33,7 +33,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on May 26, 2014.
+   This Internet-Draft will expire on May 29, 2014.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Reddy, et al.             Expires May 26, 2014                  [Page 1]
+Reddy, et al.             Expires May 29, 2014                  [Page 1]
 
 Internet-Draft           Happy Eyeballs for ICE            November 2013
 
@@ -86,7 +86,7 @@ Table of Contents
    is broken, this specification encourages earlier checking of the
    other address family.  Greater IP address family fairness into ICE
    connectivity checks will lead to more sustained IPv6 deployment (so
-   users will no longer have an incentive to disable IPv6), with incurs
+   users will no longer have an incentive to disable IPv6), which incurs
    only a small penalty for the IPv4 connectivity checks.
 
 1.1.  Notational Conventions
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Reddy, et al.             Expires May 26, 2014                  [Page 2]
+Reddy, et al.             Expires May 29, 2014                  [Page 2]
 
 Internet-Draft           Happy Eyeballs for ICE            November 2013
 
@@ -165,7 +165,7 @@ Internet-Draft           Happy Eyeballs for ICE            November 2013
 
 
 
-Reddy, et al.             Expires May 26, 2014                  [Page 3]
+Reddy, et al.             Expires May 29, 2014                  [Page 3]
 
 Internet-Draft           Happy Eyeballs for ICE            November 2013
 
@@ -201,6 +201,8 @@ Authors' Addresses
 
    Prashanth Patil
    Cisco Systems, Inc.
+   Cessna Business Park, Varthur Hobli
+   Sarjapur Marathalli Outer Ring Road
    Bangalore
    India
 
@@ -219,6 +221,4 @@ Authors' Addresses
 
 
 
-
-
-Reddy, et al.             Expires May 26, 2014                  [Page 4]
+Reddy, et al.             Expires May 29, 2014                  [Page 4]
