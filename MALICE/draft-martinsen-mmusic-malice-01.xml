@@ -66,8 +66,6 @@
     <workgroup>MMUSIC</workgroup>
 
     <abstract>
-      <t>Rewrite this as well??</t>
-
       <t>It can be useful for applications to provide flow metadata information
       to on-path devices to influence flow treatment in the
       network. Provided that the network is able to provide
