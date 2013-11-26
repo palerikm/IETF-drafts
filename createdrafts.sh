@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 
 for FILE in `ls -l`
@@ -12,6 +12,11 @@ do
           echo "Procsessing file: $XMLFILE"
           mkdir ../Drafts/$FILE
           xml2rfc -b ../Drafts/$FILE $XMLFILE --text --raw --html
+          if [ $? -ne 0 ]
+          then
+              exit 1
+          fi
+
       done
       cd ..
     fi
