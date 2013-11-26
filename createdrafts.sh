@@ -1,5 +1,6 @@
 #!/bin/sh
 
+mkdir Drafts 2>/dev/null
 
 for FILE in `ls -l`
 do
