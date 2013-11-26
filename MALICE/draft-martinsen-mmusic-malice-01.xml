@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+<!ENTITY rfc2119 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
+<!ENTITY rfc5245 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5245.xml">
+<!ENTITY rfc5389 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5389.xml">
+<!ENTITY rfc4594 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4594.xml">
+]>
+<?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
+<?rfc toc="yes" ?>
+<?rfc symrefs="yes" ?>
+<?rfc iprnotified="no" ?>
+<?rfc strict="yes" ?>
+<?rfc compact="yes" ?>
+<?rfc subcompact="no" ?>
+<?rfc sortrefs="no" ?>
+<?rfc colonspace='yes' ?>
+<?rfc tocindent='yes' ?>
+
+<?rfc needLines="yes" ?>
+<rfc category="std" docName="draft-martinsen-mmusic-malice-01" ipr="trust200902">
+  <front>
+    <title abbrev="MALICE">Meta-data Attribute signaLling with ICE</title>
+
+    
+    <author fullname="Paal-Erik Martinsen" initials="P.E" surname="Martinsen">
+      <organization abbrev="Cisco">Cisco Systems, Inc.</organization>
+
+      <address>
+        <postal>
+          <street>Philip Pedersens vei 20</street>
+
+          <city>Lysaker</city>
+
+          <region>Akershus</region>
+
+          <code>1366</code>
+
+          <country>Norway</country>
+        </postal>
+
+        <email>palmarti@cisco.com</email>
+      </address>
+    </author>
+
+    <author fullname="Anca Zamfir" initials="A." surname="Zamfir">
+      <organization abbrev="Cisco">Cisco Systems, Inc.</organization>
+
+      <address>
+        <postal>
+          <street>EPFL, Quartier de l'Innovation</street>
+
+          <city>Ecublens</city>
+
+          <region>Vaud</region>
+
+          <code>1015</code>
+
+          <country>Switzerland</country>
+        </postal>
+
+        <email>ancaz@cisco.com</email>
+      </address>
+    </author>
+
+    <date/>
+asdasd
+    <workgroup>MMUSIC</workgroup>
+
+    <abstract>
+      <t>Rewrite this as well??</t>
+
+      <t>It can be useful for applications to provide flow metadata information
+      to on-path devices to influence flow treatment in the
+      network. Provided that the network is able to provide
+      useful feedback, this can also influence path
+      selection if an application have multiple flow paths to choose from.</t>
+      
+      <t>This draft describes how this can be achieved by adding
+      metadata to the STUN packets sent during the ICE connectivity
+      checks or a slightly modified version of the keep-alive
+      mechanism. Devices on the
+      media path can use the metadata information to prioritize the flow,
+      perform traffic engineering, or provide network analytics and
+      notifications as requested by the endpoints. On-path devices can append
+      or modify the existing metadata information in the STUN/ICE
+      messages to enable feedback to other on-path devices or the
+      applications in both ends of the media session.</t>
+
+      <t>This document describes a framework mechanism for how such metadata
+      can be transported by STUN when ICE is in use and it covers the endpoint
+      and on path device processing. The functionality described here is
+      referred to as MALICE.</t>
+    </abstract>
+
+    <note title="Requirements Language">
+      <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+      "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+      document are to be interpreted as described in <xref
+      target="RFC2119">RFC 2119</xref>.</t>
+    </note>
+  </front>
+
+  <middle>
+    <section title="Problem Statement">
+      <t>In the context of Content, Mobile, Fixed Service, Service
+      Providers, Enterprise and Private networks have a need to
+      prioritize packet flows end-to-end. These flows
+      are often dynamic, time-bound, encrypted, peer-to-peer, possibly
+      asymmetric, and might have different priorities depending on network
+      conditions, direction, time of the day, dynamic user preferences and
+      other factors. These factors may be time variant, and thus need to be
+      signalled. Moreover, in many cases of peer-to-peer communication, flow
+      information is known only to the endpoint. These considerations, coupled
+      with the trend to use encryption for browser-to-browser communication
+      <xref target="I-D.ietf-rtcweb-security-arch"/>, imply that access lists,
+      deep packet inspection and other static prioritization methods cannot be
+      employed successfully to prioritize packet flows. It can also be useful
+      for the endpoints to provide flow metadata and receive network feedback
+      in order select an optimal media communication path. This specification
+      describes how these problems can be solved at different points in the
+      network by using either STUN <xref target="RFC5389"/> packets
+      sent during ICE's <xref target="RFC5245"/> connectivity check
+      phase during establishment of a  media session, or as part a
+      slightly modified keep-alive mechanism
+      after the session is established. Devices on the media path can use the
+      metadata information to prioritize the flow, perform traffic
+      engineering, or provide network analytics and notifications as requested
+      by the endpoints. On-path devices can append or modify the existing
+      metadata information in the STUN/ICE messages. The ICE agents may use
+      this information to learn about the status of their requests at on-path
+      devices.</t>
+
+      <t>This document describes a framework mechanism for how such metadata
+      can be transported by STUN when ICE is in use with UDP based media and
+      it covers the endpoint and middlebox processing. The functionality
+      described here is referred to as MALICE.</t>
+    </section>
+
+   
+  </middle>
+
+  <back>
+    <references title="Normative References">
+      &rfc2119;
+
+      <?rfc include="reference.RFC.4732"?>
+
+      <?rfc include="reference.RFC.5389"?>
+
+      <?rfc include="reference.RFC.6398"?>
+
+      <?rfc include="reference.RFC.5245"?>
+    </references>
+
+    <references title="Informational References">
+      <?rfc include='reference.I-D.ietf-rtcweb-security-arch' ?>
+
+      <?rfc include='reference.I-D.muthu-behave-consent-freshness' ?>
+    </references>
+
+    <!--
+ -->
+
+    <!--
+      -->
+  </back>
+</rfc>
+
