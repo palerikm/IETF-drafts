@@ -74,6 +74,28 @@
       </address>
     </author>
 
+    <author fullname="Tirumaleswar Reddy" initials="T." surname="Reddy">
+      <organization>Cisco Systems, Inc.</organization>
+
+      <address>
+        <postal>
+          <street>Cessna Business Park, Varthur Hobli</street>
+
+          <street>Sarjapur Marathalli Outer Ring Road</street>
+
+          <city>Bangalore</city>
+
+          <region>Karnataka</region>
+
+          <code>560103</code>
+
+          <country>India</country>
+        </postal>
+
+        <email>tireddy@cisco.com</email>
+      </address>
+    </author>
+
     <date/>
 
     <!-- If the month and year are both specified and are the current ones, xml2rfc will fill
@@ -120,7 +142,7 @@
       flow characteristics, which enables them to apply the correct flow
       treatment and provide feedback to applications. Additional details on
       this framework are provided in <xref
-      target="I-D.eckert-intarea-flow-metadata-framework"/></t>
+      target="I-D.eckert-intarea-flow-metadata-framework"></xref></t>
     </section>
 
     <section title="Use Cases">
@@ -164,101 +186,159 @@
         </list></t>
 
       <section title="Home: Consistent experience of video conferencing with competing traffic">
-        <section title="Description of Problem"/>
+        <section title="Description of Problem"></section>
 
-        <section title="User Benefit"/>
+        <section title="User Benefit"></section>
 
-        <section title="Operator Benefit"/>
+        <section title="Operator Benefit"></section>
 
-        <section title="Flow characteristics provided by application"/>
+        <section title="Flow characteristics provided by application"></section>
 
-        <section title="Action taken by network as result of receiving flow characteristics"/>
+        <section title="Action taken by network as result of receiving flow characteristics"></section>
 
-        <section title="Feedback provided by network"/>
+        <section title="Feedback provided by network"></section>
       </section>
 
       <section title="Firewall Traversal: Identification of new applications">
-        <section title="Description of Problem"/>
+        <section title="Description of Problem">
+          <t>Modern firewalls use application-layer gateways (ALGs) to perform
+          policy enforcement. For example firewalls implement SIP-aware
+          Application Layer Gateway function, which examines the SIP signaling
+          and opens the appropriate pinholes for the RTP media. In particular
+          firewall extracts media transport addresses, transport protocol and
+          ports from session description and creates a dynamic mapping for
+          media to flow through. This model will not work in the following
+          cases: <list style="numbers">
+              <t>Session signaling is end-to-end encrypted (say, using
+              TLS).</t>
 
-        <section title="User Benefit"/>
+              <t>Firewall does not understand the session signaling protocol,
+              or extensions to the protocol, used by the endpoints (e.g.
+              WebRTC signaling protocols).</t>
 
-        <section title="Operator Benefit"/>
+              <t>Session signaling and media traverse different firewalls
+              (e.g., signaling exits a network via one firewall whereas media
+              exits a network via a different firewall).</t>
+            </list></t>
 
-        <section title="Flow characteristics provided by application"/>
+          <t>This problem can be addressed by the host getting authorization
+          from the Application Server trusted by the network in order to
+          install flows and associated actions (e.g., policies). PCP third
+          party authorization (draft-wing-pcp-third-party-authz-01) solves
+          this problem by associating the media session with the signaling
+          session. This is done by sending a cryptographic token in the
+          signaling which authorizes the firewall mapping for the media
+          session.</t>
+        </section>
 
-        <section title="Action taken by network as result of receiving flow characteristics"/>
+        <section title="User Benefit">
+          <t>New applications can be deployed in the Enterprise network at a
+          faster rate. This mechanism can be used by any other Application
+          Function trusted by the network to permit time-bound, encrypted,
+          peer-to-peer traffic.</t>
+        </section>
 
-        <section title="Feedback provided by network"/>
+        <section title="Operator Benefit">
+          <t>Enterprise firewalls can enforce restrictive policies without the
+          need to be enhanced to perform ALG on new applications. For example
+          Enterprise firewall could have granular policies to permit
+          peer-to-peer UDP media session only when the call is initiated using
+          the selected WebRTC server (Dr. Good) it trusts and block others
+          (Dr. Evil). PCP-aware firewalls can enforce such granular security
+          policies without performing ALG on the session signaling
+          protocols.</t>
+        </section>
+
+        <section title="Flow characteristics provided by application">
+          <t>The client signals request to create dynamic mappings to permit
+          traffic, flow characteristics to prioritize the traffic along with
+          cryptographic token.</t>
+        </section>
+
+        <section title="Action taken by firewall as result of receiving flow characteristics">
+          <t>The client signaled request to create dynamic mappings to permit
+          traffic, flow characteristics to prioritize traffic will be compared
+          with the token bound authorization data to determine if the client
+          request can be honored or not.</t>
+        </section>
+
+        <section title="Feedback provided by firewall">
+          <t>Firewall matches the authorization data with what is requested in
+          the request sent by the client. If the authorization sets match, the
+          firewall honors the request made by the client. If the token is
+          invalid or the request exceeds what is authorized by the token then
+          firewall rejects the request with appropriate error response.</t>
+        </section>
       </section>
 
       <section title="Load Balancing: Identification of application for better load balancing without solely relying on inspection techniques">
-        <section title="Description of Problem"/>
+        <section title="Description of Problem"></section>
 
-        <section title="User Benefit"/>
+        <section title="User Benefit"></section>
 
-        <section title="Operator Benefit"/>
+        <section title="Operator Benefit"></section>
 
-        <section title="Flow characteristics provided by application"/>
+        <section title="Flow characteristics provided by application"></section>
 
-        <section title="Action taken by network as result of receiving flow characteristics"/>
+        <section title="Action taken by network as result of receiving flow characteristics"></section>
 
-        <section title="Feedback provided by network"/>
+        <section title="Feedback provided by network"></section>
       </section>
 
       <section title="Scavenger class: Creation of a scavenger class. Use metadata to shift high-bandwidth, low priority traffic to off-peak hours">
-        <section title="Description of Problem"/>
+        <section title="Description of Problem"></section>
 
-        <section title="User Benefit"/>
+        <section title="User Benefit"></section>
 
-        <section title="Operator Benefit"/>
+        <section title="Operator Benefit"></section>
 
-        <section title="Flow characteristics provided by application"/>
+        <section title="Flow characteristics provided by application"></section>
 
-        <section title="Action taken by network as result of receiving flow characteristics"/>
+        <section title="Action taken by network as result of receiving flow characteristics"></section>
 
-        <section title="Feedback provided by network"/>
+        <section title="Feedback provided by network"></section>
       </section>
 
       <section title="Video Adaptation: Use client metadata to help video bit rate selection">
-        <section title="Description of Problem"/>
+        <section title="Description of Problem"></section>
 
-        <section title="User Benefit"/>
+        <section title="User Benefit"></section>
 
-        <section title="Operator Benefit"/>
+        <section title="Operator Benefit"></section>
 
-        <section title="Flow characteristics provided by application"/>
+        <section title="Flow characteristics provided by application"></section>
 
-        <section title="Action taken by network as result of receiving flow characteristics"/>
+        <section title="Action taken by network as result of receiving flow characteristics"></section>
 
-        <section title="Feedback provided by network"/>
+        <section title="Feedback provided by network"></section>
       </section>
 
       <section title="Mobile Host/App Metadata: Use metadata for troubleshooting and network planning">
-        <section title="Description of Problem"/>
+        <section title="Description of Problem"></section>
 
-        <section title="User Benefit"/>
+        <section title="User Benefit"></section>
 
-        <section title="Operator Benefit"/>
+        <section title="Operator Benefit"></section>
 
-        <section title="Flow characteristics provided by application"/>
+        <section title="Flow characteristics provided by application"></section>
 
-        <section title="Action taken by network as result of receiving flow characteristics"/>
+        <section title="Action taken by network as result of receiving flow characteristics"></section>
 
-        <section title="Feedback provided by network"/>
+        <section title="Feedback provided by network"></section>
       </section>
 
       <section title="Multi-interface selection: Use metadata to help interface selection or prioritization">
-        <section title="Description of Problem"/>
+        <section title="Description of Problem"></section>
 
-        <section title="User Benefit"/>
+        <section title="User Benefit"></section>
 
-        <section title="Operator Benefit"/>
+        <section title="Operator Benefit"></section>
 
-        <section title="Flow characteristics provided by application"/>
+        <section title="Flow characteristics provided by application"></section>
 
-        <section title="Action taken by network as result of receiving flow characteristics"/>
+        <section title="Action taken by network as result of receiving flow characteristics"></section>
 
-        <section title="Feedback provided by network"/>
+        <section title="Feedback provided by network"></section>
       </section>
     </section>
 
