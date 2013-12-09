@@ -300,12 +300,13 @@
       </section>
 
       <section title="Video Adaptation: Use client metadata to help video bit rate selection">
-        <t>HTTP Adaptive Streaming is an umbrella term for various HTTP-based
-        streaming technologies that allow a client to adaptively switch
-        between multiple bitrates, depending on current network conditions.
-        HAS client first requests and receives a Manifest File, and then,
-        after parsing the information in the Manifest File, proceeds with
-        sequentially requesting the chunks listed in the Manifest File.</t>
+        <t>HTTP Adaptive Streaming (HAS) is an umbrella term for various
+        HTTP-based streaming technologies that allow a client to adaptively
+        switch between multiple bitrates, depending on current network
+        conditions. HAS client first requests and receives a Manifest File,
+        and then, after parsing the information in the Manifest File, proceeds
+        with sequentially requesting the chunks listed in the Manifest
+        File.</t>
 
         <section title="Description of Problem">
           <t>The problems with HAS are:</t>
@@ -317,9 +318,9 @@
               <t>HAS client does not have a mechanism to signal the flow
               characteristics and flow priority to the network.</t>
 
-              <t>Content Providers like Netflix, Youtube etc. may have tie-up
-              with ISPs and need a mechanism to convey the flow
-              characteristics and flow priority to the ISP.</t>
+              <t>Content Providers may have tie-up with ISPs and need a
+              mechanism to convey the flow characteristics and flow priority
+              to the ISP.</t>
 
               <t>HAS client needs a mechanism to be notified by the network
               whenever the link characteristics change so that it can
@@ -328,8 +329,8 @@
         </section>
 
         <section title="User Benefit">
-          <t>AEON helps increase the average played quality, reduces the
-          start-up delay and frame freezes thus improving the quality of
+          <t>AEON helps increase the average play quality, reduces the
+          start-up delay and frame freezes etc thus improving the quality of
           experience for end user.</t>
         </section>
 
@@ -339,9 +340,8 @@
           tie-up with content provider then HAS client can use third party
           authorization to request network resources. At a high level, this
           authorization works by the client first obtaining a cryptographic
-          token from the authorizing network element (e.g., Netflix, Youbute)
-          and includes that token in the request. ISP validates the token and
-          grants the request.</t>
+          token from the authorizing network element and includes that token
+          in the request. ISP validates the token and grants the request.</t>
         </section>
 
         <section title="Flow characteristics provided by application">
@@ -410,15 +410,9 @@
           mechanism where Interactive Connectivity Establishment (ICE) agent
           on a host with multiple interfaces uses AEON to determine the link
           characteristics of the host's interfaces, which influences the ICE
-          candidate priority.</t>
-        </section>
-
-        <section title="Action taken by network as result of receiving flow characteristics">
-          <t>NA</t>
-        </section>
-
-        <section title="Feedback provided by network">
-          <t>NA</t>
+          candidate priority. Similarly draft-wing-mptcp-pcp-00 explains how
+          Multipath TCP (MPTCP) can select the best path when multiple paths
+          are available.</t>
         </section>
       </section>
     </section>
