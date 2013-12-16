@@ -136,10 +136,10 @@
   <middle>
     <section title="Introduction">
       <t>This document describes application enabled open networking use
-      cases. Application enabled open networking (AEON) is a framework in
-      which applications explicitly signal their flow characteristics to the
-      network. This provides network nodes with visibility of the application
-      flow characteristics, which enables them to apply the correct flow
+      cases. Application enabled open networking (AEON) is an architecture in
+      which applications explicitly signal the characteristics of their flows
+      to the network. This provides network nodes with visibility into the
+      application flows, which enables them to apply the correct flow
       treatment and provide feedback to applications. Additional details on
       this framework are provided in <xref
       target="I-D.eckert-intarea-flow-metadata-framework"></xref></t>
@@ -232,10 +232,10 @@
         </section>
 
         <section title="User Benefit">
-          <t>New applications can be deployed in the Enterprise Network at a
-          faster rate. This mechanism can be used by any other Application
-          Function trusted by the network to permit time-bound, encrypted,
-          peer-to-peer traffic.</t>
+          <t>Enterprise networks that use firewalls with restrictive policies
+          can deploy new applications at a faster rate. This mechanism can be
+          used by any other Application Function trusted by the network to
+          permit time-bound, encrypted, peer-to-peer traffic.</t>
         </section>
 
         <section title="Operator Benefit">
@@ -265,9 +265,9 @@
         <section title="Feedback provided by firewall">
           <t>Firewall matches the authorization data with what is requested in
           the request sent by the client. If the authorization sets match, the
-          firewall honors the request made by the client. If the token is
+          firewall processes the request made by the client. If the token is
           invalid or the request exceeds what is authorized by the token then
-          firewall rejects the request with appropriate error response.</t>
+          firewall rejects the request. </t>
         </section>
       </section>
 
@@ -313,12 +313,12 @@
 
           <t><list style="symbols">
               <t>HAS client has to select the initial bitrate without knowing
-              the current network conditions.</t>
+              the current network conditions which could cause start-up delay
+              and frame freezes. HAS client does not have a mechanism to
+              signal the flow characteristics and flow priority to the
+              network.</t>
 
-              <t>HAS client does not have a mechanism to signal the flow
-              characteristics and flow priority to the network.</t>
-
-              <t>Content Providers may have tie-up with ISPs and need a
+              <t>Content Providers may have agreements with ISPs and need a
               mechanism to convey the flow characteristics and flow priority
               to the ISP.</t>
 
@@ -336,12 +336,13 @@
 
         <section title="Operator Benefit">
           <t>Network Operators do not have to perform Deep Packet Inspection
-          (DPI) to recognize one-way video streaming content. If ISP has
-          tie-up with content provider then HAS client can use third party
-          authorization to request network resources. At a high level, this
-          authorization works by the client first obtaining a cryptographic
-          token from the authorizing network element and includes that token
-          in the request. ISP validates the token and grants the request.</t>
+          (DPI) to recognize and prioritize one-way video streaming content.
+          If ISP has tie-up with content provider then HAS client can use
+          third party authorization to request network resources. At a high
+          level, this authorization works by the client first obtaining a
+          cryptographic token from the authorizing network element and
+          includes that token in the request along with relevant flow
+          characteristics. ISP validates the token and grants the request.</t>
         </section>
 
         <section title="Flow characteristics provided by application">
@@ -351,15 +352,16 @@
         </section>
 
         <section title="Action taken by network as result of receiving flow characteristics">
-          <t>The network might examine its static configuration and do
-          bandwidth counting, or it might reconfigure the underlying network
-          so that additional bandwidth is made available for this particular
-          flow, or might perform other actions.</t>
+          <t>Subject to local policies, a network node might perform bandwidth
+          counting, or reconfigure the underlying network so that additional
+          bandwidth is made available for this particular flow, or might
+          perform other actions.</t>
         </section>
 
         <section title="Feedback provided by network">
           <t>The network responds that the client request can be fully or
-          partially accommodated.</t>
+          partially accommodated. It also notifies the client when conditions
+          change.</t>
         </section>
       </section>
 
@@ -394,13 +396,13 @@
         </section>
 
         <section title="Operator Benefit">
-          <t>Network Operator which can provide the requested flow
-          characteristics will be selected by the application thus increasing
-          the subscriber base of the operator.</t>
+          <t>The network that can provide the requested flow characteristics
+          will be selected by the application thus increasing the subscriber
+          base of the operator.</t>
         </section>
 
         <section title="Flow characteristics provided by application">
-          <t>Application signals flow characteristics to multiple interfaces
+          <t>Application signals flow characteristics over multiple interfaces
           and based on the response from its various interfaces sorts the
           source addresses according to the link capacity characteristics.
           Source addresses from the interface which best fulfills the desired
@@ -419,7 +421,7 @@
 
     <section anchor="Acknowledgements" title="Acknowledgements">
       <t>The authors would like those you attended the bar BoF and contributed
-      to the set of use cases.</t>
+      to the set of use cases. </t>
     </section>
   </middle>
 
