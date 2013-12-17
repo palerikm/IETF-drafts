@@ -136,20 +136,20 @@
   <middle>
     <section title="Introduction">
       <t>This document describes application enabled open networking use
-      cases. Application enabled open networking (AEON) is an architecture in
+      cases. Application enabled open networking (AEON) is a framework in
       which applications explicitly signal the characteristics of their flows
       to the network. This provides network nodes with visibility into the
       application flows, which enables them to apply the correct flow
       treatment and provide feedback to applications. Additional details on
       this framework are provided in <xref
-      target="I-D.eckert-intarea-flow-metadata-framework"></xref></t>
+      target="I-D.eckert-intarea-flow-metadata-framework"></xref>, </t>
     </section>
 
     <section title="Use Cases">
       <t>The following use cases have been identified.<list counter="1"
           style="numbers">
           <t>Home: Consistent experience of video conferencing with competing
-          traffic.</t>
+          traffic. TBD: Why does that only apply to "home" ?</t>
 
           <t>Firewall Traversal: Identification of new applications.</t>
 
@@ -157,7 +157,10 @@
           balancing without solely relying on inspection techniques.</t>
 
           <t>Scavenger class: Creation of a scavenger class. Use metadata to
-          shift high-bandwidth, low priority traffic to off-peak hours.</t>
+          shift high-bandwidth, low priority traffic to off-peak hours. TBD:
+          That drifts from a use-case to a solution ("use metadata to ...").
+          Also, it appears to mix two things: (a) scavenger class and (b)
+          time-shifting traffic. This is confusing.</t>
 
           <t>Video Adaptation: Use client metadata to help video bit rate
           selection.</t>
@@ -200,7 +203,7 @@
       </section>
 
       <section title="Firewall Traversal: Identification of new applications">
-        <section title="Description of Problem">
+        <section title="Description of Problem and Solution">
           <t>Modern firewalls use application-layer gateways (ALGs) to perform
           policy enforcement. For example firewalls implement SIP-aware
           Application Layer Gateway function, which examines the SIP signaling
@@ -221,21 +224,23 @@
               exits a network via a different firewall).</t>
             </list></t>
 
-          <t>This problem can be addressed by the host getting authorization
-          from the Application Server trusted by the network in order to
-          install flows and associated actions (e.g., policies). PCP third
-          party authorization (draft-wing-pcp-third-party-authz-01) solves
-          this problem by associating the media session with the signaling
-          session. This is done by sending a cryptographic token in the
-          signaling which authorizes the firewall mapping for the media
+          <t>Enterprise networks that use firewalls with restrictive policies
+          block new applications like WebRTC and delay deployment of killer
+          applications. </t>
+
+          <t>The above problems can be addressed by the host getting
+          authorization from the Application Server trusted by the network in
+          order to install flows and associated actions (e.g., policies). PCP
+          third party authorization (draft-wing-pcp-third-party-authz-01)
+          solves this problem by associating the media session with the
+          signaling session. This is done by sending a cryptographic token in
+          the signaling which authorizes the firewall mapping for the media
           session.</t>
         </section>
 
         <section title="User Benefit">
           <t>Enterprise networks that use firewalls with restrictive policies
-          can deploy new applications at a faster rate. This mechanism can be
-          used by any other Application Function trusted by the network to
-          permit time-bound, encrypted, peer-to-peer traffic.</t>
+          can deploy new applications at a faster rate for user benefit. </t>
         </section>
 
         <section title="Operator Benefit">
@@ -245,8 +250,10 @@
           peer-to-peer UDP media session only when the call is initiated using
           the selected WebRTC server (Dr. Good) it trusts and block others
           (Dr. Evil). PCP-aware firewalls can enforce such granular security
-          policies without performing ALG on the session signaling
-          protocols.</t>
+          policies without performing ALG on the session signaling protocols.
+          This mechanism can be used by any other Application Function trusted
+          by the network to permit time-bound, encrypted, peer-to-peer
+          traffic.</t>
         </section>
 
         <section title="Flow characteristics provided by application">
@@ -267,7 +274,7 @@
           the request sent by the client. If the authorization sets match, the
           firewall processes the request made by the client. If the token is
           invalid or the request exceeds what is authorized by the token then
-          firewall rejects the request. </t>
+          firewall rejects the request.</t>
         </section>
       </section>
 
@@ -308,24 +315,54 @@
         with sequentially requesting the chunks listed in the Manifest
         File.</t>
 
-        <section title="Description of Problem">
+        <section title="Description of Problem and Solution">
           <t>The problems with HAS are:</t>
 
           <t><list style="symbols">
-              <t>HAS client has to select the initial bitrate without knowing
-              the current network conditions which could cause start-up delay
-              and frame freezes. HAS client does not have a mechanism to
-              signal the flow characteristics and flow priority to the
-              network.</t>
+              <t>HAS client selects the initial bitrate without knowing the
+              current network conditions which could cause start-up delay and
+              frame freezes. HAS client does not have a mechanism to signal
+              the flow characteristics and flow priority to the network.</t>
+
+              <t>HAS client and server can mark the packets appropriately but
+              setting DSCP has limitations like DSCP value may not be
+              preserved or honored over the Internet and OS may not allow
+              applications to set DSCP values.</t>
 
               <t>Content Providers may have agreements with ISPs and need a
               mechanism to convey the flow characteristics and flow priority
-              to the ISP.</t>
+              to the ISP. Limitations with existing mechanisms are:<list
+                  style="numbers">
+                  <t>ISP can be configured with the IP addresses of content
+                  providers to prioritize the traffic destined to these
+                  servers. The limitations with this approach are ISP has to
+                  keep track of content providers IP addresses, with CDNI
+                  (Content Delivery Network InterConnection) content could be
+                  served either from uCDN (upstream CDN) or any of dCDNs
+                  (dowstream CDN) and it will not be possible to manually
+                  track the IP addresses of all the CDN surrogates. There is
+                  also no way to differentiate content which could be
+                  available in different bitrates.</t>
 
-              <t>HAS client needs a mechanism to be notified by the network
-              whenever the link characteristics change so that it can
-              switchover to a different bitrate for subsequent chunks.</t>
+                  <t>If HAS client is behind NAT and content provider uses
+                  RESTful API (OneAPI) to install differentiated QOS then ISP
+                  will have to struggle to find the Pre NAT information.
+                  Content provider also needs to be aware of the ISP to which
+                  the client is attached and the IP address of the Policy
+                  Decision Point (PDP) in the ISP to which it needs to signal
+                  the flow characteristics.</t>
+                </list></t>
+
+              <t>ISP can use DPI to prioritize one-way video streaming content
+              but is expensive and fails if the traffic is encrypted.</t>
             </list></t>
+
+          <t>If ISP has agreement with content provider then HAS client can
+          use third party authorization to request network resources. At a
+          high level, this authorization works by the client first obtaining a
+          cryptographic token from the authorizing network element and
+          includes that token in the request along with relevant flow
+          characteristics. ISP validates the token and grants the request.</t>
         </section>
 
         <section title="User Benefit">
@@ -335,14 +372,8 @@
         </section>
 
         <section title="Operator Benefit">
-          <t>Network Operators do not have to perform Deep Packet Inspection
-          (DPI) to recognize and prioritize one-way video streaming content.
-          If ISP has tie-up with content provider then HAS client can use
-          third party authorization to request network resources. At a high
-          level, this authorization works by the client first obtaining a
-          cryptographic token from the authorizing network element and
-          includes that token in the request along with relevant flow
-          characteristics. ISP validates the token and grants the request.</t>
+          <t>Network Operators can recognize and prioritize one-way video
+          streaming content. </t>
         </section>
 
         <section title="Flow characteristics provided by application">
@@ -381,13 +412,14 @@
 
       <section title="Multi-interface selection: Use metadata to help interface selection or prioritization">
         <section title="Description of Problem">
-          <t>A host with multiple interfaces needs to choose the best
-          interface for communication. Oftentimes, this decision is based on a
-          static configuration and does not consider the link characteristics
-          of that interface, which may affect the user experience. The network
-          interfaces may have different link characteristics, but that will
-          not be known without the awareness of the upstream and downstream
-          characteristics of the access link.</t>
+          <t>An increasing number of hosts are operating in multiple-interface
+          environments and a host with multiple interfaces needs to choose the
+          best interface for communication. Oftentimes, this decision is based
+          on a static configuration and does not consider the link
+          characteristics of that interface, which may affect the user
+          experience. The network interfaces may have different link
+          characteristics, but that will not be known without the awareness of
+          the upstream and downstream characteristics of the access link.</t>
         </section>
 
         <section title="User Benefit">
@@ -420,8 +452,8 @@
     </section>
 
     <section anchor="Acknowledgements" title="Acknowledgements">
-      <t>The authors would like those you attended the bar BoF and contributed
-      to the set of use cases. </t>
+      <t>The authors thank the attendees of the Bar BoF for contributing
+      towards this set of use cases.</t>
     </section>
   </middle>
 
