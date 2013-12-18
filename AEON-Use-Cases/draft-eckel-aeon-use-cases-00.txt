@@ -5,7 +5,7 @@
 Internet Engineering Task Force                                 C. Eckel
 Internet-Draft                                                  T. Reddy
 Intended status: Informational                       Cisco Systems, Inc.
-Expires: June 20, 2014                                 December 17, 2013
+Expires: June 21, 2014                                 December 18, 2013
 
 
              Application Enabled Open Networking Use Cases
@@ -35,7 +35,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on June 20, 2014.
+   This Internet-Draft will expire on June 21, 2014.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Eckel & Reddy             Expires June 20, 2014                 [Page 1]
+Eckel & Reddy             Expires June 21, 2014                 [Page 1]
 
 Internet-Draft               AEON Use Cases                December 2013
 
@@ -75,16 +75,16 @@ Table of Contents
      2.1.  Home: Consistent experience of video conferencing with
            competing traffic . . . . . . . . . . . . . . . . . . . .   4
        2.1.1.  Description of Problem  . . . . . . . . . . . . . . .   4
-       2.1.2.  User Benefit  . . . . . . . . . . . . . . . . . . . .   4
-       2.1.3.  Operator Benefit  . . . . . . . . . . . . . . . . . .   4
-       2.1.4.  Flow characteristics provided by application  . . . .   4
+       2.1.2.  User Benefit  . . . . . . . . . . . . . . . . . . . .   5
+       2.1.3.  Operator Benefit  . . . . . . . . . . . . . . . . . .   5
+       2.1.4.  Flow characteristics provided by application  . . . .   5
        2.1.5.  Action taken by network as result of receiving flow
-               characteristics . . . . . . . . . . . . . . . . . . .   4
+               characteristics . . . . . . . . . . . . . . . . . . .   5
        2.1.6.  Feedback provided by network  . . . . . . . . . . . .   5
      2.2.  Firewall Traversal: Identification of new applications  .   5
        2.2.1.  Description of Problem and Solution . . . . . . . . .   5
        2.2.2.  User Benefit  . . . . . . . . . . . . . . . . . . . .   5
-       2.2.3.  Operator Benefit  . . . . . . . . . . . . . . . . . .   5
+       2.2.3.  Operator Benefit  . . . . . . . . . . . . . . . . . .   6
        2.2.4.  Flow characteristics provided by application  . . . .   6
        2.2.5.  Action taken by firewall as result of receiving flow
                characteristics . . . . . . . . . . . . . . . . . . .   6
@@ -97,11 +97,11 @@ Table of Contents
        2.3.3.  Operator Benefit  . . . . . . . . . . . . . . . . . .   6
        2.3.4.  Flow characteristics provided by application  . . . .   6
        2.3.5.  Action taken by network as result of receiving flow
-               characteristics . . . . . . . . . . . . . . . . . . .   6
-       2.3.6.  Feedback provided by network  . . . . . . . . . . . .   6
+               characteristics . . . . . . . . . . . . . . . . . . .   7
+       2.3.6.  Feedback provided by network  . . . . . . . . . . . .   7
      2.4.  Scavenger class: Creation of a scavenger class. Use
            metadata to shift high-bandwidth, low priority traffic to
-           off-peak hours  . . . . . . . . . . . . . . . . . . . . .   6
+           off-peak hours  . . . . . . . . . . . . . . . . . . . . .   7
        2.4.1.  Description of Problem  . . . . . . . . . . . . . . .   7
        2.4.2.  User Benefit  . . . . . . . . . . . . . . . . . . . .   7
        2.4.3.  Operator Benefit  . . . . . . . . . . . . . . . . . .   7
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Eckel & Reddy             Expires June 20, 2014                 [Page 2]
+Eckel & Reddy             Expires June 21, 2014                 [Page 2]
 
 Internet-Draft               AEON Use Cases                December 2013
 
@@ -125,7 +125,7 @@ Internet-Draft               AEON Use Cases                December 2013
        2.5.4.  Flow characteristics provided by application  . . . .   8
        2.5.5.  Action taken by network as result of receiving flow
                characteristics . . . . . . . . . . . . . . . . . . .   8
-       2.5.6.  Feedback provided by network  . . . . . . . . . . . .   8
+       2.5.6.  Feedback provided by network  . . . . . . . . . . . .   9
      2.6.  Mobile Host/App Metadata: Use metadata for
            troubleshooting and network planning  . . . . . . . . . .   9
        2.6.1.  Description of Problem  . . . . . . . . . . . . . . .   9
@@ -140,12 +140,15 @@ Internet-Draft               AEON Use Cases                December 2013
        2.7.1.  Description of Problem  . . . . . . . . . . . . . . .   9
        2.7.2.  User Benefit  . . . . . . . . . . . . . . . . . . . .   9
        2.7.3.  Operator Benefit  . . . . . . . . . . . . . . . . . .   9
-       2.7.4.  Flow characteristics provided by application  . . . .   9
+       2.7.4.  Flow characteristics provided by application  . . . .  10
    3.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  10
    4.  Informative References  . . . . . . . . . . . . . . . . . . .  10
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  10
 
 1.  Introduction
+
+   TODO: Abstract and Introduction don't explain any problem and have
+   the same text.
 
    This document describes application enabled open networking use
    cases.  Application enabled open networking (AEON) is a framework in
@@ -160,15 +163,15 @@ Internet-Draft               AEON Use Cases                December 2013
 
    The following use cases have been identified.
 
-   1.  Home: Consistent experience of video conferencing with competing
-       traffic.  TBD: Why does that only apply to "home" ?
 
 
-
-Eckel & Reddy             Expires June 20, 2014                 [Page 3]
+Eckel & Reddy             Expires June 21, 2014                 [Page 3]
 
 Internet-Draft               AEON Use Cases                December 2013
 
+
+   1.  Home: Consistent experience of video conferencing with competing
+       traffic.  TODO: Why does that only apply to "home" ?
 
    2.  Firewall Traversal: Identification of new applications.
 
@@ -177,7 +180,7 @@ Internet-Draft               AEON Use Cases                December 2013
 
    4.  Scavenger class: Creation of a scavenger class.  Use metadata to
        shift high-bandwidth, low priority traffic to off-peak hours.
-       TBD: That drifts from a use-case to a solution ("use metadata to
+       TODO: That drifts from a use-case to a solution ("use metadata to
        ...").  Also, it appears to mix two things: (a) scavenger class
        and (b) time-shifting traffic.  This is confusing.
 
@@ -210,6 +213,19 @@ Internet-Draft               AEON Use Cases                December 2013
 
 2.1.1.  Description of Problem
 
+
+
+
+
+
+
+
+
+Eckel & Reddy             Expires June 21, 2014                 [Page 4]
+
+Internet-Draft               AEON Use Cases                December 2013
+
+
 2.1.2.  User Benefit
 
 2.1.3.  Operator Benefit
@@ -218,13 +234,6 @@ Internet-Draft               AEON Use Cases                December 2013
 
 2.1.5.  Action taken by network as result of receiving flow
         characteristics
-
-
-
-Eckel & Reddy             Expires June 20, 2014                 [Page 4]
-
-Internet-Draft               AEON Use Cases                December 2013
-
 
 2.1.6.  Feedback provided by network
 
@@ -265,6 +274,14 @@ Internet-Draft               AEON Use Cases                December 2013
 
 2.2.2.  User Benefit
 
+
+
+
+Eckel & Reddy             Expires June 21, 2014                 [Page 5]
+
+Internet-Draft               AEON Use Cases                December 2013
+
+
    Enterprise networks that use firewalls with restrictive policies can
    deploy new applications at a faster rate for user benefit.
 
@@ -274,14 +291,6 @@ Internet-Draft               AEON Use Cases                December 2013
    need to be enhanced to perform ALG on new applications.  For example
    Enterprise firewall could have granular policies to permit peer-to-
    peer UDP media session only when the call is initiated using the
-
-
-
-Eckel & Reddy             Expires June 20, 2014                 [Page 5]
-
-Internet-Draft               AEON Use Cases                December 2013
-
-
    selected WebRTC server (Dr. Good) it trusts and block others (Dr.
    Evil).  PCP-aware firewalls can enforce such granular security
    policies without performing ALG on the session signaling protocols.
@@ -321,6 +330,14 @@ Internet-Draft               AEON Use Cases                December 2013
 
 2.3.4.  Flow characteristics provided by application
 
+
+
+
+Eckel & Reddy             Expires June 21, 2014                 [Page 6]
+
+Internet-Draft               AEON Use Cases                December 2013
+
+
 2.3.5.  Action taken by network as result of receiving flow
         characteristics
 
@@ -328,15 +345,6 @@ Internet-Draft               AEON Use Cases                December 2013
 
 2.4.  Scavenger class: Creation of a scavenger class.  Use metadata to
       shift high-bandwidth, low priority traffic to off-peak hours
-
-
-
-
-
-Eckel & Reddy             Expires June 20, 2014                 [Page 6]
-
-Internet-Draft               AEON Use Cases                December 2013
-
 
 2.4.1.  Description of Problem
 
@@ -367,35 +375,35 @@ Internet-Draft               AEON Use Cases                December 2013
 
    o  HAS client selects the initial bitrate without knowing the current
       network conditions which could cause start-up delay and frame
-      freezes.  HAS client does not have a mechanism to signal the flow
+      freezes while a lower bitrate chunk is being retrieved.  HAS
+      client does not have a mechanism to signal the flow
       characteristics and flow priority to the network.
 
-   o  HAS client and server can mark the packets appropriately but
-      setting DSCP has limitations like DSCP value may not be preserved
-      or honored over the Internet and OS may not allow applications to
-      set DSCP values.
+   o  Server can mark the packets appropriately but setting DSCP has
+      limitations like DSCP value may not be preserved or honored over
+      the Internet and OS may not allow to set DSCP values.
 
    o  Content Providers may have agreements with ISPs and need a
       mechanism to convey the flow characteristics and flow priority to
       the ISP.  Limitations with existing mechanisms are:
 
-      1.  ISP can be configured with the IP addresses of content
-          providers to prioritize the traffic destined to these servers.
-          The limitations with this approach are ISP has to keep track
-          of content providers IP addresses, with CDNI (Content Delivery
-          Network InterConnection) content could be served either from
-          uCDN (upstream CDN) or any of dCDNs (dowstream CDN) and it
-          will not be possible to manually track the IP addresses of all
 
 
-
-Eckel & Reddy             Expires June 20, 2014                 [Page 7]
+Eckel & Reddy             Expires June 21, 2014                 [Page 7]
 
 Internet-Draft               AEON Use Cases                December 2013
 
 
-          the CDN surrogates.  There is also no way to differentiate
-          content which could be available in different bitrates.
+      1.  ISP can be configured with the IP addresses of content
+          providers to prioritize the traffic originating from those
+          servers.  The limitations with this approach are ISP has to
+          keep track of content providers IP addresses, with CDNI
+          (Content Delivery Network InterConnection) content could be
+          served either from uCDN (upstream CDN) or any of dCDNs
+          (dowstream CDN) and it will not be possible to manually track
+          the IP addresses of all the CDN surrogates.  There is also no
+          way to differentiate content which could be available in
+          different bitrates.
 
       2.  If HAS client is behind NAT and content provider uses RESTful
           API (OneAPI) to install differentiated QOS then ISP will have
@@ -418,8 +426,9 @@ Internet-Draft               AEON Use Cases                December 2013
 2.5.2.  User Benefit
 
    AEON helps increase the average play quality, reduces the start-up
-   delay and frame freezes etc thus improving the quality of experience
-   for end user.
+   delay and frame freezes by avoiding attempt to retrieve a too high-
+   bit rate chunk etc thus improving the quality of experience for end
+   user.
 
 2.5.3.  Operator Benefit
 
@@ -434,21 +443,19 @@ Internet-Draft               AEON Use Cases                December 2013
 2.5.5.  Action taken by network as result of receiving flow
         characteristics
 
+
+
+Eckel & Reddy             Expires June 21, 2014                 [Page 8]
+
+Internet-Draft               AEON Use Cases                December 2013
+
+
    Subject to local policies, a network node might perform bandwidth
    counting, or reconfigure the underlying network so that additional
    bandwidth is made available for this particular flow, or might
    perform other actions.
 
 2.5.6.  Feedback provided by network
-
-
-
-
-
-Eckel & Reddy             Expires June 20, 2014                 [Page 8]
-
-Internet-Draft               AEON Use Cases                December 2013
-
 
    The network responds that the client request can be fully or
    partially accommodated.  It also notifies the client when conditions
@@ -491,20 +498,19 @@ Internet-Draft               AEON Use Cases                December 2013
 
 2.7.3.  Operator Benefit
 
+
+
+
+Eckel & Reddy             Expires June 21, 2014                 [Page 9]
+
+Internet-Draft               AEON Use Cases                December 2013
+
+
    The network that can provide the requested flow characteristics will
    be selected by the application thus increasing the subscriber base of
    the operator.
 
 2.7.4.  Flow characteristics provided by application
-
-
-
-
-
-Eckel & Reddy             Expires June 20, 2014                 [Page 9]
-
-Internet-Draft               AEON Use Cases                December 2013
-
 
    Application signals flow characteristics over multiple interfaces and
    based on the response from its various interfaces sorts the source
@@ -544,6 +550,18 @@ Authors' Addresses
    Email: eckelcu@cisco.com
 
 
+
+
+
+
+
+
+
+Eckel & Reddy             Expires June 21, 2014                [Page 10]
+
+Internet-Draft               AEON Use Cases                December 2013
+
+
    Tirumaleswar Reddy
    Cisco Systems, Inc.
    Cessna Business Park, Varthur Hobli
@@ -557,4 +575,42 @@ Authors' Addresses
 
 
 
-Eckel & Reddy             Expires June 20, 2014                [Page 10]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Eckel & Reddy             Expires June 21, 2014                [Page 11]

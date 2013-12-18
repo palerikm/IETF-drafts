@@ -135,6 +135,9 @@
 
   <middle>
     <section title="Introduction">
+      <t>TODO: Abstract and Introduction don't explain any problem and have
+      the same text.</t>
+
       <t>This document describes application enabled open networking use
       cases. Application enabled open networking (AEON) is a framework in
       which applications explicitly signal the characteristics of their flows
@@ -142,14 +145,14 @@
       application flows, which enables them to apply the correct flow
       treatment and provide feedback to applications. Additional details on
       this framework are provided in <xref
-      target="I-D.eckert-intarea-flow-metadata-framework"></xref>, </t>
+      target="I-D.eckert-intarea-flow-metadata-framework"></xref>,</t>
     </section>
 
     <section title="Use Cases">
       <t>The following use cases have been identified.<list counter="1"
           style="numbers">
           <t>Home: Consistent experience of video conferencing with competing
-          traffic. TBD: Why does that only apply to "home" ?</t>
+          traffic. TODO: Why does that only apply to "home" ?</t>
 
           <t>Firewall Traversal: Identification of new applications.</t>
 
@@ -157,7 +160,7 @@
           balancing without solely relying on inspection techniques.</t>
 
           <t>Scavenger class: Creation of a scavenger class. Use metadata to
-          shift high-bandwidth, low priority traffic to off-peak hours. TBD:
+          shift high-bandwidth, low priority traffic to off-peak hours. TODO:
           That drifts from a use-case to a solution ("use metadata to ...").
           Also, it appears to mix two things: (a) scavenger class and (b)
           time-shifting traffic. This is confusing.</t>
@@ -226,7 +229,7 @@
 
           <t>Enterprise networks that use firewalls with restrictive policies
           block new applications like WebRTC and delay deployment of killer
-          applications. </t>
+          applications.</t>
 
           <t>The above problems can be addressed by the host getting
           authorization from the Application Server trusted by the network in
@@ -240,7 +243,7 @@
 
         <section title="User Benefit">
           <t>Enterprise networks that use firewalls with restrictive policies
-          can deploy new applications at a faster rate for user benefit. </t>
+          can deploy new applications at a faster rate for user benefit.</t>
         </section>
 
         <section title="Operator Benefit">
@@ -321,20 +324,20 @@
           <t><list style="symbols">
               <t>HAS client selects the initial bitrate without knowing the
               current network conditions which could cause start-up delay and
-              frame freezes. HAS client does not have a mechanism to signal
-              the flow characteristics and flow priority to the network.</t>
+              frame freezes while a lower bitrate chunk is being retrieved.
+              HAS client does not have a mechanism to signal the flow
+              characteristics and flow priority to the network.</t>
 
-              <t>HAS client and server can mark the packets appropriately but
-              setting DSCP has limitations like DSCP value may not be
-              preserved or honored over the Internet and OS may not allow
-              applications to set DSCP values.</t>
+              <t>Server can mark the packets appropriately but setting DSCP
+              has limitations like DSCP value may not be preserved or honored
+              over the Internet and OS may not allow to set DSCP values.</t>
 
               <t>Content Providers may have agreements with ISPs and need a
               mechanism to convey the flow characteristics and flow priority
               to the ISP. Limitations with existing mechanisms are:<list
                   style="numbers">
                   <t>ISP can be configured with the IP addresses of content
-                  providers to prioritize the traffic destined to these
+                  providers to prioritize the traffic originating from those
                   servers. The limitations with this approach are ISP has to
                   keep track of content providers IP addresses, with CDNI
                   (Content Delivery Network InterConnection) content could be
@@ -367,13 +370,14 @@
 
         <section title="User Benefit">
           <t>AEON helps increase the average play quality, reduces the
-          start-up delay and frame freezes etc thus improving the quality of
-          experience for end user.</t>
+          start-up delay and frame freezes by avoiding attempt to retrieve a
+          too high-bit rate chunk etc thus improving the quality of experience
+          for end user.</t>
         </section>
 
         <section title="Operator Benefit">
           <t>Network Operators can recognize and prioritize one-way video
-          streaming content. </t>
+          streaming content.</t>
         </section>
 
         <section title="Flow characteristics provided by application">
