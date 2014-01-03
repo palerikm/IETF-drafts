@@ -8,10 +8,10 @@ do
     then
       echo "Entering Directory: $FILE"
       cd $FILE
+      mkdir ../Drafts/$FILE
       for XMLFILE in `ls *.xml 2>/dev/null`
       do
           echo "Procsessing file: $XMLFILE"
-          mkdir ../Drafts/$FILE
           xml2rfc -b ../Drafts/$FILE $XMLFILE --text --raw --html
           if [ $? -ne 0 ]
           then
