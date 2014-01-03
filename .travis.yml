@@ -1,0 +1,12 @@
+language: c
+compiler:
+  - gcc
+before_install:
+ - sudo apt-get install check
+
+# Change this to your needs
+script: 
+  - ./createdrafts.sh
+
+
+after_success: ./update_pages.sh
