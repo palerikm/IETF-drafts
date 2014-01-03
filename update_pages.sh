@@ -9,9 +9,7 @@ git config --global user.email "travis@travis-ci.org"
 git config --global user.name "Travis"
 
 git clone -b gh-pages https://${GH_TOKEN}@github.com/Draft-Mafia/IETF-drafts.git DraftStorage
-git clone -b gh-pages https://${GH_TOKEN}@github.com/Draft-Mafia/IETF-drafts.git start.htm
-git clone -b gh-pages https://${GH_TOKEN}@github.com/Draft-Mafia/IETF-drafts.git index.htm
-git clone -b gh-pages https://${GH_TOKEN}@github.com/Draft-Mafia/IETF-drafts.git end.html
+
 
 cp -r Drafts/* DraftStorage
 
@@ -46,7 +44,7 @@ cat end.html >>index.html
 
 
 git add -A DraftStorage
-git commit -m "Travis build $TRAVIS_BUILD_NUMBER pushed to gh-pages"
+git commit -a -m "Travis build $TRAVIS_BUILD_NUMBER pushed to gh-pages"
 git push origin gh-pages
 
 echo -e "Finishing to update gh-pages\n"
