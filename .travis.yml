@@ -2,7 +2,6 @@ language: c
 compiler:
   - gcc
 before_install:
- - sudo apt-get install python-pip
  - sudo pip install xml2rfc
 
 # Change this to your needs
