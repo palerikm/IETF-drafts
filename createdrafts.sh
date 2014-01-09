@@ -8,7 +8,12 @@ do
     then
       echo "Entering Directory: $FILE"
       cd $FILE
-      mkdir ../Drafts/$FILE
+      if [ "$FILE" = "Drafts" ]; then
+          echo "Ignoring Drafts folder"
+      else
+          mkdir ../Drafts/$FILE
+      fi
+      
       for XMLFILE in `ls *.xml 2>/dev/null`
       do
           echo "Procsessing file: $XMLFILE"
