@@ -100,9 +100,11 @@
  0                   1                   2                   3
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|0 0|   Type    |    sid    |Prp-len|   Empty   | Message Length|
+|0 0|   Type    |    sid    |TBD|         Message Length        |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|        Type Specific          |         Magic Cookie          |    
+|                           Magic Cookie                        |    
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|   Type Specific               |  Network feedback (TBD)       | 
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
             ]]></artwork>
@@ -117,13 +119,7 @@
           <t hangText="sid:"> Stream ID. User specific. Can for
             example be medialine index in SDP. MUST be different for
             each multiplexed mediastreams on the same 5-tuple</t>
-          
-          <t hangText="Prp-len:"> Pr padded length. If routers want to
-            add more network information by piggybacking on existing
-            packets it can intruct the clients to add a empty MEMO
-            attribute as padding. THe router can then use this
-            pre-padded attribute to add the desired information. </t>
-
+                    
           <t hangText="Message Length:">The message length MUST
             contain the size, in bytes, of the message not including
             the 8-byte MEMO header. </t>
