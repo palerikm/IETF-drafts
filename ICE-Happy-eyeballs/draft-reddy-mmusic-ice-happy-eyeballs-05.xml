@@ -10,7 +10,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="std" docName="draft-reddy-mmusic-ice-happy-eyeballs-04"
+<rfc category="std" docName="draft-reddy-mmusic-ice-happy-eyeballs-05"
      ipr="trust200902">
   <front>
     <title abbrev="Happy Eyeballs for ICE ">Happy Eyeballs Extension for
@@ -83,7 +83,9 @@
     <abstract>
       <t>This document provides guidelines on how to make
       ICE <xref target="RFC5245"></xref> conclude faster in IPv4/IPv6
-      dual-stack scenarios where broken paths exists.</t>
+      dual-stack scenarios where broken paths exists. This will lead
+      to more sustained IPv6 deployment as users will longer have an
+      incentive to disable IPv6. </t>
     </abstract>
   </front>
 
@@ -98,9 +100,12 @@
       obsoleted by <xref target="RFC6724"></xref> but following the
       recommendations from the updated RFC will still lead to
       prioritization of IPv6 over IPv4 with the same candidate
-      type. There can be a lot of ICE candidates belonging to one
-      address family which results in user-noticeable setup delays if
-      the path for that address family is broken.</t>
+      type. Due to prioritization recommendations mentioned above, the
+      connectivity checks for candidates of the same type (HOST, RFLX,
+      RELAY) would be sent in such a order that one IP addresses family
+      is depleted before any checks on a different address family is
+      started. This will results in user-noticeable setup delays if
+      the path for the first address family is broken.</t>
 
       <t>To avoid such user-noticeable delays when the IPv6 path or
       IPv4 path is broken, this specification encourages earlier
@@ -125,26 +130,26 @@
       <t>Candidates SHOULD be prioritized such that a long sequence of
       candidates belonging to the same address family be interleaved
       with candidates from the alternate IP family. For example,
-      promoting IPv4 candidates in the presence of many IPv6 addresses
+      promoting IPv4 candidates in the presence of many IPv6 candidates
       such that an IPv4 address candidate is always present after a
-      small sequence of IPv6 addresses. This makes ICE connectivity
+      small sequence of IPv6 candidates. This makes ICE connectivity
       checks more responsive to failures of an address family by
       reordering the candidates such that IPv6 and IPv4 candidates get
-      a fair chance during connectivity checks.</t>
+      a fair chance during the connectivity check phase.</t>
 
       <t>An ICE agent can choose an algorithm or a technique of its
-      choice to ensure the resulting checklists have a fair interleaved
-      mix of IPv4 and IPv6 address families. Modifying the checklist
-      directly can lead to uncoordinated local and remote checklists
-      that result in ICE taking longer to complete. The best approach
-      is to modify the formula for calculating the candidate priority
-      value. Section <xref target="compability" /> discusses this in
-      greater detail.</t>
+      choice to ensure the resulting checklists have a fair
+      interleaved mix of IPv4 and IPv6 address families. Modifying the
+      checklist directly can lead to uncoordinated local and remote
+      checklists that result in ICE taking longer to complete. The
+      best approach is to modify the formula for calculating the
+      candidate priority value described in
+      ICE <xref target="RFC5245"></xref> section 4.1.2.1.</t>
     </section>
 
     <section title="Compatibility" anchor="compability">
       <t>ICE <xref target="RFC5245"></xref> section 4.1.2 states that
-        the formula in section 4.1.2.1 SHOULD be used. The fomula is
+        the formula in section 4.1.2.1 SHOULD be used. The formula is
         as follows:</t>
       <t>
         <figure>
@@ -157,10 +162,10 @@
       </t>
       <t>ICE <xref target="RFC5245"></xref> section 4.1.2.2 have
       guidelines for how the type preference value should be
-      chosen. Instead of having one static value for IPv4 and one
-      static value for IPv6 type of addresses, it is possible to choose
-      this value dynamically in such a way that IPv4 and IPv6 addresses
-      would have ended up interleaved in a list where the candidates
+      chosen. Instead of having a static value for IPv4 and a
+      static value for IPv6 type of addresses, it is possible to
+      choose this value dynamically in such a way that IPv4 and IPv6
+      addresses ends up interleaved in a list where the candidates
       where sorted by priority. </t>
 
       <t>The local and remote agent can have different algorithms for
@@ -181,8 +186,9 @@
       </t>
      
       <t>Where G is the candidate provided by the controlling agent
-      and D the priority provided by the controlled agent. Ensures
-      that the local and remote checklists are coordinated. </t>
+      and D the priority provided by the controlled agent. This
+      ensures that the local and remote checklists are
+      coordinated. </t>
       
       <t>Interoperability with agents that does not support ICE Happy
       Eyeballs are supported in the same way as two agents with
