@@ -43,9 +43,7 @@
 
       <address>
         <postal>
-          <street>Cessna Business Park, Varthur Hobli</street>
-
-          <street>Sarjapur Marathalli Outer Ring Road</street>
+          <street/>
 
           <city>Bangalore</city>
 
@@ -76,127 +74,119 @@
       </address>
     </author>
 
-    <date />
+    <date/>
 
     <workgroup>MMUSIC</workgroup>
 
     <abstract>
-      <t>This document provides guidelines on how to make
-      ICE <xref target="RFC5245"></xref> conclude faster in IPv4/IPv6
-      dual-stack scenarios where broken paths exists. This will lead
-      to more sustained IPv6 deployment as users will longer have an
-      incentive to disable IPv6. </t>
+      <t>This document provides guidelines on how to make ICE <xref
+      target="RFC5245"/> conclude faster in IPv4/IPv6 dual-stack scenarios
+      where broken paths exist. This will lead to more sustained IPv6
+      deployment as users will longer have an incentive to disable IPv6.</t>
     </abstract>
   </front>
 
   <middle>
     <section anchor="introduction" title="Introduction">
-      <t>There is a need to introduce fairness in the handling of
-      connectivity checks sent on different IP address families in
-      dual-stack IPv4/IPv6 ICE scenarios. Section 4.1.2.1 of
-      ICE <xref target="RFC5245"></xref> points
-      to <xref target="RFC3484"></xref> for prioritizing among the
-      different IP families. <xref target="RFC3484"></xref> is
-      obsoleted by <xref target="RFC6724"></xref> but following the
-      recommendations from the updated RFC will still lead to
-      prioritization of IPv6 over IPv4 with the same candidate
-      type. Due to prioritization recommendations mentioned above, the
-      connectivity checks for candidates of the same type (HOST, RFLX,
-      RELAY) would be sent in such a order that one IP addresses family
-      is depleted before any checks on a different address family is
-      started. This will results in user-noticeable setup delays if
-      the path for the first address family is broken.</t>
+      <t>There is a need to introduce more fairness in the handling of
+      connectivity checks for different IP address families in dual-stack
+      IPv4/IPv6 ICE scenarios. Section 4.1.2.1 of ICE <xref target="RFC5245"/>
+      points to <xref target="RFC3484"/> for prioritizing among the different
+      IP families. <xref target="RFC3484"/> is obsoleted by <xref
+      target="RFC6724"/> but following the recommendations from the updated
+      RFC will lead to prioritization of IPv6 over IPv4 for the same candidate
+      type. Due to this, connectivity checks for candidates of the same type
+      (HOST, RFLX, RELAY) are sent such that an IP address family is
+      completely depleted before checks on the other address family are
+      started. This results in user-noticeable setup delays if the path for
+      the first address family is broken.</t>
 
-      <t>To avoid such user-noticeable delays when the IPv6 path or
-      IPv4 path is broken, this specification encourages earlier
-      checking of the other address family. Introducing IP address
-      family fairness into ICE connectivity checks will lead to more
-      sustained IPv6 deployment (so users will no longer have an
-      incentive to disable IPv6), which incurs only a small penalty
-      for the IPv4 connectivity checks.</t>
+      <t>To avoid such user-noticeable delays when either IPv6 path or IPv4
+      path is broken, this specification encourages earlier checking of the
+      other address family. Introducing IP address family fairness into ICE
+      connectivity checks will lead to more sustained IPv6 deployment (so
+      users will no longer have an incentive to disable IPv6), with only a
+      small penalty for IPv4 connectivity checks.</t>
 
       <section anchor="notation" title="Notational Conventions">
-        <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL",
-        "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and
-        "OPTIONAL" in this document are to be interpreted as described
-        in <xref target="RFC2119"></xref>.</t>
+        <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+        "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+        document are to be interpreted as described in <xref
+        target="RFC2119"/>.</t>
 
-        <t>This document uses terminology defined
-        in <xref target="RFC5245"></xref>.</t>
+        <t>This document uses terminology defined in <xref
+        target="RFC5245"/>.</t>
       </section>
     </section>
 
     <section title="Improving ICE Dual-stack Fairness">
       <t>Candidates SHOULD be prioritized such that a long sequence of
-      candidates belonging to the same address family be interleaved
-      with candidates from the alternate IP family. For example,
-      promoting IPv4 candidates in the presence of many IPv6 candidates
-      such that an IPv4 address candidate is always present after a
-      small sequence of IPv6 candidates. This makes ICE connectivity
-      checks more responsive to failures of an address family by
-      reordering the candidates such that IPv6 and IPv4 candidates get
-      a fair chance during the connectivity check phase.</t>
+      candidates belonging to the same address family be interleaved with
+      candidates from the alternate IP family. For example, promoting IPv4
+      candidates in the presence of many IPv6 candidates such that an IPv4
+      address candidate is always present after a small sequence of IPv6
+      candidates i.e., reordering candidates such that IPv6 and IPv4
+      candidates get a fair chance during the connectivity check phase. This
+      makes ICE connectivity checks more responsive to failures of an address
+      family.</t>
 
-      <t>An ICE agent can choose an algorithm or a technique of its
-      choice to ensure the resulting checklists have a fair
-      interleaved mix of IPv4 and IPv6 address families. Modifying the
-      checklist directly can lead to uncoordinated local and remote
-      checklists that result in ICE taking longer to complete. The
-      best approach is to modify the formula for calculating the
-      candidate priority value described in
-      ICE <xref target="RFC5245"></xref> section 4.1.2.1.</t>
+      <t>An ICE agent can choose an algorithm or a technique of its choice to
+      ensure that the resulting check lists have a fair interleaved mix of
+      IPv4 and IPv6 address families. Modifying the checklist directly can
+      lead to uncoordinated local and remote checklists that result in ICE
+      taking longer to complete. The best approach is to modify the formula
+      for calculating the candidate priority value described in ICE <xref
+      target="RFC5245"/> section 4.1.2.1.</t>
     </section>
 
-    <section title="Compatibility" anchor="compability">
-      <t>ICE <xref target="RFC5245"></xref> section 4.1.2 states that
-        the formula in section 4.1.2.1 SHOULD be used. The formula is
-        as follows:</t>
-      <t>
-        <figure>
+    <section anchor="compability" title="Compatibility">
+      <t>ICE <xref target="RFC5245"/> section 4.1.2 states that the formula in
+      section 4.1.2.1 SHOULD be used. The formula is as follows:</t>
+
+      <t><figure>
           <artwork align="right"><![CDATA[
      priority = (2^24)*(type preference) + 
                 (2^8)*(local preference) + 
                 (2^0)*(256 - component ID)
           ]]></artwork>
-        </figure>
-      </t>
-      <t>ICE <xref target="RFC5245"></xref> section 4.1.2.2 have
-      guidelines for how the type preference value should be
-      chosen. Instead of having a static value for IPv4 and a
-      static value for IPv6 type of addresses, it is possible to
-      choose this value dynamically in such a way that IPv4 and IPv6
-      addresses ends up interleaved in a list where the candidates
-      where sorted by priority. </t>
+        </figure></t>
 
-      <t>The local and remote agent can have different algorithms for
-      choosing the type preference value without any impact on
-      coordination between the local and remote checklist. </t>
-        
-      <t>The checklist is made up by candidate pairs. A candidate pair
-      is two candidates paired up and given a candidate pair priority
-      as described in <xref target="RFC5245"></xref> section
-      5.7.2. Using the pair priority formula:</t>
+      <t>ICE <xref target="RFC5245"/> section 4.1.2.2 has guidelines for how
+      the type preference value should be chosen. Instead of having a static
+      value for IPv4 and a static value for IPv6 type of addresses, it is
+      possible to choose this value dynamically in such a way that IPv4 and
+      IPv6 addresses end up interleaved in a list where candidates where
+      sorted by priority.</t>
 
-      <t>
-        <figure>
+      <t>The local and remote agent can have different algorithms for choosing
+      the type preference value without any impact on coordination between the
+      local and remote checklist.</t>
+
+      <t>The checklist is made up by candidate pairs. A candidate pair is two
+      candidates paired up and given a candidate pair priority as described in
+      <xref target="RFC5245"/> section 5.7.2. Using the pair priority
+      formula:</t>
+
+      <t><figure>
           <artwork align="right"><![CDATA[
      pair priority = 2^32*MIN(G,D) + 2*MAX(G,D) + (G>D?1:0)
           ]]></artwork>
-        </figure>
-      </t>
-     
-      <t>Where G is the candidate provided by the controlling agent
-      and D the priority provided by the controlled agent. This
-      ensures that the local and remote checklists are
-      coordinated. </t>
-      
-      <t>Interoperability with agents that does not support ICE Happy
-      Eyeballs are supported in the same way as two agents with
-      different ICE Happy Eyeballs candidate priority algorithms. It
-      is the controlling agent that have most impact on how the
-      checklist is sorted due to the formula above. If the controlling
-      agent does not support any form of ICE Happy Eyeball algorithm,
-      the effect is standard ICE behaviour</t>
+        </figure></t>
+
+      <t>Where G is the candidate provided by the controlling agent and D the
+      priority provided by the controlled agent. This ensures that the local
+      and remote checklists are coordinated.</t>
+
+      <t>Interoperability with agents that do not support ICE Happy Eyeballs
+      is supported in the same way as two agents with different ICE Happy
+      Eyeballs candidate priority algorithms. </t>
+
+      <t>Based on candidate pair priority formula above, the end point that
+      has promoted IPv4 cautiosly i.e. IPv4 lower in its list when compared to
+      the other end point, will influence the candidate priority pairing due
+      to (2^32*MIN(G,D)) in the formula. So essentially, even If one of the
+      agents does not support a form of ICE Happy Eyeball algorithm, the
+      effect is standard ICE behaviour.</t>
     </section>
 
     <section title="IANA Considerations">
@@ -206,8 +196,8 @@
     <section anchor="security" title="Security Considerations">
       <t>STUN connectivity check using MAC computed during key exchanged in
       the signaling channel provides message integrity and data origin
-      authentication as described in section 2.5 of <xref
-      target="RFC5245"></xref> apply to this use.</t>
+      authentication as described in section 2.5 of <xref target="RFC5245"/>
+      apply to this use.</t>
     </section>
 
     <section anchor="ack" title="Acknowledgements">
