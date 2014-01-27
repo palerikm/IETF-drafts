@@ -375,7 +375,7 @@
     <references title="Normative References">
       <?rfc include='reference.RFC.0791.xml' ?>
       <?rfc include='reference.RFC.2119.xml' ?>
-      <?rfc include='reference.RFC.2629.xml' ?>
+      <!--<?rfc include='reference.RFC.2629.xml' ?> -->
       <?rfc include='reference.RFC.5245.xml' ?>
       <?rfc include='reference.RFC.5389.xml' ?>
     </references>

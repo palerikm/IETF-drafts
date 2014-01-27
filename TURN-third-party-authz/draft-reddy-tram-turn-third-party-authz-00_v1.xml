@@ -503,8 +503,8 @@ User : Alice
     </references>
 
     <references title="Informative References">
-      <?rfc include='reference.I-D.ietf-rtcweb-use-cases-and-requirements'
-?>
+      <!--<?rfc include='reference.I-D.ietf-rtcweb-use-cases-and-requirements'
+?>-->
 
       <?rfc include='reference.I-D.ietf-rtcweb-overview'?>
 
@@ -514,11 +514,11 @@ User : Alice
 
       <?rfc include="reference.RFC.6819"?>
 
-      <?rfc include="reference.RFC.5245"?>
+     <!-- <?rfc include="reference.RFC.5245"?> -->
 
-      <?rfc include="reference.RFC.3261"?>
+      <!--<?rfc include="reference.RFC.3261"?> -->
 
-      <?rfc include="reference.RFC.6819"?>
+      <!--<?rfc include="reference.RFC.6819"?> -->
 
       <!---->
     </references>

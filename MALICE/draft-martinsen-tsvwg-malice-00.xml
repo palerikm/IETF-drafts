@@ -488,11 +488,7 @@
     <references title="Normative References">
       &rfc2119;
       
-      <?rfc include="reference.RFC.4732"?>
-      
       <?rfc include="reference.RFC.5389"?>
-
-      <?rfc include="reference.RFC.6398"?>
 
       <?rfc include="reference.RFC.5245"?>
     </references>
@@ -500,11 +496,11 @@
     <references title="Informational References">
       <?rfc include='reference.I-D.ietf-rtcweb-security-arch' ?>
 
-      <?rfc include='reference.I-D.muthu-behave-consent-freshness' ?>
+      <!--<?rfc include='reference.I-D.muthu-behave-consent-freshness' ?>-->
     </references>
 
-    <!--
- -->
+    
+ 
 
     <!--
       -->
