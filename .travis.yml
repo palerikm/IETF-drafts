@@ -2,6 +2,7 @@ language: c
 compiler:
 - gcc
 before_install:
+- sudo pip install lxml
 - sudo pip install xml2rfc
 script:
 - ./createdrafts.sh
