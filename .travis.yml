@@ -3,7 +3,7 @@ compiler:
 - gcc
 before_install:
 - sudo pip install lxml
-- sudo pip install xml2rfc
+- sudo pip install xml2rfc==2.4.3
 script:
 - ./createdrafts.sh
 after_success: ./update_pages.sh
