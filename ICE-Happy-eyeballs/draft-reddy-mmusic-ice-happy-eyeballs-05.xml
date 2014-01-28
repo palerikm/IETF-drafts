@@ -59,7 +59,7 @@
 
       <address>
         <postal>
-          <street>Philip Pedersens vei 22</street>
+          <street>Philip Pedersens Vei 22</street>
 
           <city>Lysaker</city>
 
@@ -99,17 +99,16 @@
       (HOST, RFLX, RELAY) are sent such that an IP address family is
       completely depleted before checks on the other address family are
       started. This results in user noticeable setup delays if the path for
-      the first address family is broken.</t>
+      the prioritized address family is broken.</t>
 
-      <t>To avoid such user noticeable delays when either IPv6 path or
-      IPv4 path is broken, this specification encourages intermingling
-      the different address families when connectivity checks are
+      <t>To avoid such user noticeable delays when either IPv6 or IPv4
+      path is broken, this specification encourages intermingling the
+      different address families when connectivity checks are
       conducted. Introducing IP address family fairness into ICE
-      connectivity checks will lead to more sustained IPv6 deployment
-      (so users will no longer have an incentive to disable IPv6),
-      with only a small penalty for IPv4 connectivity checks.</t>
-
-      
+      connectivity checks will lead to more sustained dual-stack
+      IPv4/IPv6 deployment as users will no longer have an incentive
+      to disable IPv6. The cost is a small penalty to the address type
+      that otherwise would have been prioritized.</t>
     </section>
 
     <section anchor="notation" title="Notational Conventions">
@@ -144,11 +143,12 @@
     </section>
 
     <section anchor="compability" title="Compatibility">
-      <t>ICE <xref target="RFC5245"/> section 4.1.2 states that the formula in
-      section 4.1.2.1 SHOULD be used. The formula is as follows:</t>
+      <t>ICE <xref target="RFC5245"/> section 4.1.2 states that the
+      formula in section 4.1.2.1 SHOULD be used to calculate the
+      candidate priority. The formula is as follows:</t>
 
       <t><figure>
-          <artwork align="right"><![CDATA[
+          <artwork align="left"><![CDATA[
      priority = (2^24)*(type preference) + 
                 (2^8)*(local preference) + 
                 (2^0)*(256 - component ID)
@@ -171,7 +171,7 @@
       formula:</t>
 
       <t><figure>
-          <artwork align="right"><![CDATA[
+          <artwork align="left"><![CDATA[
      pair priority = 2^32*MIN(G,D) + 2*MAX(G,D) + (G>D?1:0)
           ]]></artwork>
         </figure></t>
@@ -184,15 +184,18 @@
       the candidate priority value to get an intermingled set of IPv4
       and IPv6 candidates, the resulting checklist, that is a list
       sorted by the pair priority value, will be identical on the two
-      agents. </t>
+      agents.</t>
 
       <t>The agent that has promoted IPv4 cautiously i.e. lower IPv4
       candidate priority values compared to the other agent, will
       influence the check list the most due to (2^32*MIN(G,D)) in the
-      formula, i.e., if an agent does not support any intermingling of
-      the candidate address types it will be the most cautious of the
-      agents and will dictate the resulting check list on both
-      agents.</t>
+      formula.</t>
+
+      <t>These recommendations are backward compatible with a standard
+      ICE implementation. If the other agent have IPv4 candidates with
+      higher priorities due to intermingling, the effect is canceled
+      when the checklist is formed and the pair priority formula is
+      used to calculate the pair priority.</t>
 
     </section>
 
