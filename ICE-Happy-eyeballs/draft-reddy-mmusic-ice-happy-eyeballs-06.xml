@@ -155,14 +155,16 @@
           ]]></artwork>
         </figure></t>
 
-      <t>ICE <xref target="RFC5245"/> section 4.1.2.2 has guidelines for how
-      the type preference value should be chosen. Instead of having a static
-      value for IPv4 and a static value for IPv6 type of addresses, it is
-      possible to choose this value dynamically in such a way that IPv4 and
-      IPv6 address candidate priorities ends up intermingled.</t>
+      <t>ICE <xref target="RFC5245"/> section 4.1.2.2 has guidelines
+      for how the type preference and local preference value should be
+      chosen. Instead of having a static value for IPv4 and a static
+      value for IPv6 type of addresses for the local preference, it is
+      possible to choose this value dynamically in such a way that
+      IPv4 and IPv6 address candidate priorities ends up intermingled
+      within the same candidate type (HOST, RFLX, RELAY).</t>
 
       <t>The local and remote agent can have different algorithms for choosing
-      the type preference value without any impact on coordination between the
+      the local preference value without any impact on coordination between the
       local and remote check list.</t>
 
       <t>The check list is made up by candidate pairs. A candidate pair is two
@@ -211,8 +213,9 @@
     </section>
 
     <section anchor="ack" title="Acknowledgements">
-      <t>Authors would like to thank Dan Wing, Ari Keranen, Bernard Aboba,
-      Martin Thomson and Jonathan Lennox for their comments and review.</t>
+      <t>Authors would like to thank Dan Wing, Ari Keranen, Bernard
+      Aboba, Martin Thomson, Jonathan Lennox and Balint Menyhart for
+      their comments and review.</t>
     </section>
   </middle>
 
