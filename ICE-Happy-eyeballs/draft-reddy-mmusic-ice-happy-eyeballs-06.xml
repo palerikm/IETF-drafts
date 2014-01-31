@@ -79,10 +79,9 @@
     <workgroup>MMUSIC</workgroup>
 
     <abstract>
-      <t>This document provides guidelines on how to make ICE <xref
-      target="RFC5245"/> conclude faster in IPv4/IPv6 dual-stack scenarios
-      where broken paths exist. This will lead to more sustained IPv6
-      deployment as users will no longer have an incentive to disable IPv6.</t>
+      <t>This document provides guidelines on how to make Interactive
+      Connectivity Establishment (ICE) conclude faster in IPv4/IPv6
+      dual-stack scenarios where broken paths exist.</t>
     </abstract>
   </front>
 
@@ -133,13 +132,14 @@
       connectivity checks more responsive to broken path failures of
       an address family.</t>
 
-      <t>An ICE agent can choose an algorithm or a technique of its choice to
-      ensure that the resulting check lists have a fair intermingled mix of
-      IPv4 and IPv6 address families. Modifying the check list directly can
-      lead to uncoordinated local and remote check lists that result in ICE
-      taking longer to complete. The best approach is to modify the formula
-      for calculating the candidate priority value described in ICE <xref
-      target="RFC5245"/> section 4.1.2.1.</t>
+      <t>An ICE agent can choose an algorithm or a technique of its
+      choice to ensure that the resulting check lists have a fair
+      intermingled mix of IPv4 and IPv6 address families. Modifying
+      the check list directly can lead to uncoordinated local and
+      remote check lists that result in ICE taking longer to complete
+      or in the worst case scenario fail. The best approach is to
+      modify the formula for calculating the candidate priority value
+      described in ICE <xref target="RFC5245"/> section 4.1.2.1.</t>
     </section>
 
     <section anchor="compability" title="Compatibility">
@@ -164,7 +164,7 @@
       within the same candidate type (HOST, RFLX, RELAY).</t>
 
       <t>The local and remote agent can have different algorithms for choosing
-      the local preference value without any impact on coordination between the
+      the local preference value without impacting the synchronization between the
       local and remote check list.</t>
 
       <t>The check list is made up by candidate pairs. A candidate pair is two
@@ -178,8 +178,8 @@
           ]]></artwork>
         </figure></t>
 
-      <t>Where G is the candidate provided by the controlling agent and D the
-      priority provided by the controlled agent. This ensures that the local
+      <t>Where G is the candidate priority provided by the controlling agent and D the
+      candidate priority provided by the controlled agent. This ensures that the local
       and remote check lists are coordinated.</t>
 
       <t>Even if the two agents have different algorithms for choosing
@@ -199,6 +199,55 @@
       when the checklist is formed and the pair priority formula is
       used to calculate the pair priority.</t>
 
+    </section>
+
+    <section title="Example Algorithm for Choosing the Local
+      Preference">
+      <t>The value space for the local preference is from 0 to 65535
+      inclusive. This value space can be divided up in chunks for each
+      IP address family.
+      </t>
+
+      <t>
+        An IPv6 and IPv4 start priority must be given. In this example
+        IPv6 starts at 60000 and IPv4 at 59000. This leaves enough
+        address space to further play with the values if pr interface
+        priorities needs to be added. The highest value should be given
+        to the address family that should be prioritized. 
+      </t>
+      <t>
+        <figure>
+          <artwork align="left"><![CDATA[
+      IPv6    IPv4 
+      Start   Start 
+65535  60k     59k    58k    57k    56k    55k                    0
++--------+------+------+------+------+------+---------------------+
+|        | IPv6 | IPv4 | IPv6 | IPv4 | IPv6 |                     |
+|        | (1)  |  (1) |  (2) |  (2) |  (3) |                     |
++--------+------+------+------+------+------+---------------------+
+          <- N->
+          ]]></artwork>
+        </figure>
+      </t>
+      <t>
+        The local preference can be calculated by the given formula:
+      </t>
+      <t>
+        <figure>
+          <artwork align="left"><![CDATA[
+            
+      local_preference = N*2*(Cn/Cmax)
+          ]]></artwork>
+        </figure>
+      </t>
+      <t>
+       Where N is the absolute value of IPv6_start-IPv4_start. This
+       ensures a positive number even if IPv4 is the highest
+       priority. Cn is the number of current candidates of a specific
+       IP address type and candidate type (HOST, SRFLX, RELAY).  Cmax is
+       the number of allowed consecutive candidates of the same IP address
+       type.
+      </t>
     </section>
 
     <section title="IANA Considerations">
