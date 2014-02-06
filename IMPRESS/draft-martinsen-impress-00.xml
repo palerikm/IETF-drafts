@@ -273,6 +273,15 @@
         congestion value. But values close to MAX may lead to
         applications rate adoption mechanisms to kick in. (Fairness problem)
       </t>
+      <t>
+        TODO: Describe interaction with DSCP. The rtcweb-qos documents
+        explicitly says how to map for instance video to a DSCP
+        value. If the DSCP values was somehow reset on the path (That
+        happens) the router can remark the IP packets correctly by
+        looking at the STUN message. (IE the signalling in the STUN
+        message survives the whole path, and is integrity protects,
+        but the network node have no way of detecting that...)
+      </t>
     </section>
     
     <section title="New STUN attributes">
@@ -317,13 +326,13 @@
               approximate bandwidth usage in kbps. If this is unknown
               the value 0x0 is used.
             </t>
-            <t hangText="Delay Tol:"> Delay tollerance in ms. A number
+            <t hangText="Delay Tol:"> Delay tolerance in ms. A number
             describing the total delay a stream can experience before
             problems occur. 
 
             </t>
-            <t hangText="Loss Tol:"> Loss tollerance. Number descibing
-            percentage of packets that can be lost without severly
+            <t hangText="Loss Tol:"> Loss tolerance. Number describing
+            percentage of packets that can be lost without severely
             affecting the quality of the stream.
             </t>
 
