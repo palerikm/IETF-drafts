@@ -134,15 +134,18 @@
 
     <section title="General Usage">
       <t>
-        This draft defines two attributes that can be added to a
-        STUN message; STREAM-PROPERTIES and NETWORK-STATUS. Se
-        section ?? for the formal description. It is RECOMMENDED to
-        add them to a STUN request response pair, especially if the
-        NETWORK STATUS attribute is in use.
+        This draft defines several attributes that can be added to a
+        STUN message; STREAM-TYPE, BANDWIDTH-USAGE, DELAY-TOLERANCE,
+        LOSS-TOLERANCE and NETWORK-STATUS. Se
+        <xref target="new_attributes" /> for the
+        formal description. It is RECOMMENDED to add them to a STUN
+        request response pair, especially if the NETWORK STATUS
+        attribute is in use.
       </t>
       
       <t>
-        The STREAM-PROPERTIES attribute MUST be added before any
+        The STREAM-TYPE, BANDWIDTH-USAGE, DELAY-TOLERANCE,
+        LOSS-TOLERANCE attributes MUST be added before any
         INTEGRITY attribute. It is RECOMMENDED to only add this
         attribute to STUN messages containing a INTEGRITY attribute
         as this prevents tampering with the content of the attribute.
@@ -177,6 +180,37 @@
         downstream direction.
       </t>
       <t>
+        It might make sense to distinguish IMPRESS packets from normal STUN
+        packets. This would prevent unnecessary processing of normal
+        STUN packets on the network nodes.
+      </t>
+      <t>
+        A few alternatives (Needs discussion):
+        <list style="numbers">
+          <t>
+            Alter the STUN magic cookie. (But than i would not be a
+            STUN packet anymore, and that raises a new set of
+            problems)
+          </t>
+          <t>
+            Add a special this is IMPRESS attribute. This must be the
+            first attribute in the message. This allows for network
+            node to look for IMPRESS packets at a fixed offset without
+            needing to parse the entire packet.
+          </t>
+          <t>
+            Alter the transaction id. This might be problematic if
+            using it in conjunction with ICE connectivity checks. But
+            probably fine in other scenarios.
+          </t>
+          <t>
+            Define a new STUN Method. Also brakes ICE, makes it
+            harder to tag onto attributes to already in use messages.
+          </t>
+        </list>
+      </t>
+      
+      <t>
         <cref anchor="Q1" source="palmarti">Do we want to restrict
           this to req/resp or do we want to allow for the attributes
           to be added in this fashion for indications as well?</cref>
@@ -202,14 +236,16 @@
         </figure>
         <list style="numbers">
           <t>
-            Alice creates a Binding Request, add STREAM-PROPERTY
-            attribute before the INTEGRITY attribute and a single
-            NETWORK-STATUS attribute after the INTEGRITY attribute.
+            Alice creates a Binding Request, adds STREAM-TYPE,
+            BANDWIDTH-USAGE, DELAY-TOLERANCE, LOSS-TOLERANCE attributes
+            before the INTEGRITY attribute and a single NETWORK-STATUS
+            attribute after the INTEGRITY attribute.
           </t>              
           <t>
             Router1 inspects the STUN Request message and reads
-            STREAM-PROPERTY attribute and the information it
-            contains. It then updates the NETWORK-STATUS attribute
+            any STREAM-TYPE, BANDWIDTH-USAGE, DELAY-TOLERANCE or
+            LOSS-TOLERANCE attributes and the information they
+            contain. It then updates the NETWORK-STATUS attribute
             with any information the router have. It then forwards the
             request.
           </t>
@@ -223,13 +259,15 @@
           <t>
             Router2 (first IMPRESS network element for the downstream
             direction) inspects the Response message, reads the
-            STREAM-PROPERTIES attribute and MAY alter the
-            NETWORK-STATUS attribute located after the INTEGRITY
-            attribute. It then transmits the message.
+            STREAM-TYPE, BANDWIDTH-USAGE, DELAY-TOLERANCE or
+            LOSS-TOLERANCE attributes and MAY alter the NETWORK-STATUS
+            attribute located after the INTEGRITY attribute. It then
+            transmits the message.
           </t>
           <t>
             When Alice receives the STUN Response, she can extract the
-            STREAM-PROPERTIES attribute and the two NETWORK-STATUS
+            STREAM-TYPE, BANDWIDTH-USAGE, DELAY-TOLERANCE or
+            LOSS-TOLERANCE attributes and the two NETWORK-STATUS
             attributes to get a complete picture of what the remote
             agent is sending and how the status of both the upstream
             and downstream path.
@@ -242,12 +280,18 @@
       <t>
         An ICE connectivity check is performed by sending a STUN
         Binding indication. Prior to sending the agent can add one
-        STREAM-PROPERTY attribute. If added, only one MUST be added.
+        STREAM-TYPE attribute. If added, only one MUST be added.
         This is to avoid unnecessary large STUN packets during the
         connectivity checks. If the connectivity check is sent on a
         5-tuple that multiplexes different types of media and more
         detailed information wants to be signalled it should be done
         after the connectivity check phase is finished.
+      </t>
+      <t>
+        This limits the information the STUN messages are able to
+        convey during the connectivity checks, but also avoids adding
+        network confution with BANDWIDTH-USAGE attributes describing
+        different paths that never going to be utilized.
       </t>
       <t>
         <cref anchor="Q2" source="palmarti">
@@ -284,100 +328,70 @@
       </t>
     </section>
     
-    <section title="New STUN attributes">
+    <section title="New STUN attributes" anchor="new_attributes" >
       <t>
         This STUN extension defines the following new attributes:
       </t>
       <figure>
-        <artwork align="center"><![CDATA[
-      0xXXXX: STREAM PROPERTIES  
+        <artwork align="left"><![CDATA[
+      0xXXX0: STREAM-TYPE
+      0xXXX1: BANDWIDTH-USAGE
+      0xXXX2: DELAY-TOLERANCE
+      0xXXX3: LOSS-TOLERANCE  
       0xYYYY: NETWORK STATUS
            ]]></artwork>
       </figure>
 
-      <section title="STREAM PROPERTIES">
+      <section title="STREAM-TYPE">
         <t>
-          This attribute have a length that are multiples of 4 (128) so
+          This attribute have a length that are multiples of 4 (32) so
           no padding is necessary.
         </t>
         
-        <figure anchor="stream_prop_attr" title="STREAM PROPERTIES Attribute">
-          <artwork align="right"><![CDATA[
+        <figure anchor="stream_type_attr" title="STREAM TYPE Attribute">
+          <artwork align="left"><![CDATA[
 0                   1                   2                   3
 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|        STREAM TYPE            |   Bandwidth (kbps)            |
+|              TYPE             |         TBD                   |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|   Delay Tol   |   Loss Tol    |         TBD                   | 
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|             Stream Type specific Value (64 bits)              |    
-|                                                               |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
       ]]></artwork>
         </figure>
         <t>
           <list style="hanging">
-            
-            <t hangText="STREAM TYPE:"> STREAM TYPE a a 16 bit value
-              defined in section ??  describing the flow.
+            <t hangText="TYPE:"> STREAM TYPE a a 16 bit value
+              defined in below  describing the flow.
             </t>
-            
-            <t hangText="Bandwidth:"> MUST be a number describing the
-              approximate bandwidth usage in kbps. If this is unknown
-              the value 0x0 is used.
-            </t>
-            <t hangText="Delay Tol:"> Delay tolerance in ms. A number
-            describing the total delay a stream can experience before
-            problems occur. 
-
-            </t>
-            <t hangText="Loss Tol:"> Loss tolerance. Number describing
-            percentage of packets that can be lost without severely
-            affecting the quality of the stream.
-            </t>
-
-            <t hangText="Stream Type Specific Value:"> 64 bits of the
-              attribute is reserved for further description of the
-              specific STREAM TYPE. This value field is thus dependant
-              on the type field and entities not understanding the
-              specific STREAM TYPE should ignore this when parsing.
-            </t>
-            
           </list>
         </t>
         
-                
         <t>
           There are four stream types types defined:
           <figure anchor="stream_types" title="STREAM Types">
-            <artwork align="center"><![CDATA[
-     0x0001 Generic 
+            <artwork align="left"><![CDATA[
+     0x0001 Undescribed 
      0x0002 Audio
      0x0004 Video
      0x0008 Application Data
       ]]></artwork>
           </figure>
           The intention is to keep the number of types limited and
-          fairly general. There are 64 bits set aside for each
-          stream type for further description.
+          general. (Avoiding descriptions like high quality and
+          similar that change over time) 
         </t>
         
         <t>
           It is possible to combine the stream types if a stream
-          contains more than one type. The 64 bit value filed MUST
-          then be treated as if the type was Generic
-          (0x0001). (TODO: Define generic field to better suit this
-          scenario)
+          contains more than one type. 
         </t>
         
         <t>
           If a 5-tuple is used to send both a audio and video
-          stream, the stream type can be set to 0x0006. The type
-          specific value field will then have the same properties as
-          if the type was generic. This can be useful if the
+          stream, the stream type can be set to 0x0006. 
+          This can be useful if the
           application wants to hint that the 5-tuple contains
-          several streams, but have no other useful information to
-          share. This is useful if the attribute is added to STUN
+          several streams, This is useful if the attribute is added to STUN
           binding requests during ICE connectivity checks. If more
           information regarding multiplexed streams is needed it is
           possible to add more than one attribute to a STUN message
@@ -388,124 +402,142 @@
           threat.
         </t>
         
-        <section title="Generic">
-          
-          <figure anchor="stream_type_genericr" title="Stream
-                                                       Type Generic">
-            <artwork align="right"><![CDATA[
+
+      </section>
+
+      <section title="BANDWIDTH-USAGE">
+        <t>
+          This attribute have a length that are multiples of 4 (32) so
+          no padding is necessary.
+        </t>
+        
+        <figure anchor="bandwidth_usage_attr" title="BANDWIDTH USAGE Attribute">
+          <artwork align="right"><![CDATA[
 0                   1                   2                   3
 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|            0x0001              |      Bandwidth (kbps)        |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-| max retransmit|  retransmits   |           0xFF               |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+    
-|                              0xFFFF                           |
+|            SUSTAINED (kbps)   |           MAX (kbps)          |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
       ]]></artwork>
-          </figure>
-          <t>
-            <list style="hanging">
-              
-              <t hangText="max retransmits:"> Maximal number of
-                retransmits a client will do before giving up. For
-                example a normal STUN transactions have 10 retransmits
-                before it is considered as failed. RTP will typically
-                have 0 retransmits.
-              </t>
-              
-              <t hangText="retransmits:"> Current number of
-                retransmits for non reliable packets in this
-                stream. If this number is close to the mac retransmits
-                it might be nice of the network element to consider
-                not to drop the next packets coming.
-              </t>
-              
-            </list>
-          </t>
-        </section>
-      
-        <section title="Audio">
-          <figure anchor="stream_type_audio" title="Stream
-                                                  Type Audio">
-            <artwork align="right"><![CDATA[
-0                   1                   2                   3
-0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|            0x0002             |       Bandwidth (kbps)        |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|    Sample Rate (Hz)           |          0xFF                 |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+    
-|                              0xFFFF                           |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-
-      ]]></artwork>
-          </figure>        
-          <t>
-            <list style="hanging">
-              
-              <t hangText="Sample Rate:"> The current sample rate the
-                audio codec used in this stream is sampled with.
-              </t>
-              
-            </list>
-          </t>
+        </figure>
+        <t>
+          <list style="hanging">
+            <t hangText="SUSTAINED:"> Expected sustained bandwidth
+              usage for this stream. Note that for elastic types of
+              streams like video, sudden large movements in the
+              picture my lead to this value being inaccurate.
+            </t>
+            <t hangText="MAX:"> The maximum bandwidth usage for this
+              stream. If the sustained and max value differ greatly it
+              might be safe to assume that an elastic encoder is in
+              use. (Would it be useful to say something about
+              expected BURST lengths?)
+            </t>
+            
+          </list>
+        </t>
       </section>
       
-        <section title="Video">
-          <figure anchor="stream_type_video" title="STREAM
-                                                  Type Video">
-            <artwork align="right"><![CDATA[
+      <section title="DELAY-TOLERANCE">
+        <t>
+          This attribute have a length that are multiples of 4 (32) so
+          no padding is necessary.
+        </t>
+        
+        <figure anchor="delay_tolerance_attr" title="DELAY TOLLERANCE Attribute">
+          <artwork align="right"><![CDATA[
 0                   1                   2                   3
 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|            0x0003              |      Bandwidth (kbps)        |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|      Vertical Resolution       |     Horizontal Resolution    |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|             FPS                |          Jitter (ms)         |
+|       Loss of Quality (ms)    |       Loss of Service (ms)    |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
       ]]></artwork>
-          </figure>
-          <t>
-            <list style="hanging">
-              
-              <t hangText="Bandwidth:"> Bandwidth usage with video
-                encoders are elastic. This value should indicate what
-                max bandwidth value the encoder are set up to
-                use. Dependant on movement in the picture and other
-                video specific parameters the actual bandwidth usage
-                might be lower than indicated. Note that this value
-                can change over time as rate adaption algorithms in
-                the encoder might change this value.
-              </t>
-
-              <t hangText="Vertical Resolution:"> Current vertical
-                resolution used in the video encoded in the
-                stream. Note that this value might change over time as
-                the encoder might change this dependant on many
-                different parameters. (In some instances a encoder can
-                decide that changing from 1080p30 to 720p60 will give
-                the end user a better user experience)
-              </t>
+        </figure>
+        <t>
+          <list style="hanging">
             
-              <t hangText="Horizontal Resolution:"> Current horizontal
-                resolution.
-              </t>
-              
-              <t hangText="FPS:"> How many frames per seconds the video
-                in the stream is encoded with.
-              </t>
-            </list>
-          </t>  
-        </section>  
+            <t hangText="Loss of Quality:"> Amount of delay in ms the
+              streams can accept on the entire path without
+              experiencing quality issues.
+            </t>
+            
+            <t hangText="Loss of Service:"> Amount of delay in ms on
+              the entire path the without the service being unusable.
+            </t>
+          </list>
+        </t>
+        <t>
+          Wanted to avoid terms like high/low delay tolerance and
+          replace them with real numbers. But in the end the network
+          elements will probably decide what queue they go into based on
+          these values.
+        </t>
+        <t>
+          If an agent have two video streams, one for live video and
+          one for slide sharing. The video for the presentation
+          sharing have much higher delay tolerances. 
+        </t>
+        <t>
+          Incentives to lie about the values. The network element can
+          treat those values as internal prioritization for the
+          streams coming out from particular agent or session. (But
+          then we need to group them together. MSID in STUN packets?)
+        </t>
         
       </section>
+     
+      <section title="LOSS-TOLERANCE">
+        <t>
+          This attribute have a length that are multiples of 4 (32) so
+          no padding is necessary.
+        </t>
+        
+        <figure anchor="loss_tolerance_attr" title="LOSS TOLLERANCE Attribute">
+          <artwork align="right"><![CDATA[
+0                   1                   2                   3
+0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|       Loss of Quality (%)     |       Loss of Service (%)     |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+      ]]></artwork>
+        </figure>
+        <t>
+          <list style="hanging">
+            
+            <t hangText="Loss of Quality:"> Amount of packet loss in
+              percentage the streams can accept on the entire path
+              without experiencing quality issues.
+            </t>
+            
+            <t hangText="Loss of Service:"> Amount of packet loss in
+              percentage on the entire path the without the service
+              being unusable.
+            </t>
+          </list>
+        </t>
+        
+        <t>
+          If an agent have two video streams, one for live video and
+          one for slide sharing. The video for the presentation
+          sharing have much higher loss tolerances. 
+        </t>
+        <t>
+          Incentives to lie about the values. The network element can
+          treat those values as internal prioritization for the
+          streams coming out from particular agent or session. (But
+          then we need to group them together. MSID in STUN packets?)
+        </t>
+      </section>
+      
+
+
+
       <section title="NETWORK STATUS">
         <t>
-          This attribute have a length that are multiples of 4 (64) so
+          This attribute have a length that are multiples of 4 (32) so
           no padding is necessary.
         </t>
       
@@ -520,53 +552,31 @@
  0                   1                   2                   3
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-| Link TYPE     |Conguestion Lvl| Node Cnt      |    0xFF       |
+|Conguestion Lvl| Node Cnt      |    0xFFFF                     |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-| Up Bandwidth (kbps)           |   Down Bandwidth (kbps)       |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
       ]]></artwork>
         </figure>
         <t>
-            <list style="hanging">
-              
-              <t hangText="Link TYPE:"> Value describing what kind of
-              link types the other fields in the attribute
-              describes. For home and small routers where the
-              information is limited the value can for example be set
-              to SHARED (0x01). For routers with more control the
-              value can be set to either HOST, APPLICATION, SESSION or
-              STREAM. (Todo: Link those to fields in STREAM PROPERTIES?)
-              </t>
-
-              <t hangText="Conguestion Lvl:"> Value in the range 0x00
-              and Ox0F describing the level of congestion the network
-              element is experiencing at this point. 0x00 means no
-              congestion, 0x0F Fully congested. The router can
-              choose any value between those value as it sees fit. The
-              application that sees those values might act on by doing
-              some rate adaption or similar. The values 0x10-0xFF are
-              reserved for future use.
-              </t>
+          <list style="hanging">
             
-              <t hangText="Node Cnt:">Numbers of nodes that supports
+            <t hangText="Conguestion Lvl:"> Value in the range 0x00
+              and Ox0F describing the level of congestion the
+              network element is experiencing at this point. 0x00
+              means no congestion, 0x0F Fully congested. The router
+              can choose any value between those value as it sees
+              fit. The application that sees those values might act
+              on by doing some rate adaption or similar. The values
+              0x10-0xFF are reserved for future use.
+            </t>
+            
+            <t hangText="Node Cnt:"> Numbers of nodes that supports
               IMPRESS in the notwork path. Any router on the path that
-              understands IMPRESS should increase this number. Other
-              fields should only be updated if the value is worse than
-              what is already in the attribute. 
-              </t>
-              
-              <t hangText="Up Bandwidth:"> Bandwidth in kbps available in the
-              upstream direction. 
-
-              </t>
-              <t hangText="Down Bandwidth:"> Bandwidth in kbps available in the
-              downstream direction.  
+              understands IMPRESS should increase this number. 
+            </t>
                 
-              </t>
-            </list>
-          </t>
-
-
+          </list>
+        </t>
       </section>
     </section>
     
