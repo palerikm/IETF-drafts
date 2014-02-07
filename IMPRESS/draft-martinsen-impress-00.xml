@@ -290,7 +290,7 @@
       <t>
         This limits the information the STUN messages are able to
         convey during the connectivity checks, but also avoids adding
-        network confution with BANDWIDTH-USAGE attributes describing
+        network confusion with BANDWIDTH-USAGE attributes describing
         different paths that never going to be utilized.
       </t>
       <t>
@@ -336,8 +336,7 @@
         <artwork align="left"><![CDATA[
       0xXXX0: STREAM-TYPE
       0xXXX1: BANDWIDTH-USAGE
-      0xXXX2: DELAY-TOLERANCE
-      0xXXX3: LOSS-TOLERANCE  
+      0xXXX2: STREAM-PRIORITY
       0xYYYY: NETWORK STATUS
            ]]></artwork>
       </figure>
@@ -370,10 +369,10 @@
           There are four stream types types defined:
           <figure anchor="stream_types" title="STREAM Types">
             <artwork align="left"><![CDATA[
-     0x0001 Undescribed 
-     0x0002 Audio
-     0x0004 Video
-     0x0008 Application Data
+     0x0001 Audio
+     0x0002 Video
+     0x0004 Application Data
+     0x0008 Other
       ]]></artwork>
           </figure>
           The intention is to keep the number of types limited and
@@ -416,14 +415,14 @@
 0                   1                   2                   3
 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|            SUSTAINED (kbps)   |           MAX (kbps)          |
+|             AVARAGE (kbps)    |           MAX (kbps)          |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
       ]]></artwork>
         </figure>
         <t>
           <list style="hanging">
-            <t hangText="SUSTAINED:"> Expected sustained bandwidth
+            <t hangText="AVARAGE:"> Expected sustained bandwidth
               usage for this stream. Note that for elastic types of
               streams like video, sudden large movements in the
               picture my lead to this value being inaccurate.
@@ -439,18 +438,20 @@
         </t>
       </section>
       
-      <section title="DELAY-TOLERANCE">
+      <section title="STREAM-PRIORITY">
         <t>
           This attribute have a length that are multiples of 4 (32) so
           no padding is necessary.
         </t>
         
-        <figure anchor="delay_tolerance_attr" title="DELAY TOLLERANCE Attribute">
+        <figure anchor="stream_priority_attr" title="STREAM PRIORITY Attribute">
           <artwork align="right"><![CDATA[
 0                   1                   2                   3
 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|       Loss of Quality (ms)    |       Loss of Service (ms)    |
+| Priority      |D|    TBD      |           Stream IDX          |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                           Session ID                          |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
       ]]></artwork>
@@ -458,83 +459,39 @@
         <t>
           <list style="hanging">
             
-            <t hangText="Loss of Quality:"> Amount of delay in ms the
-              streams can accept on the entire path without
-              experiencing quality issues.
+            <t hangText="Priority:"> Describes this streams priority
+              among other streams coming from this
+              endpoint/application (With same session ID). Values
+              range from 255 (0xFF) to 0.
             </t>
             
-            <t hangText="Loss of Service:"> Amount of delay in ms on
-              the entire path the without the service being unusable.
+            <t hangText="D:"> Delay sensitive. The application can set
+              this bit as a hint to the network element that the
+              stream is delay sensitive. (Unsure if this is useful)
+
+            </t>
+
+            <t hangText="Stream IDX:"> Application can choose set this
+              to ease debugging in the network. A reasonable value can
+              foe example be the index have in the SDP.
+            </t>
+
+            <t hangText="Stream ID:"> Identification to distinguish
+              what session this stream is part of. This MUST have the
+              same value for all the media streams the application wants
+              to give differentiated services. (Note that this ID may
+              overlap with other streams that originates from a
+              different IP address. The network element MUST only
+              prioritize among streams with the same Session Id
+              originating from the same IP)
+
             </t>
           </list>
         </t>
-        <t>
-          Wanted to avoid terms like high/low delay tolerance and
-          replace them with real numbers. But in the end the network
-          elements will probably decide what queue they go into based on
-          these values.
-        </t>
-        <t>
-          If an agent have two video streams, one for live video and
-          one for slide sharing. The video for the presentation
-          sharing have much higher delay tolerances. 
-        </t>
-        <t>
-          Incentives to lie about the values. The network element can
-          treat those values as internal prioritization for the
-          streams coming out from particular agent or session. (But
-          then we need to group them together. MSID in STUN packets?)
-        </t>
-        
+                
       </section>
      
-      <section title="LOSS-TOLERANCE">
-        <t>
-          This attribute have a length that are multiples of 4 (32) so
-          no padding is necessary.
-        </t>
-        
-        <figure anchor="loss_tolerance_attr" title="LOSS TOLLERANCE Attribute">
-          <artwork align="right"><![CDATA[
-0                   1                   2                   3
-0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|       Loss of Quality (%)     |       Loss of Service (%)     |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-
-      ]]></artwork>
-        </figure>
-        <t>
-          <list style="hanging">
-            
-            <t hangText="Loss of Quality:"> Amount of packet loss in
-              percentage the streams can accept on the entire path
-              without experiencing quality issues.
-            </t>
-            
-            <t hangText="Loss of Service:"> Amount of packet loss in
-              percentage on the entire path the without the service
-              being unusable.
-            </t>
-          </list>
-        </t>
-        
-        <t>
-          If an agent have two video streams, one for live video and
-          one for slide sharing. The video for the presentation
-          sharing have much higher loss tolerances. 
-        </t>
-        <t>
-          Incentives to lie about the values. The network element can
-          treat those values as internal prioritization for the
-          streams coming out from particular agent or session. (But
-          then we need to group them together. MSID in STUN packets?)
-        </t>
-      </section>
       
-
-
-
       <section title="NETWORK STATUS">
         <t>
           This attribute have a length that are multiples of 4 (32) so
@@ -552,7 +509,7 @@
  0                   1                   2                   3
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|Conguestion Lvl| Node Cnt      |    0xFFFF                     |
+| Congestion Lvl| Node Cnt      |    0xFFFF                     |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
       ]]></artwork>
@@ -560,7 +517,7 @@
         <t>
           <list style="hanging">
             
-            <t hangText="Conguestion Lvl:"> Value in the range 0x00
+            <t hangText="Congestion Lvl:"> Value in the range 0x00
               and Ox0F describing the level of congestion the
               network element is experiencing at this point. 0x00
               means no congestion, 0x0F Fully congested. The router
