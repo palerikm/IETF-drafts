@@ -167,8 +167,9 @@
         content into a new NETWORK-STATUS attribute and add it before
         the INTEGRITY attribute when sending the STUN response. A new
         empty NETWORK-STATUS attribute can be added after the
-        INTEGRITY attribute. New STEAM-PROPERTIES attributes can also
-        be added describing the stream in this direction.
+        INTEGRITY attribute. New STUN attributes described in this
+        draft can also be added describing the stream in this
+        direction.
       </t>
       
       <t>
