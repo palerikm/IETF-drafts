@@ -58,17 +58,14 @@
 
     <abstract>
         <t>
-            <!-- Defocusing the prioritization aspect and generalizing to 
-            application/network information exchange.  This is an attempt to avoid
-            controversy around conflict with existing differential service 
-            protocols/mechanisms. -->
-            This draft describes a mechanism for information exchange between an 
-            application and the network.  The information provided from the 
-            application to the network MAY be used by a network element in the
-            path to modify its behavior to improve application quality of experience (QoE).
-            Likewise, the information provided by the network to the application
-            MAY be used by the application to modify its behavior to optimize
-            for QoE.
+            This draft describes a mechanism for information exchange
+            between an application and the network.  The information
+            provided from the application to the network MAY be used
+            by a network element in the path to modify its behavior to
+            improve application quality of experience (QoE).
+            Likewise, the information provided by the network to the
+            application MAY be used by the application to modify its
+            behavior to optimize for QoE.
         </t>
     </abstract>
     
@@ -112,7 +109,6 @@
           regarding the incentive to lie is needed.   
         </cref>
       </t>
-
       <t>
         This draft describes how these problems can be solved by
         defining a few strictly defined STUN <xref target="RFC5389"/>
@@ -149,46 +145,40 @@
       <t>
         This draft defines several attributes that can be added to a
         STUN message; STREAM-TYPE, BANDWIDTH-USAGE, STREAM-PRIORITY
-        and NETWORK-STATUS. See
-        <xref target="new_attributes" /> for the
-        formal description. It is RECOMMENDED to add them to a STUN
-        request response pair, especially if the NETWORK-STATUS
+        and NETWORK-STATUS. See <xref target="new_attributes" /> for
+        the formal description. It is RECOMMENDED to add them to a
+        STUN request response pair, especially if the NETWORK-STATUS
         attribute is in use. This allows the information gathered to
         be sent back to the requesting agent in the the STUN response.
       </t>
-      
       <t>
-        The STREAM-TYPE, BANDWIDTH-USAGE, STREAM-PRIORITY
-        attributes MUST be added before any
-        INTEGRITY attribute. It is RECOMMENDED to only add these
-        attributes to STUN messages containing a INTEGRITY attribute
-        as this prevents tampering with the content of the attribute.
+        The STREAM-TYPE, BANDWIDTH-USAGE, STREAM-PRIORITY attributes
+        MUST be added before any INTEGRITY attribute. It is
+        RECOMMENDED to only add these attributes to STUN messages
+        containing a INTEGRITY attribute as this prevents tampering
+        with the content of the attribute.
       </t>
-      
       <t>
         If the client wants to receive feedback from the network it
-        must add a null NETWORK-STATUS attribute. A null NETWORK_STATUS
-        attribute consists of the attribute with the Node Cnt field set to zero
-        (0) and the CS bit set to 0 (Off).  This attribute
-        MUST be added after the INTEGRITY attribute, as on-path
-        devices may write information into this attribute. Having a
-        readily available attribute to write into will save the the
-        on-path device from growing buffers to add their own
-        attribute. On path devices SHOULD not add their own
+        must add a null NETWORK-STATUS attribute. A null
+        NETWORK_STATUS attribute consists of the attribute with the
+        Node Cnt field set to zero (0) and the CS bit set to 0 (Off).
+        This attribute MUST be added after the INTEGRITY attribute, as
+        on-path devices may write information into this
+        attribute. Having a readily available attribute to write into
+        will save the the on-path device from growing buffers to add
+        their own attribute. On path devices SHOULD not add their own
         NETWORK-STATUS attribute (or any other STUN attribute).
       </t>
-      
       <t>
         If an agent receives a STUN request with a NETWORK-STATUS
         attribute after the INTEGRITY attribute, it should copy the
         content into a new NETWORK-STATUS attribute and add it before
         the INTEGRITY attribute when sending the STUN response. A new
-        null NETWORK-STATUS attribute can be added after the
-        INTEGRITY attribute. New STUN attributes described in this
-        draft can also be added describing the stream in this
-        direction.
+        null NETWORK-STATUS attribute can be added after the INTEGRITY
+        attribute. New STUN attributes described in this draft can
+        also be added describing the stream in this direction.
       </t>
-      
       <t>
         If an agent receives a STUN response with a NETWORK-STATUS
         attribute before the INTEGRITY attribute, this describes the
@@ -219,11 +209,8 @@
         ---4:  
             Define a new STUN Method. Also brakes ICE, makes it
             harder to tag onto attributes to already in use messages.
-          
-        
         </cref>
       </t>
-      
       <t>
         <cref anchor="Q3" source="palmarti">Do we want to restrict
           this to req/resp or do we want to allow for the attributes
@@ -251,52 +238,49 @@
         <list style="numbers">
           <t>
             Alice creates a Binding Request, adds STREAM-TYPE,
-            BANDWIDTH-USAGE, STREAM-PRIORITY attributes
-            before the INTEGRITY attribute and a single null NETWORK-STATUS
+            BANDWIDTH-USAGE, STREAM-PRIORITY attributes before the
+            INTEGRITY attribute and a single null NETWORK-STATUS
             attribute after the INTEGRITY attribute.
           </t>              
           <t>
-            Router1 inspects the STUN Request message and reads
-            any STREAM-TYPE, BANDWIDTH-USAGE, or STREAM-PRIORITY
-            attributes and the information they
-            contain. It then updates the NETWORK-STATUS attribute
-            with any information the router have. It then forwards the
-            request.
+            Router1 inspects the STUN Request message and reads any
+            STREAM-TYPE, BANDWIDTH-USAGE, or STREAM-PRIORITY
+            attributes and the information they contain. It then
+            updates the NETWORK-STATUS attribute with any information
+            the router have. It then forwards the request.
           </t>
           <t>
             Bob processes the STUN Request. When Bob builds the
             response, it copies the NETWORK-STATUS attribute into the
-            STUN Response before the INTEGRITY check and adds new
-            null NETWORK-STATUS attribute after the INTEGRITY
+            STUN Response before the INTEGRITY check and adds new null
+            NETWORK-STATUS attribute after the INTEGRITY
             attribute. Bob then transmits the message.
           </t>
           <t>
             Router2 (first DISCUSS network element for the downstream
             direction) inspects the Response message, reads the
             STREAM-TYPE, BANDWIDTH-USAGE, or STREAM-PRIORITY
-            attributes and MAY alter the NETWORK-STATUS
-            attribute located after the INTEGRITY attribute. It then
-            transmits the message.
+            attributes and MAY alter the NETWORK-STATUS attribute
+            located after the INTEGRITY attribute. It then transmits
+            the message.
           </t>
           <t>
             When Alice receives the STUN Response, she can extract the
             STREAM-TYPE, BANDWIDTH-USAGE, or STREAM-PRIORITY
-            attributes and the two NETWORK-STATUS
-            attributes to get a complete picture of what the remote
-            agent is sending and how the status of both the upstream
-            and downstream path.
+            attributes and the two NETWORK-STATUS attributes to get a
+            complete picture of what the remote agent is sending and
+            how the status of both the upstream and downstream path.
           </t>
         </list>
       </t>
     </section>
-    
     
     <section title="Network Processing">
       <t> 
         This section describes the processing of DISCUSS packets by
         network devices.
       </t>
-      <section title="DISCUSS Packet Processing by Network Device">
+      <section title="Packet Processing by Network Device">
         <t>
           Network devices are said to support DISCUSS if they perform
           inspection of packets being forward or switched in order to
@@ -312,90 +296,83 @@
           Network devices that support DISCUSS MAY utilize the
           information provided by the application in the STUN
           attributes to modify their behavior.  These include the
-          attributes defined in this document with the exception
-          of the NETWORK-STATUS attribute.  The NETWORK-STATUS
-          attribute SHOULD NOT be used by the DISCUSS capable
-          network device to modify its behavior.  The intent of
-          the NEWTORK-STATUS attribute is for the application to
-          modify its behavior.
+          attributes defined in this document with the exception of
+          the NETWORK-STATUS attribute.  The NETWORK-STATUS attribute
+          SHOULD NOT be used by the DISCUSS capable network device to
+          modify its behavior.  The intent of the NEWTORK-STATUS
+          attribute is for the application to modify its behavior.
         </t>
         <t>
-          If the NETWORK-STATUS attributes exists in a DISCUSS
-          packet after an INTEGRITY attribute, the DISCUSS capable
-          network device MUST process it as described in this
-          section.  NETWORK-STATUS attributes that exist before
-          the INTEGRITY attribute MUST NOT be modified by the
-          network device.  The modifications to the NETWORK-STATUS
-          attribute are:
+          If the NETWORK-STATUS attributes exists in a DISCUSS packet
+          after an INTEGRITY attribute, the DISCUSS capable network
+          device MUST process it as described in this section.
+          NETWORK-STATUS attributes that exist before the INTEGRITY
+          attribute MUST NOT be modified by the network device.  The
+          modifications to the NETWORK-STATUS attribute are:
           <list style="symbols">
-            <t> Update the Node Cnt field in the attribute.
-              The device SHALL increment this field by one
-              unless it is at its maximum (saturated) value.
-              If the field is at its maximum value, the device
-              SHALL NOT modify this field.
+            <t> Update the Node Cnt field in the attribute.  The
+              device SHALL increment this field by one unless it is at
+              its maximum (saturated) value.  If the field is at its
+              maximum value, the device SHALL NOT modify this field.
             </t>
             <t>
-              Overwrite the attribute CS bit if the value at
-              this device is "worst" than the current value.
-              In other words, only write to this bit if the
-              device is experiencing congestion on relevant
-              queues/interfaces for this flow AND the current
-              value of this field is 0 (Off).
+              Overwrite the attribute CS bit if the value at this
+              device is "worst" than the current value.  In other
+              words, only write to this bit if the device is
+              experiencing congestion on relevant queues/interfaces
+              for this flow AND the current value of this field is 0
+              (Off).
             </t>
           </list>
         </t>
         <t>
-          The determination of congestion at a device is out of
-          the scope of this document.  Setting of CS bit to On by
-          the device is meant to provide direct feedback to the
-          application of potential or current loss of packets in
-          its flow (s).  The application can then react to this
-          indication by altering its encoding of information in
-          the packet to deal with congestion/packet loss,
-          e.g. reduce its encoding rate or switch to embedded
-          encoding.  Devices SHOULD ensure that the DISCUSS
-          capable applications that do react to congestion
-          notification by reducing their transmission rate be
-          treated properly to ensure fairness with non reacting
+          The determination of congestion at a device is out of the
+          scope of this document.  Setting of CS bit to On by the
+          device is meant to provide direct feedback to the
+          application of potential or current loss of packets in its
+          flow (s).  The application can then react to this indication
+          by altering its encoding of information in the packet to
+          deal with congestion/packet loss, e.g. reduce its encoding
+          rate or switch to embedded encoding.  Devices SHOULD ensure
+          that the DISCUSS capable applications that do react to
+          congestion notification by reducing their transmission rate
+          be treated properly to ensure fairness with non reacting
           applications (i.e. ensure fairness for well behaving
           applications).
-          
         </t>
         <t>
           The DISCUSS STUN packet SHOULD experience minimal extra
-          processing delay through the DISCUSS capable network
-          device relative to non-DISCUSS packets in the flow.  The
-          DISCUSS STUN packet MAY be placed out of order in the
-          packet flow, but SHOULD NOT be delayed more than a few
-          packet interval times.
+          processing delay through the DISCUSS capable network device
+          relative to non-DISCUSS packets in the flow.  The DISCUSS
+          STUN packet MAY be placed out of order in the packet flow,
+          but SHOULD NOT be delayed more than a few packet interval
+          times.
         </t>
       </section>
       <section title="Interaction with DSCP">
         <t>
-          One of the attributes that may be added to the STUN
-          packet by the application is the STREAM-PRIORITY
-          attribute.  This attribute indicates the relative
-          priority of streams inside of an application session.
-          This attribute is compatible with the use of DSCP (or
-          other priority markings) at the networking layer as
-          described in this section.
+          One of the attributes that may be added to the STUN packet
+          by the application is the STREAM-PRIORITY attribute.  This
+          attribute indicates the relative priority of streams inside
+          of an application session.  This attribute is compatible
+          with the use of DSCP (or other priority markings) at the
+          networking layer as described in this section.
         </t>
         <t>
           Since transport layer markings may be modified by middle
           boxes or devices in the path or at the interface of the
           application itself due to the lack of support in the OS
-          network stack, the STREAM-PRIORITY attribute can be used
-          as a mechanism for ensuring proper QoS treatment through
+          network stack, the STREAM-PRIORITY attribute can be used as
+          a mechanism for ensuring proper QoS treatment through
           multiple domains.  DISCUSS capable device may use the
-          STREAM-PRIORITY attribute to remark the DSCP value to
-          the appropriate value.  DSCP re-marking based on
-          STREAM-PRIORITY attribute may make sense at certain
-          PIN's, e.g. gateway between network domains
-          (e.g. managed network to/from Internet), access switches
-          in managed network, etc.  The translation from the
-          Priority number in the STREAM-PRIORITY attribute to the
-          correct transport layer marking (e.g. DSCP) is
-          implementation specific and out of the scope of this
+          STREAM-PRIORITY attribute to remark the DSCP value to the
+          appropriate value.  DSCP re-marking based on STREAM-PRIORITY
+          attribute may make sense at certain PIN's, e.g. gateway
+          between network domains (e.g. managed network to/from
+          Internet), access switches in managed network, etc.  The
+          translation from the Priority number in the STREAM-PRIORITY
+          attribute to the correct transport layer marking (e.g. DSCP)
+          is implementation specific and out of the scope of this
           document.
         </t>
         <t>
@@ -409,8 +386,8 @@
       <t>
         An ICE connectivity check is performed by sending a STUN
         Binding indication. Prior to sending the agent can add one
-        STREAM-TYPE attribute. If added, only one MUST be added.
-        This is to avoid unnecessary large STUN packets during the
+        STREAM-TYPE attribute. If added, only one MUST be added. This
+        is to avoid unnecessary large STUN packets during the
         connectivity checks. If the connectivity check is sent on a
         5-tuple that multiplexes different types of media and more
         detailed information wants to be signalled it should be done
@@ -434,25 +411,24 @@
         In some scenarios a 5-tuple can be used to transport several
         media streams. BUNDLE
         <xref target="I-D.ietf-mmusic-sdp-bundle-negotiation" />
-        describes such a mechanism. 
+        describes such a mechanism.
       </t>
       <t>
         When describing the stream with a STREAM-TYPE attribute there
         are two possibilities to describe the streams that are
-        multiplexed. Adding one attribute
-        for each type (Audio, Video,++), or to save a few bits on the
-        wire it is also possible to construct the STREAM-TYPE so a
-        one type value describes several types. For example audio have
-        the value of 1 and application data have the value of 4. If
-        the STREAM_TYPE value is set to 5 the only combination that
-        gives that is audio and application data.
+        multiplexed. Adding one attribute for each type (Audio,
+        Video,++), or to save a few bits on the wire it is also
+        possible to construct the STREAM-TYPE so a one type value
+        describes several types. For example audio have the value of 1
+        and application data have the value of 4. If the STREAM_TYPE
+        value is set to 5 the only combination that gives that is
+        audio and application data.
       </t>
       <t>
         The other attributes BANDWIDTH-USAGE, STREAM-PRIORITY and
         NETWORK-STATUS SHOULD only be added once as they describe the
-        behaviour of the 5-tuple and not individual streams. 
+        behaviour of the 5-tuple and not individual streams.
       </t>
-      
     </section>
         
     <section title="New STUN attributes" anchor="new_attributes" >
@@ -514,7 +490,6 @@
           It is possible to combine the stream types if a stream
           contains more than one type. 
         </t>
-        
         <t>
           If a 5-tuple is used to send both a audio and video stream,
           the stream type can be set to 0x0006.  This can be useful if
@@ -528,8 +503,6 @@
           (Keepalive, consent freshness). During this phase the added
           size of the STUN messages pose no security threat.
         </t>
-        
-
       </section>
 
       <section title="BANDWIDTH-USAGE">
@@ -537,7 +510,6 @@
           This attribute have a length that are multiples of 4 (32) so
           no padding is necessary.
         </t>
-        
         <figure anchor="bandwidth_usage_attr" title="BANDWIDTH USAGE Attribute">
           <artwork align="right"><![CDATA[
 0                   1                   2                   3
@@ -550,16 +522,16 @@
         </figure>
         <t>
           <list style="hanging">
-            <t hangText="AVERAGE:"> Expected sustained bandwidth
-              usage for this stream. Note that for elastic types of
-              streams like video, sudden large movements in the
-              picture my lead to this value being inaccurate.
+            <t hangText="AVERAGE:"> Expected sustained bandwidth usage
+              for this stream. Note that for elastic types of streams
+              like video, sudden large movements in the picture my
+              lead to this value being inaccurate.
             </t>
             <t hangText="MAX:"> The maximum bandwidth usage for this
               stream. If the sustained and max value differ greatly it
               might be safe to assume that an elastic encoder is in
-              use. (Would it be useful to say something about
-              expected BURST lengths?)
+              use. (Would it be useful to say something about expected
+              BURST lengths?)
             </t>
             
           </list>
@@ -571,7 +543,6 @@
           This attribute have a length that are multiples of 4 (32) so
           no padding is necessary.
         </t>
-        
         <figure anchor="stream_priority_attr" title="STREAM PRIORITY Attribute">
           <artwork align="right"><![CDATA[
 0                   1                   2                   3
@@ -592,33 +563,27 @@
               endpoint/application (With same session ID). Values
               range from 255 (0xFF) to 0.
             </t>
-            
             <t hangText="D:"> Delay sensitive. The application can set
               this bit as a hint to the network element that the
               stream is delay sensitive. (Unsure if this is useful)
-
             </t>
-
             <t hangText="Stream IDX:"> Application can choose set this
               to ease debugging in the network. A reasonable value can
               foe example be the index have in the SDP.
             </t>
-
             <t hangText="Session ID:"> Identification to distinguish
               what session this stream is part of. This MUST have the
-              same value for all the media streams the application wants
-              to give differentiated services. (Note that this ID may
-              overlap with other streams that originates from a
+              same value for all the media streams the application
+              wants to give differentiated services. (Note that this
+              ID may overlap with other streams that originates from a
               different IP address. The network element MUST only
               prioritize among streams with the same Session Id
               originating from the same IP)
-
             </t>
           </list>
         </t>
       </section>
-     
-      
+           
       <section title="NETWORK-STATUS">
         <t>
           This attribute have a length that are multiples of 4 (32) so
@@ -632,12 +597,11 @@
             network element?
           </cref>
         </t>
-      
         <t>
           This attribute MUST be added after any INTEGRITY attribute
           in the STUN message. Values in this attribute can be updated
           along the network path by nodes that are not able to
-          regenerate a correct INTEGRITY attribute. 
+          regenerate a correct INTEGRITY attribute.
         </t>
         <figure anchor="network_status_attr" title="NETWORK-STATUS Attribute">
           <artwork align="right"><![CDATA[
@@ -651,7 +615,6 @@
         </figure>
         <t>
           <list style="hanging">
-            
             <t hangText="CS:"> Congestion Status.  This bit is set to
               indicate that there is congestion at the network
               device's relevant queues/interfaces for this flow.  The
@@ -661,14 +624,12 @@
               application that sees this bit set might act on it by
               doing some rate adaption or similar action.
             </t>
-            
             <t hangText="Node Cnt:"> Numbers of nodes that supports
               DISCUSS in the network path. Any router on the path that
               understands DISCUSS should increase this number.  This
               field is set to 0 when the attribute is created by the
               application.
             </t>
-                
           </list>
         </t>
       </section>
