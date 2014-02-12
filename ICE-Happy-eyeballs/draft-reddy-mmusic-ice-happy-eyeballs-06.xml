@@ -248,6 +248,46 @@
        the number of allowed consecutive candidates of the same IP address
        type.
       </t>
+      <t>
+        Using the values N=abs(60000-59000) and Cmax = 2 yields the
+        following sorted local candidate list:
+       <figure>
+          <artwork align="left"><![CDATA[
+ (1)  HOST  IPv6 (1) Priority: 2129289471
+ (2)  HOST  IPv6 (2) Priority: 2129289470
+ (3)  HOST  IPv4 (1) Priority: 2129033471
+ (4)  HOST  IPv4 (2) Priority: 2129033470
+ (5)  HOST  IPv6 (1) Priority: 2128777471
+ (6)  HOST  IPv6 (2) Priority: 2128777470
+ (7)  HOST  IPv4 (1) Priority: 2128521471
+ (8)  HOST  IPv4 (2) Priority: 2128521470
+ (9)  HOST  IPv6 (1) Priority: 2128265471
+ (10) HOST  IPv6 (2) Priority: 2128265470
+ (11) SRFLX IPv6 (1) Priority: 1693081855
+ (12) SRFLX IPv6 (2) Priority: 1693081854
+ (13) SRFLX IPv4 (1) Priority: 1692825855
+ (14) SRFLX IPv4 (2) Priority: 1692825854
+ (15) RELAY IPv6 (1) Priority: 15360255
+ (16) RELAY IPv6 (2) Priority: 15360254
+ (17) RELAY IPv4 (1) Priority: 15104255
+ (18) RELAY IPv4 (2) Priority: 15104254
+         ]]></artwork>
+        </figure>
+       
+       The result is an even spread of IPv6 and IPv4 candidates among
+       the different candidate types (HOST, SRFLX, RELAY). The
+       local_preference value is calculated separately for each
+       candidate type.
+      </t>
+      <t>
+        The resulting checklist will depend on the priorities of the
+        remote candidates. It is not possible to ensure an even spread
+        of IPv4 and IPv6 addresses unless both the remote and local
+        sides uses the simple recommendations in this draft. It is worth
+        noting that there is a good chance it will some effect even
+        if the remote side does not support this. It will not break
+        interoperability with other ICE implementations.
+      </t>
     </section>
 
     <section title="IANA Considerations">
@@ -266,6 +306,74 @@
       Aboba, Martin Thomson, Jonathan Lennox and Balint Menyhart for
       their comments and review.</t>
     </section>
+
+    <section title="Implementation Status">
+      <t>[Note to RFC Editor: Please remove this section and reference to
+      <xref target="RFC6982"></xref> prior to publication.]</t>
+
+      <t>This section records the status of known implementations of the
+      protocol defined by this specification at the time of posting of this
+      Internet-Draft, and is based on a proposal described in <xref
+      target="RFC6982"></xref>. The description of implementations in this
+      section is intended to assist the IETF in its decision processes in
+      progressing drafts to RFCs. Please note that the listing of any
+      individual implementation here does not imply endorsement by the IETF.
+      Furthermore, no effort has been spent to verify the information
+      presented here that was supplied by IETF contributors. This is not
+      intended as, and must not be construed to be, a catalog of available
+      implementations or their features. Readers are advised to note that
+      other implementations may exist.</t>
+
+      <t>According to <xref target="RFC6982"></xref>, "this will allow
+      reviewers and working groups to assign due consideration to documents
+      that have the benefit of running code, which may serve as evidence of
+      valuable experimentation and feedback that have made the implemented
+      protocols more mature. It is up to the individual working groups to use
+      this information as they see fit".</t>
+
+      <section title="HappyE-ICE-Test">
+        <t><list style="hanging">
+            <t hangText="Organization: ">
+              Private Initiative (palerikm@gmail.com)
+            </t>
+
+            <t hangText="Description: ">
+              A private initiative to create working code to show how
+              the recommendations in this draft can be implemented. The
+              code is publicly available at github.
+            </t>
+
+            <t hangText="Implementation: ">
+              https://github.com/palerikm/HappyE-ICE-Test
+            </t>
+
+            <t hangText="Level of maturity: ">
+              The code only implements the parts that cover this draft
+              and not a full ICE implementation. There is work in
+              progress to get this into a full implementation,
+              unfortunately that source code is not at the current
+              time available to the public.
+            </t>
+
+            <t hangText="Coverage: ">
+              Implement this draft.
+            </t>
+
+            <t hangText="Licensing: ">BSD</t>
+
+            <t hangText="Implementation experience: ">
+              Fiddly. Please not that the developer also is author of
+              this draft. The implementation also helped writing parts
+              of this draft.
+            </t>
+
+            <t hangText="Contact: ">Paal-Erik Martinsen
+            &lt;palmarti@gmail.com&gt;.</t>
+          </list></t>
+      </section>
+    </section>
+
+
   </middle>
 
   <back>
@@ -277,6 +385,7 @@
       <?rfc include="reference.RFC.5245"?>
 
       <?rfc include="reference.RFC.6724"?>
+      <?rfc include="reference.RFC.6982"?>
     </references>
   </back>
 </rfc>
