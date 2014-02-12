@@ -75,7 +75,29 @@
       </address>
     </author>
 
-    <date/>
+    <author fullname="Tirumaleswar Reddy" initials="T." surname="Reddy">
+      <organization>Cisco Systems, Inc.</organization>
+
+      <address>
+        <postal>
+          <street>Cessna Business Park, Varthur Hobli</street>
+
+          <street>Sarjapur Marathalli Outer Ring Road</street>
+
+          <city>Bangalore</city>
+
+          <region>Karnataka</region>
+
+          <code>560103</code>
+
+          <country>India</country>
+        </postal>
+
+        <email>tireddy@cisco.com</email>
+      </address>
+    </author>
+
+    <date />
 
     <!-- If the month and year are both specified and are the current ones, xml2rfc will fill
          in the current day for you. If only the current year is specified, xml2rfc will fill
@@ -108,7 +130,7 @@
       range of signaling protocols. Historically, this functionality has been
       accomplished to the extent possible using heuristics, which inspect and
       infer flow characteristics. Heuristics may be based on port ranges, IP
-      subnetting, or deep packet inspection (DPI), e.g. by an application
+      subnetting, or deep packet inspection (DPI), e.g. By an application
       level gateway (ALG). Current trends in application deployment, usage,
       and traffic renders such techniques less effective and/or result in
       compromises to application security or user privacy. A better solution
@@ -139,27 +161,27 @@
       <t>Historically, identification of application flows has been
       accomplished using heuristics, which inspect and infer flow
       characteristics. Heuristics may be based on port ranges, IP subnetting,
-      or deep packet inspection (DPI), e.g. by an application level gateway
+      or deep packet inspection (DPI), e.g. By an application level gateway
       (ALG). Each of these techniques suffers from a set of limitations,
       particularly in the face of challenges on the network outlined
       previously.</t>
 
-      <t> Port based solutions suffer from port overloading and inconsistent
+      <t>Port based solutions suffer from port overloading and inconsistent
       port usage. IP subnetting solutions are error prone and result increase
       network management complexity. DPI is computationally expensive and
       becomes a greater challenge with the wider adoption of encrypted
       signaling and secured media. An additional drawback of DPI is that the
       resulting insights are not available, or need to be recomputed, at
-      network nodes further down the application flow path. </t>
+      network nodes further down the application flow path.</t>
     </section>
 
     <section title="Typical Workflows">
       <t>Various heuristic based approaches are used prevalently and
-      successfully for two types of workflows:<list counter="1"
+      successfully for two types of work flows:<list counter="1"
           style="numbers">
           <t>Provide network operators with visibility into traffic for
           troubleshooting, capacity planning, accounting and billing and other
-          off network workflows. This is done by exporting observed traffic
+          off network work flows. This is done by exporting observed traffic
           analysis via protocols such as IPFIX and SNMP.</t>
 
           <t>Provide differentiated network services for the traffic according
@@ -170,19 +192,19 @@
     </section>
 
     <section title="Limitations of Existing Solutions">
-      <t>These typical workflows, visibility and differentiated network
+      <t>These typical work flows, visibility and differentiated network
       services, are critical in many networks. However, their reliance on
-      inspection and observation limits the ability to enable these workflows
+      inspection and observation limits the ability to enable these work flows
       more widely. Reasons for this include the following:<list
           style="symbols">
           <t>Simple observation based classification, especially ones relying
           on TCP/UDP, ports often result in incorrect results due to port
-          overloading (i.e. ports used by applications other than those
+          overloading (i.e. Ports used by applications other than those
           claiming the port with IANA).</t>
 
           <t>More and more traffic is encrypted, rendering DPI impossible, or
           much more complex, and sometimes at the expense of privacy or
-          security (e.g. need to share encryption keys with intermediary
+          security (e.g. Need to share encryption keys with intermediary
           performing DPI).</t>
 
           <t>Observation generally requires inspecting the control and
@@ -207,7 +229,7 @@
     <section title="Efforts in Progress">
       <t>There are a variety of existing and evolving signaling options that
       can provide explicit application to network signaling and serve the
-      visibility and differentiated network services workflows where DPI is
+      visibility and differentiated network services work flows where DPI is
       currently being used. It seems clear that there will be no single
       one-protocol-fits-all solution. Every protocol is currently defined in
       its own silo, creating duplicate or inconsistent information models.
@@ -222,29 +244,37 @@
           original goal was to provide admission control. Arguably, its
           success was impacted by its reliance on router-alert because this
           often leads to RSVP packets being filtered by intervening networks.
-          To date, more lightweight signaling workflows utilizing RSVP have
+          To date, more lightweight signaling work flows utilizing RSVP have
           not been standardized within the IETF.</t>
 
-          <t> NSIS (next Steps in Signaling) is the next iteration of
-          RSVP-like signaling defined by the IETF. Because it focused on the
-          same fundamental workflow as RSVP admission control as its main
-          driver, and because it did not provide significant enough use-case
-          benefits over RSVP, it has seen even less adoption than RSVP.</t>
+          <t>NSIS (next Steps in Signaling) is the next iteration of RSVP-like
+          signaling defined by the IETF. Because it focused on the same
+          fundamental work flow as RSVP admission control as its main driver,
+          and because it did not provide significant enough use-case benefits
+          over RSVP, it has seen even less adoption than RSVP.</t>
 
-          <t> STUN is an on path, in-band signaling protocol that could easily
+          <t>DiffServ style packet marking can help provide QoS in some
+          environments but DSCP bits might not be preserved over the Internet.
+          When this occurs DSCP markings set by the remote peer or server are
+          likely to be modified or removed by the intervening network(s). </t>
+
+          <t>STUN is an on path, in-band signaling protocol that could easily
           be extended to provide signaling to on path network devices because
           it provides an easily inspected packet signature, at least for
-          transport protocols such as UDP and SCTP. Through its extensions
-          TURN and ICE, it is becoming quite popular in application signaling
-          driven by the initial use-case of automatically opening up firewall
-          pinholes and determining the best local and remote addresses for
+          transport protocols such as UDP. Through its extensions TURN and
+          ICE, it is becoming quite popular in application signaling driven by
+          the initial use-case of providing NAT, firewall traversal
+          capabilities and determining the best local and remote addresses for
           peer-to-peer connectivity (ICE).</t>
 
-          <t> PCP is a protocol designed to support use cases similar to UPnP
-          firewall traversal. It also can easily be extended to provide more
-          generic application to network signaling for traffic flows. Unlike
-          the prior protocols, it is not meant to be used on path end-to-end
-          but rather independently on one "edge" of a traffic flow. It is
+          <t>Port Control Protocol (PCP) provides a mechanism to describe a
+          flow to the network. The primary driver for PCP has been creating
+          port mappings on NAT and firewall devices. When doing this, PCP
+          pushes flow information from the host into the network (specifically
+          to the network's NAT or firewall device), and receives information
+          back from the network (from the NAT or firewall device). Unlike the
+          prior protocols, it is not meant to be used on path end-to-end but
+          rather independently on one "edge" of a traffic flow. It is
           therefore an attractive alternative (albeit with challenges under
           path redundancy) because it allows the introduction of application
           to network signaling without relying on the remote peer. This is
@@ -257,28 +287,50 @@
           application purposely keeps or inserts information elements that are
           meant to be signaled to the network in the clear, or knowingly uses
           an encryption scheme shared with the network.</t>
-        </list>Rather than encourage independent, protocol specific solutions
-      to this problem, this draft calls for a protocol and application
+        </list></t>
+    </section>
+
+    <section title="Requirements">
+      <t>Rather than encourage independent, protocol specific solutions to
+      this problem, this draft calls for a protocol and application
       independent solution that can be applied in a consistent fashion across
-      a variety of protocols. The solution should:<list style="symbols">
-          <t>allow applications to explicitly signal their flow
-          characteristics to the network </t>
+      a variety of protocols. The requirements are :<list style="hanging">
+          <t hangText="F1:">Allow applications to explicitly signal their flow
+          characteristics to the network.</t>
 
-          <t>provide network nodes visibility to application flow
-          characteristics</t>
+          <t hangText="F2:">Provide network nodes visibility to application
+          flow characteristics.</t>
 
-          <t>enable network nodes to contribute to application flow
-          descriptions</t>
+          <t hangText="F3:">Enable network nodes to contribute to application
+          flow descriptions.</t>
 
-          <t>allow applications to receive resulting flow descriptions as
-          feedback from the network</t>
+          <t hangText="F4:">Allow applications to receive resulting flow
+          descriptions as feedback from the network.</t>
 
-          <t>complement existing heuristic based mechanisms</t>
-        </list>The solution should not:<list style="symbols">
-          <t>compromise the privacy or security of applications, their end
-          users, or network nodes</t>
+          <t hangText="F5:">Complement existing heuristic based
+          mechanisms.</t>
 
-          <t>preclude the use of existing heuristic based mechanisms</t>
+          <t hangText="F6:">Provide differentiated service for both directions
+          of a flow, including flows that cross administrative boundaries.
+          </t>
+
+          <t hangText="F7:">Use protocols that are access agnostic. </t>
+
+          <t hangText="F8:">Usable at the application level, without needing
+          operating system support.</t>
+
+          <t hangText="F9:">Provide mechanism to authenticate and authorize
+          endpoints, applications to signal flow characteristics. </t>
+
+          <t hangText="F10:">Provide mechanism for integrity and replay
+          protection of messages exchanged between the application and the
+          network. </t>
+
+          <t hangText="F11:">The solution should not compromise the privacy or
+          security of applications, their end users, or network nodes.</t>
+
+          <t hangText="F12:">The solution should not preclude the use of
+          existing heuristic based mechanisms.</t>
         </list></t>
     </section>
 
