@@ -133,7 +133,7 @@
       network separation, or deep packet inspection (DPI). But most of
       observed flows in current usages are dynamic, time-bound (short lived
       for some of them), possibly encrypted (TLS for signaling), peer-to-peer,
-      possibly asymmetric, use non-dedicated devices which renders such
+      possibly asymmetric, used on non-dedicated devices which renders such
       techniques less effective and/or result in compromises to application
       security or user privacy. </t>
     </abstract>
