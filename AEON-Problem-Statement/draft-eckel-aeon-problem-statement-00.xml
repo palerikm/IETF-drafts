@@ -282,7 +282,7 @@
           meant to be signaled to the network in the clear, or knowingly uses
           an encryption scheme shared with the network.</t>
 
-          <t>Interface to the Routing System (I2RS) is a workign group
+          <t>Interface to the Routing System (I2RS) is a working group
           chartered to provide interfaces for management applications, network
           controllers, and user applications to make specific demands on the
           network.</t>
@@ -291,11 +291,11 @@
           non-working group mailing list intended to enable discussion of the
           architecture, use-cases, and requirements that provide abstraction
           and virtual control of transport networks to various
-          applications/clients. </t>
+          applications/clients.</t>
 
           <t>Prefix coloring has been proposed for use in HOMENET and 6MAN
-          working groups to provide differented services to applications based
-          on its IP address. </t>
+          working groups to provide differentiated services to applications
+          based on its IP address.</t>
         </list></t>
     </section>
 
