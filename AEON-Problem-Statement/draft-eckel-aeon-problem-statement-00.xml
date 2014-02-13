@@ -5,7 +5,6 @@
 <!-- One method to get references from the online citation libraries.
      There has to be one entity for each item to be referenced.
      An alternate method (rfc include) is described in the references. -->
-<!ENTITY I-D.eckert-intarea-flow-metadata-framework SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.eckert-intarea-flow-metadata-framework.xml">
 ]>
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 <!-- used by XSLT processors -->
@@ -97,7 +96,7 @@
       </address>
     </author>
 
-    <date />
+    <date/>
 
     <!-- If the month and year are both specified and are the current ones, xml2rfc will fill
          in the current day for you. If only the current year is specified, xml2rfc will fill
@@ -130,12 +129,12 @@
       range of signaling protocols. Historically, this functionality has been
       accomplished to the extent possible using heuristics, which inspect and
       infer flow characteristics. Heuristics may be based on port ranges,
-      network separation, or deep packet inspection (DPI). But most of
-      observed flows in current usages are dynamic, time-bound (short lived
+      network separation, or deep packet inspection (DPI). But many
+      application flows in current usages are dynamic, time-bound (short lived
       for some of them), possibly encrypted (TLS for signaling), peer-to-peer,
-      possibly asymmetric, used on non-dedicated devices which renders such
-      techniques less effective and/or result in compromises to application
-      security or user privacy. </t>
+      possibly asymmetric, and used on non-dedicated devices, any combination
+      of which renders such techniques less effective or results in
+      compromises to application security or user privacy.</t>
     </abstract>
   </front>
 
@@ -150,7 +149,7 @@
       available capacity is saturated at whatever rate it is added.</t>
 
       <t>Now more so than ever before, identification and treatment of
-      application flows is critical for the successful deployment and
+      application flows are critical for the successful deployment and
       operation of applications. These applications are based on wide range of
       signaling protocols and deployed by a diverse set of application
       providers that is not necessarily affiliated with the network providers
@@ -165,12 +164,11 @@
 
       <t>Port based solutions suffer from port overloading and inconsistent
       port usage. Network separation techniques like IP subnetting are error
-      prone and result increase network management complexity. DPI is
-      computationally expensive and becomes a greater challenge with the wider
-      adoption of encrypted signaling and secured media. An additional
-      drawback of DPI is that the resulting insights are not available, or
-      need to be recomputed, at network nodes further down the application
-      flow path.</t>
+      prone and increase network management complexity. DPI is computationally
+      expensive and becomes a greater challenge with the wider adoption of
+      encrypted signaling and secured media. An additional drawback of DPI is
+      that any insights are not available, or need to be recomputed, at
+      network nodes further down the application flow path.</t>
     </section>
 
     <section title="Typical Workflows">
@@ -178,14 +176,15 @@
       successfully for two types of work flows:<list counter="1"
           style="numbers">
           <t>Provide network operators with visibility into traffic for
-          troubleshooting, capacity planning, accounting and billing and other
-          off network work flows. This is done by exporting observed traffic
-          analysis via protocols such as IPFIX and SNMP.</t>
+          troubleshooting, capacity planning, accounting and billing, and
+          other off-network work flows. This is done by exporting observed
+          traffic analysis via protocols such as IPFIX and SNMP.</t>
 
-          <t>Provide differentiated network services for the traffic according
-          to network operator defined rule sets, including policing and
-          shaping of traffic, providing admission control, impacting routing,
-          permitting passage of traffic (e.g. firewall functions), etc.</t>
+          <t>Provide differentiated network services for specific traffic
+          according to network operator defined rule sets, including policing
+          and shaping of traffic, providing admission control, impacting
+          routing, and permitting passage of specific traffic (e.g. firewall
+          functions).</t>
         </list></t>
     </section>
 
@@ -195,14 +194,14 @@
       inspection and observation limits the ability to enable these work flows
       more widely. Reasons for this include the following:<list
           style="symbols">
-          <t>Simple observation based classification, especially ones relying
-          on TCP/UDP ports often result in incorrect results due to port
-          overloading (i.e. Ports used by applications other than those
-          claiming the port with IANA).</t>
+          <t>Simple observation based classification based on TCP/UDP port
+          numbers often result in incorrect results due to port overloading
+          (i.e. ports used by applications other than those claiming the port
+          with IANA).</t>
 
           <t>More and more traffic is encrypted, rendering DPI impossible, or
           much more complex, and sometimes at the expense of privacy or
-          security (e.g. Need to share encryption keys with intermediary
+          security (e.g. need to share encryption keys with intermediary
           performing DPI).</t>
 
           <t>Visibility generally requires inspecting the signaling traffic of
@@ -210,15 +209,14 @@
           than the actual application data traffic. Impacting the traffic
           behavior is ineffective in those scenarios.</t>
 
-          <t>Heuristics can result in false negatives or false positives,
-          which cause inappropriate QoS treatment of a flow or incorrect flow
-          accounting.</t>
+          <t>Extensions to signaling protocols can result in false negatives
+          or false positives during inspection.</t>
 
-          <t>Without explicit involvement of the application, network services
-          leveraging DPI traffic classification impact the application
-          behavior by impacting its traffic, but cannot provide explicit
-          feedback to the application. This results in a lost opportunity for
-          the application to gain insight and cooperate with the network.</t>
+          <t>Network services leveraging DPI traffic classification impact the
+          application behavior by impacting its traffic, but they do not
+          provide explicit feedback to the application. This results in a lost
+          opportunity for the application to gain insight and cooperate with
+          the network.</t>
         </list></t>
     </section>
 
@@ -250,16 +248,16 @@
           over RSVP, it has seen even less adoption than RSVP.</t>
 
           <t>DiffServ style packet marking can help provide QoS in some
-          environments but DSCP bits might not be preserved over the Internet.
-          When this occurs DSCP markings set by the remote peer or server are
-          likely to be modified or removed by the intervening network(s).</t>
+          environments but DSCP markings are often modified or removed at
+          various points in the network or when crossing network
+          boundaries.</t>
 
           <t>STUN is an on path, in-band signaling protocol that could easily
           be extended to provide signaling to on path network devices because
           it provides an easily inspected packet signature, at least for
           transport protocols such as UDP. Through its extensions TURN and
           ICE, it is becoming quite popular in application signaling driven by
-          the initial use-case of providing NAT, firewall traversal
+          the initial use-case of providing NAT and firewall traversal
           capabilities and determining the best local and remote addresses for
           peer-to-peer connectivity (ICE).</t>
 
@@ -283,6 +281,21 @@
           application purposely keeps or inserts information elements that are
           meant to be signaled to the network in the clear, or knowingly uses
           an encryption scheme shared with the network.</t>
+
+          <t>Interface to the Routing System (I2RS) is a workign group
+          chartered to provide interfaces for management applications, network
+          controllers, and user applications to make specific demands on the
+          network.</t>
+
+          <t>Abstraction and Control of Transport Networks (ACTN) is a
+          non-working group mailing list intended to enable discussion of the
+          architecture, use-cases, and requirements that provide abstraction
+          and virtual control of transport networks to various
+          applications/clients. </t>
+
+          <t>Prefix coloring has been proposed for use in HOMENET and 6MAN
+          working groups to provide differented services to applications based
+          on its IP address. </t>
         </list></t>
     </section>
 
@@ -291,32 +304,29 @@
       this problem, this draft calls for a protocol and application
       independent solution that can be applied in a consistent fashion across
       a variety of protocols. The requirements are:<list style="hanging">
-          <t hangText="Req-1:">Eliminate need for network to perform
-          heuristics to differentiate services.</t>
-
-          <t hangText="Req-2:">Allow applications to explicitly signal their
+          <t hangText="Req-1:">Allow applications to explicitly signal their
           flow characteristics to the network.</t>
 
-          <t hangText="Req-3:">Provide network nodes visibility to application
+          <t hangText="Req-2:">Provide network nodes visibility to application
           flow characteristics.</t>
 
-          <t hangText="Req-4:">Enable network nodes to contribute to
+          <t hangText="Req-3:">Enable network nodes to contribute to
           application flow descriptions.</t>
 
-          <t hangText="Req-5:">Allow applications to receive resulting flow
+          <t hangText="Req-4:">Allow applications to receive resulting flow
           descriptions as feedback from the network.</t>
 
-          <t hangText="Req-6:">Complement existing heuristic based
+          <t hangText="Req-5:">Complement existing heuristic based
           mechanisms.</t>
 
-          <t hangText="Req-7:">Provide differentiated service for both
+          <t hangText="Req-6:">Provide differentiated service for both
           directions of a flow, including flows that cross administrative
           boundaries.</t>
 
-          <t hangText="Req-8:">Provide mechanism to authenticate and authorize
-          endpoints, applications to signal flow characteristics.</t>
+          <t hangText="Req-7:">Provide mechanism to authenticate and authorize
+          endpoints/applications to signal flow characteristics.</t>
 
-          <t hangText="Req-9:">Provide mechanism for integrity and replay
+          <t hangText="Req-8:">Provide mechanism for integrity and replay
           protection of messages exchanged between the application and the
           network.</t>
         </list></t>
