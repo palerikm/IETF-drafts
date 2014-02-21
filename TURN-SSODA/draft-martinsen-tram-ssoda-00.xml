@@ -37,19 +37,32 @@
         <email>palmarti@cisco.com</email>
       </address>
     </author>
-    <author initials="S." surname="Perreault" fullname="Simon Perreault">
-      <organization>Viagénie</organization>
+    <author fullname="Justin Uberti" initials="J." surname="Uberti">
+      <organization>Google</organization>
       <address>
         <postal>
-          <street>2600 boul. Laurier, suite 625</street>
-          <city>Québec</city>
-          <region>QC</region>
-          <code>G1V 4W1</code>
-          <country>Canada</country>
+          <street></street>
+          <city>Kirkland</city>
+          <region>WA</region>
+          <code></code>
+          <country>USA</country>
         </postal>
-        <phone>+1 418 656 9254</phone>
-        <email>simon.perreault@viagenie.ca</email>
-        <uri>http://www.viagenie.ca</uri>
+        <email>justin@uberti.name</email>
+      </address>
+    </author>
+    <author fullname="Oleg Moskalenko" initials="O."
+            surname="Moskalenko">
+      <organization>public project rfc5766-turn-server</organization>
+      <address>
+        <postal>
+          <street></street>
+          <city>Walnut Creek</city>
+          <region>CA</region>
+          <code></code>
+          <country>USA</country>
+        </postal>
+        <email>mom040267@gmail.com</email>
+        <uri>https://code.google.com/p/rfc5766-turn-server/</uri>
       </address>
     </author>
     
@@ -316,7 +329,12 @@
       </t>
     </section>
 
-    
+  <section anchor="ack" title="Acknowledgements">
+      <t>
+        Authors would like to thank Simon Perreault for providing ideas
+        direction and insight.
+      </t>
+    </section>  
 
   </middle>
   
