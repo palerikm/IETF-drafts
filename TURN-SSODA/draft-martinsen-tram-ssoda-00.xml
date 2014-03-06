@@ -122,10 +122,6 @@
           family, in the Allocate request that it sends to the TURN
           server. The mechanisms to formulate an Allocate request are
           described in Section 6.1 of <xref target="RFC5766" />.
-          <cref anchor="Q1" source="palmarti">
-            Rewrite to me more generic regarding address type? One
-            attribute allowed for each desired family? 
-          </cref>
         </t>
         
         <t>
@@ -145,37 +141,28 @@
           and has not been tampered with, the TURN server processes
           the Allocate request following the rules in
           <xref target="RFC5766" /> and <xref target="RFC6156"
-          />. Only one REQUESTED-ADDRESS-FAMILY attribute with the same
-          family value is allowed in the request. If two attributes
-          with the same family value exist the server MUST return a
-          450 (Multiple Address Allocation not Supported) Error
-          Allocate message. 
+          />. Only one REQUESTED-ADDRESS-FAMILY attribute with the
+          same family value is allowed in the request. If two
+          attributes with the same family value exist the server MUST
+          ignore all but one. 
         </t>
         <t>
           If the server can successfully process the request, it
           allocates a RELAY address for each of the
-          REQUESTED-ADDRESS-FAMILY attributes in the Allocate
-          request.  The allocated RELAY addresses are returned in
-          separate XOR-RELAYED-ADDRESS attributes in the Allocate
-          response message.
+          REQUESTED-ADDRESS-FAMILY attributes in the Allocate request.
+          The allocated RELAY addresses are returned in separate
+          XOR-RELAYED-ADDRESS attributes in the Allocate response
+          message.
         </t>
         <t>
-          If the requested address family is not supported on the
-          TURN server, the REQUEST-ADDRESS-FAMILY attribute MUST be
-          included in the response instead of the XOR-RELAYED-ADDRESS
-          attribute that would have been added if the address family
-          was supported. This will notify the client that the
-          REQUESTED-ADDRESS-FAMILY was understood, but not supported. 
+          If the requested address family is not supported on the TURN
+          server, a XOR-ADDRESS-ATTRIBUTE with a NULL address
+          corresponding to the address family not allocated MUST be
+          included in the response. This will notify the client that
+          the REQUESTED-ADDRESS-FAMILY was understood, but not
+          supported.
         </t>
-        <t>
-          If all of the requested address families included in the
-          Allocate request are unsupported on the TURN server it MUST
-          respond with a 460 (None of the address families are
-          supported) Allocate Error Response. An old TURN server
-          implementation would potentially return 440, so a new error
-          response was defined.
-        </t>
-
+        
         <t>
           If the REQUESTED-ADDRESS-FAMILY attributes are absent, the
           server MUST allocate an IPv4-relayed transport address for
@@ -184,22 +171,7 @@
           Family not Supported) Allocate error response.
         </t>
 
-        <section title="New Error Responses">
-          <t>
-            This document defines the following new error response code:
-          </t>
-          <t>
-            450 (Multiple Address Allocation not Supported): The
-            server does not support allocation more than one RELAY
-            address of the same type.
-          </t>
-          <t>
-            460 (None of the Address Families are Supported): The
-            server did not support any of the requested address
-            families.
-          </t>
-        </section>
-        
+                
       </section>
 
       <section title="Receiving an Allocate Success Response">
@@ -234,12 +206,6 @@
       <section title="Receiving an Allocate Error Response">
         <t>
           If the client receives an Allocate error response with the
-          450 (Multiple Address Allocation not Supported) or 460 (None
-          of the Address Families are Supported) error code, the
-          client MUST NOT retry its request.
-        </t>
-        <t>
-          If the client receives an Allocate error response with the
           440 (Unsupported Address Family) error code, the client
           knows that the TURN server does not SSODA and might have
           misinterpreted any of the included REQUESTED-ADDRESS-FAMILY
@@ -255,10 +221,10 @@
       <t>
         The behavior specified here affects the processing defined in
         Section 7 of <xref target="RFC5766"/> and Section 5 of
-        <xref target="RFC6156" />. This section MUST only be used id
+        <xref target="RFC6156" />. This section MUST only be used if
         the client have verified that the TURN server supports SSODA
         during the allocation creation described in <xref target =
-        "create_allocation" />.
+        "create_allocation" />. Otherwise rewert back to 5766 behaviour.
       </t>
       <section title="Sending a Refresh Request">
         <t>
