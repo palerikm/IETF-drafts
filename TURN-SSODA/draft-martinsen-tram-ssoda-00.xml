@@ -153,7 +153,8 @@
         <t>
           If the requested address family is not supported on the TURN
           server, a XOR-RELAYED-ADDRESS with a NULL address (that is
-	  IPv4 0.0.0.0:0 or IPv6 [::0]:0) corresponding to the address family 
+	  IPv4 address 0.0.0.0:0 or IPv6 address [::0]:0) 
+	  corresponding to the address family 
 	  not allocated MUST be included in the response. This will 
 	  notify the client that the REQUESTED-ADDRESS-FAMILY was understood, 
 	  but not supported.
