@@ -209,7 +209,7 @@
       <section title="Receiving an Allocate Error Response">
         <t>
           If the client receives an Allocate error response with the
-          440 (Unsupported Address Family) error code, the client
+          440 (Unsupported Address Family) error code, then the client
           knows that the TURN server does not support SSODA and might have
           misinterpreted any of the included REQUESTED-ADDRESS-FAMILY
           attributes in the Allocate request. The client should retry
