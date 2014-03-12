@@ -120,19 +120,15 @@
           sending one Allocate request MUST include two
           REQUESTED-ADDRESS-FAMILY attributes, one for each address
           family, in the Allocate request that it sends to the TURN
-          server. The mechanisms to formulate an Allocate request are
+          server. The mechanism to formulate an Allocate request is
           described in Section 6.1 of <xref target="RFC5766" />.
         </t>
         
         <t>
           Clients MUST NOT include a REQUESTED-ADDRESS-FAMILY
           attribute in an Allocate request that contains a
-          RESERVATION-TOKEN attribute.
-          <cref anchor="Q2" source="palmarti">
-            Or should we disallow the whole odd even port scheme when
-            this mechanism is in use? Will simplify things on the
-            server.
-          </cref>
+          RESERVATION-TOKEN or an EVEN-PORT attributes. The dual allocation 
+	  mechanism is not available with odd/even port allocation scheme.
         </t>
       </section>
       <section title="Receiving an Allocate Request">
@@ -156,11 +152,11 @@
         </t>
         <t>
           If the requested address family is not supported on the TURN
-          server, a XOR-ADDRESS-ATTRIBUTE with a NULL address
-          corresponding to the address family not allocated MUST be
-          included in the response. This will notify the client that
-          the REQUESTED-ADDRESS-FAMILY was understood, but not
-          supported.
+          server, a XOR-RELAYED-ADDRESS with a NULL address (that is
+	  IPv4 0.0.0.0:0 or IPv6 [::0]:0) corresponding to the address family 
+	  not allocated MUST be included in the response. This will 
+	  notify the client that the REQUESTED-ADDRESS-FAMILY was understood, 
+	  but not supported.
         </t>
         
         <t>
@@ -175,31 +171,38 @@
       </section>
 
       <section title="Receiving an Allocate Success Response">
+	<t>
+	  This section describes how the client must react on
+	  receiving a response to the dual allocation request.
+	  If the client is not using dual allocation, then the behavior 
+	  is not different from the rules in <xref target="RFC5766" /> 
+	  and in <xref target="RFC6156" />.
+	</t>
         <t>
-          If the client receives a Allocate Response containing a
-          XOR-RELAYED-ADDRESS attribute for each of the corresponding
-          REQUESTED-ADDRESS-FAMILY attributes in the Allocate request
+          If the client receives an Allocate Response containing a
+          non-NULL XOR-RELAYED-ADDRESS attribute for each of the 
+	  REQUESTED-ADDRESS-FAMILY attributes in the Allocate request
           sent by the client, the client knows that the TURN server
           supports multiple address family allocation over a single
-          socket. The RELAY addresses can now be used by the client.
+          socket. Both RELAY addresses can now be used by the client.
         </t>
         <t>
-          If the Allocate response contains at least one
-          XOR-RELAYED-ADDRESS and at least one
-          REQUESTED-ADDRESS-FAMILY attribute, the client know that the
-          TURN server supports SSODA, and the allocated RELAY addresses
-          can be used. The client MUST not try to allocate any of the
-          included requested address families on a different 5-tuple.
+          If the Allocate response contains one non-NULL 
+          XOR-RELAYED-ADDRESS and also one NULL XOR-RELAYED-ADDRESS, 
+	  of different requested address families, then the client 
+	  knows that the TURN server "understands" SSODA, but the server
+	  policy does not allow dual allocations. The allocated 
+	  non-NULL RELAY address can be used. The client MUST not try to 
+	  allocate any of the included requested address families on
+	  a different 5-tuple.
         </t>
         <t>
-          If the Allocate Response contain one XOR-RELAYED-ADDRESS
-          attribute and no additional REQUESTED-ADDRESS-FAMILY
-          attributes the client knows that the TURN server does not
+          If the Allocate Response contain only one XOR-RELAYED-ADDRESS
+          attribute then the client knows that the TURN server does not
           support SSODA. The client can retry the the missing address
-          family allocations on new 5-tuples (from a new local HOST
-          address). Subsequent Allocate Request towards the same TURN
-          server MUST not include multiple REQUESTED-ADDRESS-FAMILY
-          attributes.
+          family allocations on new 5-tuples. Subsequent Allocate Request 
+	  towards the same TURN server MUST not include multiple 
+	  REQUESTED-ADDRESS-FAMILY attributes.
         </t>
       </section>
 
@@ -207,7 +210,7 @@
         <t>
           If the client receives an Allocate error response with the
           440 (Unsupported Address Family) error code, the client
-          knows that the TURN server does not SSODA and might have
+          knows that the TURN server does not support SSODA and might have
           misinterpreted any of the included REQUESTED-ADDRESS-FAMILY
           attributes in the Allocate request. The client should retry
           the allocations by sending the Allocate request messages
@@ -224,7 +227,8 @@
         <xref target="RFC6156" />. This section MUST only be used if
         the client have verified that the TURN server supports SSODA
         during the allocation creation described in <xref target =
-        "create_allocation" />. Otherwise rewert back to 5766 behaviour.
+        "create_allocation" />. Otherwise rewert back to RFC 5766 or
+	RFC 6156 vbehaviour.
       </t>
       <section title="Sending a Refresh Request">
         <t>
@@ -245,14 +249,14 @@
       <section title="Receiving a Refresh Request">
         <t>
           The server refreshes the allocated address families that
-          matches the requested address family value. If some of the
+          matches the requested address family values. If some of the
           values in the request do not match an allocated family this
           is silently ignored. (No point in refreshing or deleting an
           allocation that does not exist.)
         </t>
         <t>
           If a server receives a Refresh Request with
-          REQUESTED-ADDRESS- FAMILY attributes, and none attributes
+          REQUESTED-ADDRESS-FAMILY attributes, and none attributes
           values don't match any of the address family allocations,
           the server MUST reply with a 443 (Peer Address Family
           Mismatch) Refresh error response.
@@ -288,10 +292,14 @@
     </section>
     <section title="Channels">
       <t>
-        <cref anchor="Q3" source="palmarti">
-          Allow to bind two channels? Or only bind one and discard the
-          other address types?
-        </cref>
+	The session channels setup process follows the same rules as in 
+	<xref target="RFC5766"/> and in <xref target="RFC6156" />.
+	The client is allowed to setup multiple channels within the same
+	5-tuple session. The only new feature if that, is the server
+	supports SSODA and a dual allocation is used by the session, 
+	then the peer addresses of those channels may be of different families.
+	Thus, a single 5-tuple session may set several IPv4 channels and 
+	several IPv6 channels.
       </t>
     </section>
 
