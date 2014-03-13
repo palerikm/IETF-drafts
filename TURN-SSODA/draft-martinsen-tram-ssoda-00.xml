@@ -292,9 +292,9 @@
     <section title="Channels">
       <t>
 	The session channels setup process follows the same rules as in 
-	<xref target="RFC5766"/> and in <xref target="RFC6156" />.
-	The client is allowed to setup multiple channels within the same
-	5-tuple session. The only new feature if that, is the server
+	<xref target="RFC5766"/> and in <xref target="RFC6156" />:
+	the client is allowed to setup multiple channels within the same
+	5-tuple session. The new feature is that if the server
 	supports SSODA and a dual allocation is used by the session, 
 	then the peer addresses of those channels may be of different families.
 	Thus, a single 5-tuple session may set several IPv4 channels and 
