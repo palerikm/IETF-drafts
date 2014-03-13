@@ -194,6 +194,11 @@
 	  be returned if all allocation requests cannot be satisfied;
 	  instead, an error response should be returned, as indicated
 	  above.
+	</t>
+	<t>
+	  This somewhat unusual pattern of partial success is used to
+	  avoid the need for an additional roundtrip when the client
+	  just wants whatever address families the TURN server supports.
         </t>
         <t>
           Note that while allocating multiple address families at the
@@ -228,7 +233,7 @@
 	  either does not support one of the requested address families
 	  or cannot currently allocate an address of that family.
 	  The allocated non-"any" address can be used, but the client
-	  SHOULD NOT try to allocate any of unsupported families on
+	  SHOULD NOT try to allocate any of the unsupported families on
 	  a different 5-tuple.
         </t>
         <t>
@@ -243,16 +248,18 @@
 
       <section title="Receiving an Allocate Error Response">
         <t>
-          If the client receives an Allocate error response with the
+          When doing dual allocation, if the client receives an 
+          Allocate error response with the
           440 (Unsupported Address Family) error code, then the client
           knows that the TURN server does not support any of the desired
           address families, or might be a non-SSODA server that 
           misinterpreted the included REQUESTED-ADDRESS-FAMILY
           attributes in the Allocate request. The client SHOULD retry
-          the allocations by sending an Allocate request messages
-          from different local ports, with only a single
-          REQUESTED-ADDRESS-FAMILY attribute (for IPv6) or omitting it
-          entirely (for IPv4).
+          its IPv4 request on the same 5-tuple, with no
+          REQUSTED-ADDRESS-FAMILY attribute, and MAY retry other
+          address families on different local ports, by sending an
+          Allocate request with only one REQUESTED-ADDRESS-FAMILY
+          attribute.
         </t>
       </section>
     </section>
@@ -262,41 +269,50 @@
         The behavior specified here affects the processing defined in
         Section 7 of <xref target="RFC5766"/> and Section 5 of
         <xref target="RFC6156" />. This section MUST only be used if
-        the client have verified that the TURN server supports SSODA
+        the client has verified that the TURN server supports SSODA
         during the allocation creation described in <xref target =
-        "create_allocation" />. Otherwise rewert back to RFC 5766 or
-	RFC 6156 vbehaviour.
+        "create_allocation" />. Otherwise, revert back to RFC 5766 or
+	RFC 6156 behaviour.
       </t>
       <section title="Sending a Refresh Request">
         <t>
           To perform an allocation refresh, the client generates a
           Refresh Request as described in Section 7.1 of <xref target="RFC5766"/>.
-          The client MUST include one ore more REQUESTED-ADDRESS-FAMILY
-          attributes describing the the family types that should be refreshed.
+          When refreshing a dual allocation, the client SHOULD include one or
+          more REQUESTED-ADDRESS-FAMILY attributes describing the the family
+          types that should be refreshed; the client MUST only include
+          family types that it previously allocated and has not yet deleted.
+          When refreshing a (single) allocation on a server that does not
+          not support SSODA, REQUESTED-ADDRESS-FAMILY should be omitted, for
+          backwards compatibility.
         </t>
         <t>
-          If the clients wants to delete an existing allocation of a
-          specific address type the lifetime of that refresh request
-          must be set to 0 and requested address type must be
-          included. It is possible to delete one ore more allocations
-          dependant on how many REQUESTED-ADDRESS-FAMILY attributes
-          that are included. 
+          This process can also be used to delete an allocation of a
+          specific address type, by setting the lifetime of that refresh request
+          to 0. It is possible to delete one or
+          more allocations depending on how many REQUESTED-ADDRESS-FAMILY
+          attributes are included. Deleting a single allocation destroys
+          any permissions or channels associated with that particular allocation;
+          it MUST NOT affect any permissions or channels associated with
+          allocations for other address families.
         </t>
+        
       </section>
       <section title="Receiving a Refresh Request">
         <t>
           The server refreshes the allocated address families that
-          matches the requested address family values. If some of the
-          values in the request do not match an allocated family this
-          is silently ignored. (No point in refreshing or deleting an
-          allocation that does not exist.)
+          match the supplied REQUESTED-ADDRESS-FAMILY values. If any of the
+          values in the request do not match a currently allocated address,
+          the server MUST respond with a 437 (Allocation Mismatch) error. 
+          [OPEN ISSUE: Is this the right code?]
+          
+          If no REQUESTED-ADDRESS-FAMILY is present, the request should be
+          treated as applying to all current allocations, for backward
+          compatibility.
         </t>
         <t>
-          If a server receives a Refresh Request with
-          REQUESTED-ADDRESS-FAMILY attributes, and none attributes
-          values don't match any of the address family allocations,
-          the server MUST reply with a 443 (Peer Address Family
-          Mismatch) Refresh error response.
+          The server MUST then refresh or delete the specified allocations,
+          and return a Refresh Success Response.
         </t>
       </section>
 
@@ -309,8 +325,8 @@
         <section title="Sending a CreatePermission Request">
           <t>
             The client MUST only include XOR-PEER-ADDRESS attributes
-            with addresses of the same address family as that of the
-            relayed transport addresses that are allocated.
+            with addresses that match an address family of one of the 
+            currently allocated addresses.
           </t>
         </section>
         <section title="Receiving a CreatePermission Request">
@@ -330,12 +346,11 @@
     <section title="Channels">
       <t>
 	The session channels setup process follows the same rules as in 
-	<xref target="RFC5766"/> and in <xref target="RFC6156" />:
-	the client is allowed to setup multiple channels within the same
-	5-tuple session. The new feature is that if the server
-	supports SSODA and a dual allocation is used by the session, 
-	then the peer addresses of those channels may be of different families.
-	Thus, a single 5-tuple session may set several IPv4 channels and 
+	<xref target="RFC5766"/> and in <xref target="RFC6156" />;
+	the client is allowed to set up multiple channels within the same
+	5-tuple session. However, when using SSODA and dual allocation,
+	the peer addresses of those channels may be of different families.
+	Thus, a single 5-tuple session may create several IPv4 channels and 
 	several IPv6 channels.
       </t>
     </section>
