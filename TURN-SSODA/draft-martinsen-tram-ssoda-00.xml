@@ -123,8 +123,11 @@
           sending one Allocate request MUST include two
           REQUESTED-ADDRESS-FAMILY attributes, one for each address
           family, in the Allocate request that it sends to the TURN
-          server. [OPEN ISSUE: which order is recommended, for optimal
-          backwards compatibility with 6156 severs?]
+          server. The order of the REQUESTED-ADDRESS-FAMILY is arbitrary,
+	  because the server either understands SSODA (then the order 
+	  does not matter) or the server does not understand SSODA 
+	  (then the server bahavior is undefined - it may return a 400 error,
+	  or it may take the first attribute, or it may take the last attribute).
           Multiple candidates of the same family are not supported; the 
           client MUST NOT include more than one REQUESTED-ADDRESS-FAMILY
           attribute for a given address family. The mechanism to formulate
@@ -135,7 +138,7 @@
         <t>
           Clients MUST NOT include a REQUESTED-ADDRESS-FAMILY
           attribute in an Allocate request that contains a
-          RESERVATION-TOKEN or an EVEN-PORT attributes. The dual allocation 
+          RESERVATION-TOKEN or an EVEN-PORT attributes. The SSODA 
 	  mechanism is not available when using the odd/even port
 	  allocation scheme.
         </t>
@@ -149,8 +152,7 @@
           Only one REQUESTED-ADDRESS-FAMILY attribute with the
           same family value is allowed in the request. If two
           attributes with the same family value exist the server MUST
-          ignore all but one. [OPEN ISSUE: I think it would be better to
-          fail this with 400 Bad Request.]
+          return 400 Bad Request error.
         </t>
         <t>  
           If no REQUESTED-ADDRESS-FAMILY attributes are present, the
@@ -163,8 +165,8 @@
           REQUESTED-ADDRESS-FAMILY attributes present in the Allocate
           request. The allocated relay addresses are returned in separate
           XOR-RELAYED-ADDRESS attributes in the Allocate response
-          message. [OPEN ISSUE: do we need to match the ordering of the
-          REQUESTED-ADDRESS-FAMILY attributes?]
+          message. The ordering of the XOR-RELAYED-ADDRESS attributes 
+	  is arbitrary.
         </t>
         <t>
           If the server cannot satisfy the request at all, because none
@@ -219,20 +221,22 @@
 	</t>
         <t>
           If the client receives an Allocate Success Response containing
-          a non-NULL XOR-RELAYED-ADDRESS attribute for each of the 
-	  REQUESTED-ADDRESS-FAMILY attributes in the Allocate request
+          a non-ANY (ANY as defined above) XOR-RELAYED-ADDRESS 
+	  attribute for each of the REQUESTED-ADDRESS-FAMILY 
+	  attributes in the Allocate request
           sent by the client, the client knows that the TURN server
           supports multiple address family allocation over a single
           socket. All relay addresses can now be used by the client.
         </t>
         <t>
           If the Allocate response contains both usable 
-          XOR-RELAYED-ADDRESS attributes as well as "any"
+          XOR-RELAYED-ADDRESS attributes as well as ANY
           XOR-RELAYED-ADDRESS attributes, then the client 
-	  knows that the TURN server "understands" SSODA, but the server
-	  either does not support one of the requested address families
+	  knows that the TURN server "understands" dual allocation
+	  SSODA request, but the server either does not support one 
+	  of the requested address families
 	  or cannot currently allocate an address of that family.
-	  The allocated non-"any" address can be used, but the client
+	  The allocated non-ANY address can be used, but the client
 	  SHOULD NOT try to allocate any of the unsupported families on
 	  a different 5-tuple.
         </t>
@@ -303,8 +307,7 @@
           The server refreshes the allocated address families that
           match the supplied REQUESTED-ADDRESS-FAMILY values. If any of the
           values in the request do not match a currently allocated address,
-          the server MUST respond with a 437 (Allocation Mismatch) error. 
-          [OPEN ISSUE: Is this the right code?]
+          the server MUST respond with a 443 (Peer Address Family Mismatch) error.
           
           If no REQUESTED-ADDRESS-FAMILY is present, the request should be
           treated as applying to all current allocations, for backward
