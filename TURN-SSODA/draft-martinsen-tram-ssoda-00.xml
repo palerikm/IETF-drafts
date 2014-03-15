@@ -166,7 +166,7 @@
           request. The allocated relay addresses are returned in separate
           XOR-RELAYED-ADDRESS attributes in the Allocate response
           message. The ordering of the XOR-RELAYED-ADDRESS attributes 
-	  is arbitrary.
+	  in the response is arbitrary.
         </t>
         <t>
           If the server cannot satisfy the request at all, because none
@@ -209,6 +209,18 @@
           to an existing allocation with a 437 (Allocation Mismatch)
           error code.
         </t>
+	<t>
+	  [OPEN ISSUE 1: do we need to include REQUESTED-ADDRESS-FAMILY 
+	  attribute(s) with failed address family (or families) to help 
+	  the client to recognize whether this is an "old" non-SSODA 
+	  server or a "new" SSODA-supporting server ?]
+	</t>
+      <t>
+	[OPEN ISSUE 2: do we have to consider a particular ordering of 
+	REQUESTED-ADDRESS-FAMILY and REQUESTED-ADDRESS-FAMILY attributes
+	in the ALLOCATE request and response ? Can attribute ordering 
+	provide some benefits in this case ?]
+      </t>
       </section>
 
       <section title="Receiving an Allocate Success Response">
@@ -307,7 +319,8 @@
           The server refreshes the allocated address families that
           match the supplied REQUESTED-ADDRESS-FAMILY values. If any of the
           values in the request do not match a currently allocated address,
-          the server MUST respond with a 443 (Peer Address Family Mismatch) error.
+          the server MUST respond with a 437 (Allocation Mismatch) error.
+	  [OPEN ISSUE: discuss whether this is the right error code for the situation]
           
           If no REQUESTED-ADDRESS-FAMILY is present, the request should be
           treated as applying to all current allocations, for backward
