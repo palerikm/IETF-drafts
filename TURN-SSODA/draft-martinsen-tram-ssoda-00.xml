@@ -176,7 +176,7 @@
         </t>
         <t>
           If the server cannot satisfy the request at all, because the
-          server could not allocate any of the specified adresses, the
+          server could not allocate any of the specified addresses, the
           server MUST return a 508 (Insufficient Capacity) error code as
           indicated in <xref target="RFC5766"/>.
         </t>
@@ -272,7 +272,7 @@
           misinterpreted the included REQUESTED-ADDRESS-FAMILY
           attributes in the Allocate request. The client SHOULD retry
           its IPv4 request on the same 5-tuple, with no
-          REQUSTED-ADDRESS-FAMILY attribute, and MAY retry other
+          REQUESTED-ADDRESS-FAMILY attribute, and MAY retry other
           address families on different local ports, by sending an
           Allocate request with only one REQUESTED-ADDRESS-FAMILY
           attribute.
