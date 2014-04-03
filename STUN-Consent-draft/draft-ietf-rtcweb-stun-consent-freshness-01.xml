@@ -210,20 +210,10 @@
       <t>The solution uses three values:</t>
 
       <t><list style="numbers">
-          <t>A consent timer, Tc, whose value is determined by the
-browser and not adjustable by an application.  This value MUST be 15
-seconds.</t>
-
           <t>A packet receipt timer, Tr, whose value is determined by the
           application, but MUST NOT be shorter than 1 second or longer than 15
           seconds, and SHOULD have a default value of 5 seconds.  This 
 determines liveness as described in <xref target="liveness"></xref>.</t>
-
-          <t>A consent timeout, Tf, which is how many seconds elapse without a
-          consent response before the browser ceases transmission of media.
-          Its value MUST be 15 seconds or less, and the value 15 seconds is
-          RECOMMENDED.</t>
-          
         </list></t>
 
       <t>A WebRTC browser performs a combined consent freshness and session
@@ -260,9 +250,9 @@ is considered an authenicated packet.</t>
 </list>
 </t>
 
-<t>Consent expires after 30 seconds.  That is, if an authenticated
+<t>Consent expires after 15 seconds.  That is, if an authenticated
 packet (e.g., DTLS, SRTP, ICE) has not been received from the inverted
-5-tuple after 30 seconds, the application MUST cease transmission on
+5-tuple after 15 seconds, the application MUST cease transmission on
 that 5-tuple.</t>
 
 
@@ -335,20 +325,7 @@ that 5-tuple.</t>
       PASSWORD, or any other packet.</t>
     </section>
 
-    <section title="W3C API Implications">
-      <t>For the consent freshness and liveness test the W3C specification
-      should provide APIs as described below: <list style="numbers">
-          <t>Ability for the browser to notify the JavaScript that a consent
-          freshness transaction has failed for a media stream and the browser
-          has stopped transmitting for that stream.</t>
-
-          <t>Ability for the JavaScript to start and stop liveness test and
-          set the liveness test interval.</t>
-
-          <t>Ability for the browser to notify the JavaScript that a liveness
-          test has failed for a media stream.</t>
-        </list></t>
-    </section>
+    
 -->
 
 
@@ -377,6 +354,21 @@ This follows the recommendation of ICE connectivity check described in section 7
 <xref target="RFC5245"></xref>. 
 </t>
 </section>
+
+<section title="W3C API Implications">
+      <t>For the consent freshness and liveness test the W3C specification
+      should provide APIs as described below: <list style="numbers">
+          <t>Ability for the browser to notify the JavaScript that a consent
+          freshness transaction has failed for a media stream and the browser
+          has stopped transmitting for that stream.</t>
+
+          <t>Ability for the JavaScript to start and stop liveness test and
+          set the liveness test interval.</t>
+
+          <t>Ability for the browser to notify the JavaScript that a liveness
+          test has failed for a media stream.</t>
+        </list></t>
+    </section>
 
     <section title="Security Considerations">
 
