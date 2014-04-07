@@ -127,13 +127,13 @@
       <t>This specification provides a mechanism for the client to signal the
       flow characteristics of relay channel to the TURN server, so that
       certain relay channels can receive service that is differentiated from
-      others. With this mechanism, a TURN can request the TURN server to
-      provide certain characteristics for a relay channel in both the upstream
-      and downstream directions. The TURN server authorizes the request and
-      signals back to the client that it can (fully or partially) accommodate
-      the flow. This sort of signaling is useful for long-lived flows such as
-      media streams, WebRTC data channels etc traversing through the TURN
-      server.</t>
+      others. With this mechanism, a TURN client can request the TURN server
+      to provide certain characteristics for a relay channel in both the
+      upstream and downstream directions. The TURN server authorizes the
+      request and signals back to the client that it can (fully or partially)
+      accommodate the flow. This sort of signaling is useful for long-lived
+      flows such as media streams, WebRTC data channels etc traversing through
+      the TURN server.</t>
 
       <t>The mechanism described in this document has several useful
       properties:</t>
@@ -169,20 +169,20 @@
           <t>DiffServ style packet marking can help provide QoS in some
           environments but DSCP markings are often modified or removed at
           various points in the network or when crossing network boundaries.
-          But TURN service could be provided in the access network or by the
-          application server or globally distributed 3rd party service, hence
+          TURN service could be provided by the access network or by the
+          Application Server or globally distributed 3rd party service and the
           DSCP markings set by the client may be modified or removed by the
           intervening network(s) before it reaches the TURN server.</t>
-
-          <t>TURN client cannot set DSCP values for outgoing packets because
-          of OS limitations.</t>
-
-          <t>DSCP provides differentiated service only in the outgoing
-          direction of a flow.</t>
 
           <t>DSCP values are site specific, with each site selecting its own
           code points for each QoS level, hence it may not work across
           domains. (TBD: draft-ietf-tsvwg-rtcweb-qos-00)</t>
+
+          <t>TURN client may not be able to set DSCP values for outgoing
+          packets because of OS limitations.</t>
+
+          <t>DSCP provides differentiated service only in the outgoing
+          direction of a flow.</t>
         </list></t>
     </section>
 
@@ -191,13 +191,14 @@
       attribute: FLOWDATA. If a TURN client wishes to signal the flow
       characteristics of the relay channel it MUST insert this attribute in
       ChannelBind request. This attribute if used MUST be sent only in the
-      ChannelBind request. Other specifications may extend this attribute to
-      be used in other STUN methods. The TURN server determines if it can
-      accommodate that flow, making configuration changes if necessary to
-      accommodate the flow, and returns information in the FLOWDATA attribute
-      indicating its ability to accommodate the described flow.</t>
+      ChannelBind request. Other specifications in future may extend this
+      attribute to be used in other STUN methods. The TURN server determines
+      if it can accommodate that flow, making configuration changes if
+      necessary to accommodate the flow, and returns information in the
+      FLOWDATA attribute indicating its ability to accommodate the described
+      flow.</t>
 
-      <t>Note : A client can then choose to use either Send and Data methods
+      <t>Note : A client can then choose to either use Send and Data methods
       or channels to exchange data with its peer. For bandwidth intensive
       applications like video, audio, WebRTC data channels a send indication
       or Data indication (which adds 36 bytes overhead) can substantially
@@ -211,16 +212,17 @@
         allows a TURN client to signal the flow characteristics of relay
         channel to the TURN server. If the flow characteristics of a relay
         channel changes then the client can send ChannelBind request with
-        FLOWDATA STUN attribute to refresh the binding. When binding is
-        refreshed using ChannelBind request then the client can signal
-        FLOWDATA STUN attribute if the flow characteristics of the relay
-        channel have changed.</t>
+        updated FLOWDATA STUN attribute to refresh the binding. If binding is
+        refreshed using ChannelBind request then the client can also signal
+        updated FLOWDATA STUN attribute if the flow characteristics of the
+        relay channel have changed.</t>
       </section>
 
       <section title="Receiving a ChannelBind Request">
         <t>When a server receives a ChannelBind request that includes a
-        FLOWDATA attribute, it processes as per the TURN specification <xref
-        target="RFC5766"></xref> plus the specific rules mentioned below.</t>
+        FLOWDATA attribute, it processes the request as per the TURN
+        specification <xref target="RFC5766"></xref> plus the specific rules
+        mentioned below.</t>
 
         <t>The TURN server will determine if it can provide the flow
         characteristics requested by the client. If the TURN server determines
@@ -235,20 +237,20 @@
         maximum bandwidth).</t>
 
         <t>If the TURN server can accommodate the flow as described in the
-        FLOWDATA attirubte, it sends a success response and includes the
+        FLOWDATA attribute, it sends a success response and includes the
         FLOWDATA attribute filled in according to <xref
         target="FLOWDATA"></xref>.</t>
       </section>
 
       <section title="Receiving a ChannelBind Response">
         <t>If the client receives a ChannelBind success response, it proceeds
-        with processing according to the TURN specification <xref
+        with processing the response according to the TURN specification <xref
         target="RFC5766"></xref>. If the message does not include an FLOWDATA
         attribute, no additional processing is required. If the ChannelBind
         response contains the FLOWDATA option, the FLOWDATA fields indicate if
         the TURN server could accommodate the requested flow characteristics.
-        The TURN client can use that information to influence the traffic it
-        sends to and receives from the TURN server.</t>
+        TBD: The TURN client can use that information to influence the traffic
+        it sends to and receives from the TURN server.</t>
       </section>
     </section>
 
