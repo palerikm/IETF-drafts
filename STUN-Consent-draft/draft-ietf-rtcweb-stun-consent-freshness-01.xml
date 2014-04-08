@@ -147,7 +147,7 @@
       the remote peer wants to receive traffic. This is performed both when
       the session is first established to the remote peer using ICE
       connectivity checks, and periodically for the duration of the
-      session using the procedure defined in this document.</t>
+      session using the procedures defined in this document.</t>
 
       <t>When a session is first established, WebRTC implementations
       are required to perform STUN connectivity checks as part
@@ -225,13 +225,8 @@ determines liveness as described in <xref target="liveness"></xref>.</t>
 RTP or SCTP data) on an ICE-initiated connection unless the receiving
 endpoint consents to receive the data.  This consent is initially
 obtained via the initial ICE exchange.  The consent expires after a
-fixed amount of time.  Explicit consent to send is indicated by
-either:
+fixed amount of time.  Explicit consent to send is indicated by:
 <list style="numbers">
-<t>Any authenitcated packet received from the inverted peer's
-   Transport Address refreshes consent.  For DTLS this would be an
-   authenticated DTLS message (since these contain a MAC), and for
-   DTLS-SRTP this would be an authenticated SRTP or SRTCP packet.</t>
 <t>Sending an ICE binding request to the remote peer's Transport
 Address and receiving a matching and authenticated ICE binding
 response from the inverted remote peer's Transport Address.  These ICE
@@ -334,7 +329,7 @@ that 5-tuple.</t>
 <t>A connection is considered "live" if packets are received from a
    remote endpoint within an application-dependent period.  An
    application can request a notification when there are no packets
-   received for a certain period, which is called the Tr timer.</t>
+   received for a certain period (configurable).</t>
 
 <t>Similarly, if packets haven't been received within a certain
 period, an application can request a consent check (heartbeat) be
