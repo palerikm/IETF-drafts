@@ -5,11 +5,11 @@
 RTCWEB                                                    Muthu. Perumal
 Internet-Draft                                                   D. Wing
 Intended status: Standards Track                         R. Ravindranath
-Expires: October 5, 2014                                        T. Reddy
+Expires: October 10, 2014                                       T. Reddy
                                                            Cisco Systems
                                                          Martin. Thomson
                                                                  Mozilla
-                                                           April 3, 2014
+                                                           April 8, 2014
 
 
                     STUN Usage for Consent Freshness
@@ -39,7 +39,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on October 5, 2014.
+   This Internet-Draft will expire on October 10, 2014.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Perumal, et al.          Expires October 5, 2014                [Page 1]
+Perumal, et al.         Expires October 10, 2014                [Page 1]
 
 Internet-Draft      STUN Usage for Consent Freshness          April 2014
 
@@ -70,7 +70,7 @@ Table of Contents
    2.  Terminology . . . . . . . . . . . . . . . . . . . . . . . . .   3
    3.  Design Considerations . . . . . . . . . . . . . . . . . . . .   3
    4.  Solution Overview . . . . . . . . . . . . . . . . . . . . . .   3
-   5.  Connection Liveness . . . . . . . . . . . . . . . . . . . . .   5
+   5.  Connection Liveness . . . . . . . . . . . . . . . . . . . . .   4
    6.  DiffServ Treatment for Consent packets  . . . . . . . . . . .   5
    7.  W3C API Implications  . . . . . . . . . . . . . . . . . . . .   5
    8.  Security Considerations . . . . . . . . . . . . . . . . . . .   5
@@ -79,7 +79,7 @@ Table of Contents
    11. References  . . . . . . . . . . . . . . . . . . . . . . . . .   6
      11.1.  Normative References . . . . . . . . . . . . . . . . . .   6
      11.2.  Informative References . . . . . . . . . . . . . . . . .   6
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   7
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   6
 
 1.  Introduction
 
@@ -87,7 +87,7 @@ Table of Contents
    peer wants to receive traffic.  This is performed both when the
    session is first established to the remote peer using ICE
    connectivity checks, and periodically for the duration of the session
-   using the procedure defined in this document.
+   using the procedures defined in this document.
 
    When a session is first established, WebRTC implementations are
    required to perform STUN connectivity checks as part of ICE
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Perumal, et al.          Expires October 5, 2014                [Page 2]
+Perumal, et al.         Expires October 10, 2014                [Page 2]
 
 Internet-Draft      STUN Usage for Consent Freshness          April 2014
 
@@ -148,13 +148,6 @@ Internet-Draft      STUN Usage for Consent Freshness          April 2014
 
 4.  Solution Overview
 
-   The solution uses three values:
-
-   1.  A packet receipt timer, Tr, whose value is determined by the
-       application, but MUST NOT be shorter than 1 second or longer than
-       15 seconds, and SHOULD have a default value of 5 seconds.  This
-       determines liveness as described in Section 5.
-
    A WebRTC browser performs a combined consent freshness and session
    liveness test using STUN request/response as described below:
 
@@ -162,27 +155,21 @@ Internet-Draft      STUN Usage for Consent Freshness          April 2014
    or SCTP data) on an ICE-initiated connection unless the receiving
    endpoint consents to receive the data.  This consent is initially
    obtained via the initial ICE exchange.  The consent expires after a
+   fixed amount of time.  Explicit consent to send is indicated by:
 
-
-
-Perumal, et al.          Expires October 5, 2014                [Page 3]
-
-Internet-Draft      STUN Usage for Consent Freshness          April 2014
-
-
-   fixed amount of time.  Explicit consent to send is indicated by
-   either:
-
-   1.  Any authenitcated packet received from the inverted peer's
-       Transport Address refreshes consent.  For DTLS this would be an
-       authenticated DTLS message (since these contain a MAC), and for
-       DTLS-SRTP this would be an authenticated SRTP or SRTCP packet.
-
-   2.  Sending an ICE binding request to the remote peer's Transport
+   1.  Sending an ICE binding request to the remote peer's Transport
        Address and receiving a matching and authenticated ICE binding
        response from the inverted remote peer's Transport Address.
        These ICE binding request/response are authenticated using the
        same short- term credentials as the initial ICE exchange, but
+
+
+
+Perumal, et al.         Expires October 10, 2014                [Page 3]
+
+Internet-Draft      STUN Usage for Consent Freshness          April 2014
+
+
        using a new (fresh) transaction-id each time consent needs to be
        refresh.  Implementations MUST obtain fresh consent before their
        existing consent expires.  When obtaining fresh consent a STUN
@@ -217,15 +204,6 @@ Internet-Draft      STUN Usage for Consent Freshness          April 2014
    To meet the security needs of consent, an implementation MUST ensure
    that an application (e.g., Javascript application) is not able to
    obtain or control STUN information relevant to consent, specifically
-
-
-
-
-Perumal, et al.          Expires October 5, 2014                [Page 4]
-
-Internet-Draft      STUN Usage for Consent Freshness          April 2014
-
-
    the ICE transaction-id MUST NOT be accessible to upper-level
    applications.
 
@@ -234,12 +212,19 @@ Internet-Draft      STUN Usage for Consent Freshness          April 2014
    A connection is considered "live" if packets are received from a
    remote endpoint within an application-dependent period.  An
    application can request a notification when there are no packets
-   received for a certain period, which is called the Tr timer.
+   received for a certain period (configurable).
 
    Similarly, if packets haven't been received within a certain period,
    an application can request a consent check (heartbeat) be generated.
    These two time intervals might be controlled by the same
    configuration item.
+
+
+
+Perumal, et al.         Expires October 10, 2014                [Page 4]
+
+Internet-Draft      STUN Usage for Consent Freshness          April 2014
+
 
    Sending consent checks (heartbeats) at a high rate could allow a
    malicious application to generate congestion, so applications MUST
@@ -274,14 +259,6 @@ Internet-Draft      STUN Usage for Consent Freshness          April 2014
    The security considerations discussed in [RFC5245] should also be
    taken into account.
 
-
-
-
-Perumal, et al.          Expires October 5, 2014                [Page 5]
-
-Internet-Draft      STUN Usage for Consent Freshness          April 2014
-
-
    SRTP is encrypted and authenticated with symmetric keys; that is,
    both sender and receiver know the keys.  With two party sessions,
    receipt of an authenticated packet from the single remote party is a
@@ -295,6 +272,15 @@ Internet-Draft      STUN Usage for Consent Freshness          April 2014
    sufficient.  [[Ed.  Note: Do we want to avoid this as a consent
    mechanism because of this risk, or detect such key sharing, or
    something else?]]
+
+
+
+
+
+Perumal, et al.         Expires October 10, 2014                [Page 5]
+
+Internet-Draft      STUN Usage for Consent Freshness          April 2014
+
 
 9.  IANA Considerations
 
@@ -331,13 +317,6 @@ Internet-Draft      STUN Usage for Consent Freshness          April 2014
               McGrew, D., Wing, D., and F. Andreasen, "Encrypted Key
               Transport for Secure RTP", .
 
-
-
-Perumal, et al.          Expires October 5, 2014                [Page 6]
-
-Internet-Draft      STUN Usage for Consent Freshness          April 2014
-
-
    [RFC3830]  Arkko, J., Carrara, E., Lindholm, F., Naslund, M., and K.
               Norrman, "MIKEY: Multimedia Internet KEYing", RFC 3830,
               August 2004.
@@ -347,6 +326,17 @@ Internet-Draft      STUN Usage for Consent Freshness          April 2014
               Streams", RFC 4568, July 2006.
 
 Authors' Addresses
+
+
+
+
+
+
+
+Perumal, et al.         Expires October 10, 2014                [Page 6]
+
+Internet-Draft      STUN Usage for Consent Freshness          April 2014
+
 
    Muthu Arul Mozhi Perumal
    Cisco Systems
@@ -387,13 +377,6 @@ Authors' Addresses
    Email: tireddy@cisco.com
 
 
-
-
-Perumal, et al.          Expires October 5, 2014                [Page 7]
-
-Internet-Draft      STUN Usage for Consent Freshness          April 2014
-
-
    Martin Thomson
    Mozilla
    Suite 300
@@ -406,43 +389,4 @@ Internet-Draft      STUN Usage for Consent Freshness          April 2014
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Perumal, et al.          Expires October 5, 2014                [Page 8]
+Perumal, et al.         Expires October 10, 2014                [Page 7]
