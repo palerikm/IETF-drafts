@@ -207,15 +207,6 @@
 
     <section title="Solution Overview">
 
-      <t>The solution uses three values:</t>
-
-      <t><list style="numbers">
-          <t>A packet receipt timer, Tr, whose value is determined by the
-          application, but MUST NOT be shorter than 1 second or longer than 15
-          seconds, and SHOULD have a default value of 5 seconds.  This 
-determines liveness as described in <xref target="liveness"></xref>.</t>
-        </list></t>
-
       <t>A WebRTC browser performs a combined consent freshness and session
       liveness test using STUN request/response as described below:</t>
 
