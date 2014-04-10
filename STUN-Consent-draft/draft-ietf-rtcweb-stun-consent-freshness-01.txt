@@ -2,12 +2,12 @@
 
 
 
-RTCWEB                                                    Muthu. Perumal
+RTCWEB                                                        M. Perumal
 Internet-Draft                                                   D. Wing
 Intended status: Standards Track                         R. Ravindranath
 Expires: October 12, 2014                                       T. Reddy
                                                            Cisco Systems
-                                                         Martin. Thomson
+                                                              M. Thomson
                                                                  Mozilla
                                                           April 10, 2014
 
@@ -67,7 +67,7 @@ Internet-Draft      STUN Usage for Consent Freshness          April 2014
 Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
-   2.  Terminology . . . . . . . . . . . . . . . . . . . . . . . . .   3
+   2.  Terminology . . . . . . . . . . . . . . . . . . . . . . . . .   2
    3.  Design Considerations . . . . . . . . . . . . . . . . . . . .   3
    4.  Solution Overview . . . . . . . . . . . . . . . . . . . . . .   3
    5.  Connection Liveness . . . . . . . . . . . . . . . . . . . . .   4
@@ -104,7 +104,7 @@ Table of Contents
    messages which verifies the remote peer's consent to receive traffic,
    and can also detect loss of liveness.
 
-
+2.  Terminology
 
 
 
@@ -113,8 +113,6 @@ Perumal, et al.         Expires October 12, 2014                [Page 2]
 
 Internet-Draft      STUN Usage for Consent Freshness          April 2014
 
-
-2.  Terminology
 
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
@@ -162,6 +160,8 @@ Internet-Draft      STUN Usage for Consent Freshness          April 2014
    1.  Sending an ICE binding request to the remote peer's Transport
        Address and receiving a matching and authenticated ICE binding
        response from the inverted remote peer's Transport Address.
+       These ICE binding request/response are authenticated using the
+       same short- term credentials as the initial ICE exchange, but
 
 
 
@@ -170,8 +170,6 @@ Perumal, et al.         Expires October 12, 2014                [Page 3]
 Internet-Draft      STUN Usage for Consent Freshness          April 2014
 
 
-       These ICE binding request/response are authenticated using the
-       same short- term credentials as the initial ICE exchange, but
        using a new (fresh) transaction-id each time consent needs to be
        refresh.  Implementations MUST obtain fresh consent before their
        existing consent expires.  When obtaining fresh consent a STUN
@@ -218,6 +216,8 @@ Internet-Draft      STUN Usage for Consent Freshness          April 2014
 
    Similarly, if packets haven't been received within a certain period,
    an application can request a consent check (heartbeat) be generated.
+   These two time intervals might be controlled by the same
+   configuration item.
 
 
 
@@ -225,9 +225,6 @@ Perumal, et al.         Expires October 12, 2014                [Page 4]
 
 Internet-Draft      STUN Usage for Consent Freshness          April 2014
 
-
-   These two time intervals might be controlled by the same
-   configuration item.
 
    Sending consent checks (heartbeats) at a high rate could allow a
    malicious application to generate congestion, so applications MUST
@@ -267,13 +264,16 @@ Internet-Draft      STUN Usage for Consent Freshness          April 2014
    The security considerations discussed in [RFC5245] should also be
    taken into account.
 
-   SRTP is encrypted and authenticated with symmetric keys; that is,
-   both sender and receiver know the keys.  With two party sessions,
-   receipt of an authenticated packet from the single remote party is a
-   strong assurance the packet came from that party.  However, when a
-   session involves more than two parties, all of whom know each others
-   keys, any of those parties could have sent (or spoofed) the packet.
-   Such shared key distributions are possible with some MIKEY [RFC3830]
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -282,6 +282,13 @@ Perumal, et al.         Expires October 12, 2014                [Page 5]
 Internet-Draft      STUN Usage for Consent Freshness          April 2014
 
 
+   SRTP is encrypted and authenticated with symmetric keys; that is,
+   both sender and receiver know the keys.  With two party sessions,
+   receipt of an authenticated packet from the single remote party is a
+   strong assurance the packet came from that party.  However, when a
+   session involves more than two parties, all of whom know each others
+   keys, any of those parties could have sent (or spoofed) the packet.
+   Such shared key distributions are possible with some MIKEY [RFC3830]
    modes, Security Descriptions [RFC4568], and EKT
    [I-D.ietf-avtcore-srtp-ekt].  Thus, in such shared keying
    distributions, receipt of an authenticated SRTP packet is not
@@ -321,13 +328,6 @@ Internet-Draft      STUN Usage for Consent Freshness          April 2014
               progress), February 2014.
 
    [I-D.ietf-tsvwg-rtcweb-qos]
-              Dhesikan, S., Druta, D., Jones, P., and J. Polk, "DSCP and
-              other packet markings for RTCWeb QoS", draft-ietf-tsvwg-
-              rtcweb-qos-00 (work in progress), April 2014.
-
-   [RFC3830]  Arkko, J., Carrara, E., Lindholm, F., Naslund, M., and K.
-              Norrman, "MIKEY: Multimedia Internet KEYing", RFC 3830,
-              August 2004.
 
 
 
@@ -337,6 +337,14 @@ Perumal, et al.         Expires October 12, 2014                [Page 6]
 
 Internet-Draft      STUN Usage for Consent Freshness          April 2014
 
+
+              Dhesikan, S., Druta, D., Jones, P., and J. Polk, "DSCP and
+              other packet markings for RTCWeb QoS", draft-ietf-tsvwg-
+              rtcweb-qos-00 (work in progress), April 2014.
+
+   [RFC3830]  Arkko, J., Carrara, E., Lindholm, F., Naslund, M., and K.
+              Norrman, "MIKEY: Multimedia Internet KEYing", RFC 3830,
+              August 2004.
 
    [RFC4568]  Andreasen, F., Baugher, M., and D. Wing, "Session
               Description Protocol (SDP) Security Descriptions for Media
@@ -373,14 +381,6 @@ Authors' Addresses
    Email: rmohanr@cisco.com
 
 
-   Tirumaleswar Reddy
-   Cisco Systems
-   Cessna Business Park, Varthur Hobli
-   Sarjapur Marathalli Outer Ring Road
-   Bangalore, Karnataka  560103
-   India
-
-   Email: tireddy@cisco.com
 
 
 
@@ -394,6 +394,16 @@ Perumal, et al.         Expires October 12, 2014                [Page 7]
 Internet-Draft      STUN Usage for Consent Freshness          April 2014
 
 
+   Tirumaleswar Reddy
+   Cisco Systems
+   Cessna Business Park, Varthur Hobli
+   Sarjapur Marathalli Outer Ring Road
+   Bangalore, Karnataka  560103
+   India
+
+   Email: tireddy@cisco.com
+
+
    Martin Thomson
    Mozilla
    Suite 300
@@ -402,16 +412,6 @@ Internet-Draft      STUN Usage for Consent Freshness          April 2014
    US
 
    Email: martin.thomson@gmail.com
-
-
-
-
-
-
-
-
-
-
 
 
 
