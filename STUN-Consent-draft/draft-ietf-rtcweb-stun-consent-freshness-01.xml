@@ -104,6 +104,7 @@
         <email>tireddy@cisco.com</email>
       </address>
     </author>
+
     <author fullname="Martin Thomson" initials="Martin" surname="Thomson">
       <organization>Mozilla</organization>
 
@@ -125,6 +126,7 @@
         <email>martin.thomson@gmail.com</email>
       </address>
     </author>
+
     <date />
 
     <area>RAI</area>
@@ -132,39 +134,37 @@
     <workgroup>RTCWEB</workgroup>
 
     <abstract>
-   <t>To prevent sending excessive traffic to an endpoint, periodic consent
-   needs to be obtained from that remote endpoint.</t>
-  
-   <t>This document describes a consent mechanism using a new STUN
-   usage.  This same mechanism can also determine connection loss
-   ("liveness") with a remote peer.</t>
+      <t>To prevent sending excessive traffic to an endpoint, periodic consent
+      needs to be obtained from that remote endpoint.</t>
+
+      <t>This document describes a consent mechanism using a new STUN usage.
+      This same mechanism can also determine connection loss ("liveness") with
+      a remote peer.</t>
     </abstract>
   </front>
 
   <middle>
     <section title="Introduction">
-      <t>To prevent attacks on peers, RTP endpoints have to ensure
-      the remote peer wants to receive traffic. This is performed both when
-      the session is first established to the remote peer using ICE
-      connectivity checks, and periodically for the duration of the
-      session using the procedures defined in this document.</t>
+      <t>To prevent attacks on peers, RTP endpoints have to ensure the remote
+      peer wants to receive traffic. This is performed both when the session
+      is first established to the remote peer using ICE connectivity checks,
+      and periodically for the duration of the session using the procedures
+      defined in this document.</t>
 
-      <t>When a session is first established, WebRTC implementations
-      are required to perform STUN connectivity checks as part
-      of <xref target="RFC5245">ICE</xref>. That initial consent is
-      not described further in this document and it is assumed that
-      ICE is being used for that initial consent. </t>
+      <t>When a session is first established, WebRTC implementations are
+      required to perform STUN connectivity checks as part of <xref
+      target="RFC5245">ICE</xref>. That initial consent is not described
+      further in this document and it is assumed that ICE is being used for
+      that initial consent.</t>
 
-      <t>Related to consent is loss of connectivity ("liveness").
-      Many applications want notification of
-      connection loss to take appropriate actions (e.g., alert the
-      user, try switching to a different interface).
-      </t>
+      <t>Related to consent is loss of connectivity ("liveness"). Many
+      applications want notification of connection loss to take appropriate
+      actions (e.g., alert the user, try switching to a different
+      interface).</t>
 
-      <t>This document describes a new STUN usage with a request and
-      response messages which verifies the remote peer's consent to
-      receive traffic, and can also detect loss of liveness.</t>
-
+      <t>This document describes a new STUN usage with a request and response
+      messages which verifies the remote peer's consent to receive traffic,
+      and can also detect loss of liveness.</t>
     </section>
 
     <section anchor="sec-term" title="Terminology">
@@ -175,97 +175,89 @@
 
       <t><list style="hanging">
           <t hangText="Consent:">It is the mechanism of obtaining permission
-          to send traffic to a certain transport address.  This is usually
+          to send traffic to a certain transport address. This is usually
           obtained via ICE.</t>
 
           <t hangText="Consent Freshness:">Permission to continue sending
-          traffic to a certain transport address.  This is performed by
-          the procedure described in this document.</t>
+          traffic to a certain transport address. This is performed by the
+          procedure described in this document.</t>
 
-          <t hangText="Session Liveness:">Detecting loss of
-          connectivity to a certain transport address.  This is
-          performed by the procedure described in this document.</t>
+          <t hangText="Session Liveness:">Detecting loss of connectivity to a
+          certain transport address. This is performed by the procedure
+          described in this document.</t>
 
-          <t hangText="Transport Address:">The remote peer's IP
-          address and (UDP or TCP) port number.</t>
+          <t hangText="Transport Address:">The remote peer's IP address and
+          (UDP or TCP) port number.</t>
         </list></t>
     </section>
 
     <section title="Design Considerations">
-      <t>Although ICE requires periodic keepalive traffic to keep NAT
-      bindings alive (Section 10
-      of <xref target="RFC5245"></xref>, <xref target="RFC6263"></xref>),
-      those keepalives are sent as STUN Indications which are
-      send-and-forget, and do not evoke a response.  A response is
-      necessary both for consent to continue sending traffic, as well
-      as to verify session liveness. Thus, we need a request/response
-      mechanism for consent freshness.  ICE can be used for that
-      mechanism because ICE already requires ICE agents continue
-      listening for ICE messages, as described in section 10
-      of <xref target="RFC5245"></xref>.</t>
+      <t>Although ICE requires periodic keepalive traffic to keep NAT bindings
+      alive (Section 10 of <xref target="RFC5245"></xref>, <xref
+      target="RFC6263"></xref>), those keepalives are sent as STUN Indications
+      which are send-and-forget, and do not evoke a response. A response is
+      necessary both for consent to continue sending traffic, as well as to
+      verify session liveness. Thus, we need a request/response mechanism for
+      consent freshness. ICE can be used for that mechanism because ICE
+      already requires ICE agents continue listening for ICE messages, as
+      described in section 10 of <xref target="RFC5245"></xref>.</t>
     </section>
 
     <section title="Solution Overview">
-
       <t>A WebRTC browser performs a combined consent freshness and session
       liveness test using STUN request/response as described below:</t>
 
+      <t>An endpoint MUST NOT send application data (in WebRTC this means RTP
+      or SCTP data) on an ICE-initiated connection unless the receiving
+      endpoint consents to receive the data. After a successful ICE
+      connectivity check on a particular transport address, subsequent consent
+      MUST be obtained following the procedure described in this document. The
+      consent expires after a fixed amount of time. Explicit consent to send
+      is indicated by: <list style="numbers">
+          <t>Sending an ICE binding request to the remote peer's Transport
+          Address and receiving a matching and authenticated ICE binding
+          response from the inverted remote peer's Transport Address. These
+          ICE binding request/response are authenticated using the same short-
+          term credentials as the initial ICE exchange, but using a new
+          (fresh) transaction-id each time consent needs to be refresh.
+          Implementations MUST obtain fresh consent before their existing
+          consent expires. When obtaining fresh consent a STUN connectivity
+          check (or response) could be lost, and re-transmissions MUST use the
+          same STUN transaction-id, and re-transmissions MUST NOT be sent more
+          frequently than every 500ms or the smoothed round-trip time (from
+          previous consent freshness checks or RTP round-trip time), whichever
+          is less. For the purposes of this document, receipt of an ICE
+          response with the matching transaction-id of its request with a
+          valid MESSAGE-INTEGRITY is considered an authenticated packet.</t>
+        </list></t>
 
+      <t>Consent expires after 15 seconds. That is, if an authenticated packet
+      (e.g., DTLS, SRTP, ICE) has not been received from the inverted 5-tuple
+      after 15 seconds, the application MUST cease transmission on that
+      5-tuple.</t>
 
-<t>An endpoint MUST NOT send application data (in WebRTC this means
-RTP or SCTP data) on an ICE-initiated connection unless the receiving
-endpoint consents to receive the data.  This consent is initially
-obtained via the initial ICE exchange.  The consent expires after a
-fixed amount of time.  Explicit consent to send is indicated by:
-<list style="numbers">
-<t>Sending an ICE binding request to the remote peer's Transport
-Address and receiving a matching and authenticated ICE binding
-response from the inverted remote peer's Transport Address.  These ICE
-binding request/response are authenticated using the same short- term
-credentials as the initial ICE exchange, but using a new (fresh)
-transaction-id each time consent needs to be refresh.  Implementations
-MUST obtain fresh consent before their existing consent expires.  When
-obtaining fresh consent a STUN connectivity check (or response) could
-be lost, and re-transmissions MUST use the same STUN transaction-id,
-and re-transmissions MUST NOT be sent more frequently than every 
-500ms or the smoothed round-trip time (from previous consent freshness
-checks or RTP round-trip time), whichever is less.  For the
-purposes of this document, receipt of an ICE response with the
-matching transaction-id of its request with a valid MESSAGE-INTEGRITY
-is considered an authenicated packet.</t>
-</list>
-</t>
+      <t>Consent is ended immediately by receipt of a an authenticated message
+      that closes the connection (for instance, a TLS fatal alert).</t>
 
-<t>Consent expires after 15 seconds.  That is, if an authenticated
-packet (e.g., DTLS, SRTP, ICE) has not been received from the inverted
-5-tuple after 15 seconds, the application MUST cease transmission on
-that 5-tuple.</t>
+      <t>Receipt of an unauthenticated end-of-session message (e.g., TCP FIN)
+      does not indicate loss of consent. Thus, an endpoint receiving an
+      unauthenticated end-of-session message SHOULD continue sending media
+      (over connectionless transport) or attempt to re-establish the
+      connection (over connection-oriented transport) until consent expires or
+      it receives an authenticated message revoking consent.</t>
 
+      <t>Although receiving authenticated packets is sufficient for consent,
+      it is still RECOMMENDED to send messages to keep NAT or firewall
+      bindings alive (see Section 10 of <xref target="RFC5245"></xref> and
+      <xref target="RFC6263"></xref>).</t>
 
-<t>Consent is ended immediately by receipt of a an authenticated message
-   that closes the connection (for instance, a TLS fatal alert).</t>
-<t>   Receipt of an unauthenticated end-of-session message (e.g., TCP FIN)
-   does not indicate loss of consent.  Thus, an endpoint receiving an
-   unauthenticated end-of-session message SHOULD continue sending media
-   (over connectionless transport) or attempt to re-establish the
-   connection (over connection-oriented transport) until consent expires
-   or it receives an authenticated message revoking consent.</t>
+      <t>To meet the security needs of consent, an implementation MUST ensure
+      that an application (e.g., Javascript application) is not able to obtain
+      or control STUN information relevant to consent, specifically the ICE
+      transaction-id MUST NOT be accessible to upper-level applications.</t>
+    </section>
 
-      <t>Although receiving authenticated packets is sufficient for
-      consent, it is still RECOMMENDED to send messages to keep NAT or
-      firewall bindings alive (see Section 10
-      of <xref target="RFC5245"></xref>
-      and <xref target="RFC6263"></xref>).</t>
-
-      <t>To meet the security needs of consent, an implementation MUST
-      ensure that an application (e.g., Javascript application) is not
-      able to obtain or control STUN information relevant to consent,
-      specifically the ICE transaction-id MUST NOT be accessible to
-      upper-level applications.</t>
-
-</section>
-
-<!--
+    <!--
 
       <t>Consent freshness serves as a circuit breaker (so that if the
       path or remote peer fails the WebRTC browser stops sending all
@@ -314,34 +306,36 @@ that 5-tuple.</t>
     
 -->
 
+    <section anchor="liveness" title="Connection Liveness">
+      <t>A connection is considered "live" if packets are received from a
+      remote endpoint within an application-dependent period. An application
+      can request a notification when there are no packets received for a
+      certain period (configurable).</t>
 
-<section anchor="liveness" title="Connection Liveness">
+      <t>Similarly, if packets haven't been received within a certain period,
+      an application can request a consent check (heartbeat) be generated.
+      These two time intervals might be controlled by the same configuration
+      item.</t>
 
-<t>A connection is considered "live" if packets are received from a
-   remote endpoint within an application-dependent period.  An
-   application can request a notification when there are no packets
-   received for a certain period (configurable).</t>
+      <t>Sending consent checks (heartbeats) at a high rate could allow a
+      malicious application to generate congestion, so applications MUST NOT
+      be able to send heartbeats faster than 1 per second.</t>
+    </section>
 
-<t>Similarly, if packets haven't been received within a certain
-period, an application can request a consent check (heartbeat) be
-generated.  These two time intervals might be controlled by the same
-configuration item.</t>
+    <section anchor="DSCP-consent"
+             title="DiffServ Treatment for Consent packets">
+      <t>It is RECOMMENDED that STUN consent checks use the same Diffserv
+      Codepoint markings as the media packets sent on that transport address.
+      This follows the recommendation of ICE connectivity check described in
+      section 7.1.2.4 of <xref target="RFC5245"></xref>.</t>
 
-<t>Sending consent checks (heartbeats) at a high rate could allow a
-   malicious application to generate congestion, so applications MUST
-   NOT be able to send heartbeats faster than 1 per second.</t>
-</section>
+      <t>Note: It is possible that different Diffserv Codepoints are used by
+      different media over the same transport address <xref
+      target="I-D.ietf-tsvwg-rtcweb-qos"></xref>. In that case, what should
+      this document recommend as the Codepoint for STUN consent packets ?</t>
+    </section>
 
-<section anchor="DSCP-consent" title="DiffServ Treatment for Consent packets">
-<t>
-  It is RECOMMENDED that STUN consent checks use the same Diffserv
-Codepoint markings as the media packets sent on that transport address.
-This follows the recommendation of ICE connectivity check described in section 7.1.2.4 of
-<xref target="RFC5245"></xref>. 
-</t>
-</section>
-
-<section title="W3C API Implications">
+    <section title="W3C API Implications">
       <t>For the consent freshness and liveness test the W3C specification
       should provide APIs as described below: <list style="numbers">
           <t>Ability for the browser to notify the JavaScript that a consent
@@ -357,29 +351,23 @@ This follows the recommendation of ICE connectivity check described in section 7
     </section>
 
     <section title="Security Considerations">
-
       <t>This document describes a security mechanism.</t>
 
-      <t>The security considerations discussed
-      in <xref target="RFC5245"></xref> should also be taken into
-      account.</t>
+      <t>The security considerations discussed in <xref
+      target="RFC5245"></xref> should also be taken into account.</t>
 
-   <t>SRTP is encrypted and authenticated with symmetric keys; that
-   is, both sender and receiver know the keys.  With two party
-   sessions, receipt of an authenticated packet from the single remote
-   party is a strong assurance the packet came from that party.
-   However, when a session involves more than two parties, all of whom
-   know each others keys, any of those parties could have sent (or
-   spoofed) the packet.  Such shared key distributions are possible
-   with some
-   <xref target="RFC3830">MIKEY</xref>
-   modes, <xref target="RFC4568">Security Descriptions</xref>,
-   and <xref target="I-D.ietf-avtcore-srtp-ekt">EKT</xref>.  Thus,
-   in such shared keying distributions, receipt of an authenticated
-   SRTP packet is not sufficient.   [[Ed. Note:  Do we want to 
-   avoid this as a consent mechanism because of this risk, or detect
-   such key sharing, or something else?]]</t>
-
+      <t>SRTP is encrypted and authenticated with symmetric keys; that is,
+      both sender and receiver know the keys. With two party sessions, receipt
+      of an authenticated packet from the single remote party is a strong
+      assurance the packet came from that party. However, when a session
+      involves more than two parties, all of whom know each others keys, any
+      of those parties could have sent (or spoofed) the packet. Such shared
+      key distributions are possible with some <xref
+      target="RFC3830">MIKEY</xref> modes, <xref target="RFC4568">Security
+      Descriptions</xref>, and <xref
+      target="I-D.ietf-avtcore-srtp-ekt">EKT</xref>. Thus, in such shared
+      keying distributions, receipt of an authenticated SRTP packet is not
+      sufficient. </t>
     </section>
 
     <section anchor="sec.iana-considerations" title="IANA Considerations">
@@ -387,9 +375,9 @@ This follows the recommendation of ICE connectivity check described in section 7
     </section>
 
     <section title="Acknowledgement">
-      <t>Thanks to Eric Rescorla, Harald Alvestrand, Martin Thomson,
-      Bernard Aboba, Magnus Westerland, Cullen Jennings and Simon
-      Perreault for their valuable inputs and comments.  </t>
+      <t>Thanks to Eric Rescorla, Harald Alvestrand, Bernard Aboba, Magnus
+      Westerland, Cullen Jennings and Simon Perreault for their valuable
+      inputs and comments.</t>
     </section>
   </middle>
 
@@ -400,142 +388,16 @@ This follows the recommendation of ICE connectivity check described in section 7
       <?rfc include="reference.RFC.5245"?>
 
       <?rfc include="reference.RFC.6263"?>
-
-      <?rfc include="reference.RFC.4086"?>
     </references>
 
     <references title="Informative References">
       <?rfc include="reference.RFC.3830"?>
+
       <?rfc include="reference.RFC.4568"?>
 
+      <?rfc include="reference.I-D.ietf-tsvwg-rtcweb-qos"?>
 
-<reference anchor="I-D.ietf-avtcore-srtp-ekt">
-  <front>
-    <title abbrev="EKT SRTP">Encrypted Key Transport for Secure RTP</title>
-
-    <author fullname="David A. McGrew" initials="D.A.M." surname="McGrew">
-      <organization abbrev="Cisco">Cisco Systems, Inc.</organization>
-
-      <address>
-        <postal>
-          <street>510 McCarthy Blvd.</street>
-
-          <city>Milpitas</city>
-
-          <region>CA</region>
-
-          <code>95035</code>
-
-          <country>US</country>
-        </postal>
-
-        <phone>(408) 525 8651</phone>
-
-        <email>mcgrew@cisco.com</email>
-
-        <uri>http://www.mindspring.com/~dmcgrew/dam.htm</uri>
-      </address>
-    </author>
-
-    <author fullname="Dan Wing" initials="D." surname="Wing">
-      <organization abbrev="Cisco">Cisco Systems, Inc.</organization>
-
-      <address>
-        <postal>
-          <street>510 McCarthy Blvd.</street>
-
-          <city>Milpitas</city>
-
-          <region>CA</region>
-
-          <code>95035</code>
-
-          <country>US</country>
-        </postal>
-
-        <phone>(408) 853 4197</phone>
-
-        <email>dwing@cisco.com</email>
-      </address>
-    </author>
-
-
-    <author fullname="Flemming Andreason" initials="F.A." surname="Andreasen">
-      <organization abbrev="Cisco">Cisco Systems, Inc.</organization>
-
-      <address>
-        <postal>
-          <street>499 Thornall Street</street>
-
-          <city>Edison</city>
-
-          <region>NJ</region>
-
-          <code>08837</code>
-
-          <country>US</country>
-        </postal>
-
-        <email>fandreas@cisco.com</email>
-      </address>
-    </author>
-
-
-<!--
-    <author fullname="Kai Fischer" initials="K." surname="Fischer">
-      <organization abbrev="Siemens Enterprise Communications">Siemens
-      Enterprise Communications GmbH &amp; Co. KG</organization>
-
-      <address>
-        <postal>
-          <street>Hofmannstr. 51</street>
-
-          <city>Munich</city>
-
-          <region>Bavaria</region>
-
-          <code>81739</code>
-
-          <country>Germany</country>
-        </postal>
-
-        <email>kai.fischer@siemens-enterprise.com</email>
-      </address>
-    </author>
--->
-
-    <date />
-
-    <area>RAI</area>
-
-    <workgroup>AVTCORE Working Group</workgroup>
-
-    <keyword>RTP</keyword>
-
-    <keyword>SRTP</keyword>
-
-    <keyword>EKT</keyword>
-
-    <abstract>
-
-      <t>Encrypted Key Transport (EKT) is an extension to Secure
-      Real-time Transport Protocol (SRTP) that provides for the secure
-      transport of SRTP master keys, Rollover Counters, and other
-      information.  <!--, within SRTP or SRTCP.--> This facility enables SRTP to
-      work for decentralized conferences with minimal control.
-      </t>
-
-      <t>This note defines EKT, and also describes how to use it with
-      SDP Security Descriptions, DTLS-SRTP, and MIKEY. With EKT, these
-      other key management protocols provide an EKT key to everyone in
-      a session, and EKT coordinates the SRTP keys within the session.</t>
-    </abstract>
-  </front>
-  </reference>
-
-
-
+      <?rfc include="reference.I-D.ietf-avtcore-srtp-ekt"?>
     </references>
-
   </back>
 </rfc>
