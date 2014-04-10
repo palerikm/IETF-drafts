@@ -170,13 +170,15 @@
           environments but DSCP markings are often modified or removed at
           various points in the network or when crossing network boundaries.
           TURN service could be provided by the access network or by the
-          Application Server or globally distributed 3rd party service and the
-          DSCP markings set by the client may be modified or removed by the
-          intervening network(s) before it reaches the TURN server.</t>
+          application Server or globally distributed 3rd party provider and
+          the DSCP markings set by the client may be modified or removed by
+          the intervening network(s) before it reaches the TURN server.</t>
 
           <t>DSCP values are site specific, with each site selecting its own
           code points for each QoS level, hence it may not work across
-          domains. (TBD: draft-ietf-tsvwg-rtcweb-qos-00)</t>
+          domains. However <xref target="I-D.ietf-tsvwg-rtcweb-qos"></xref>
+          recommends default set of DSCP values for browsers when there is no
+          site specific information.</t>
 
           <t>TURN client may not be able to set DSCP values for outgoing
           packets because of OS limitations.</t>
@@ -234,7 +236,12 @@
         high delay is available. The same sort of processing occurs on all of
         the FLOWDATA fields of the response (upstream and downstream delay
         tolerance, loss tolerance, jitter tolerance, minimum bandwidth,
-        maximum bandwidth).</t>
+        maximum bandwidth). If the TURN server determines the flow can only be
+        partially accommodated and the client has also signaled CHECK-
+        ALTERNATE attribute <xref target="I-D.williams-peer-redirect"></xref>
+        then the TURN server can re-direct the client to an alternate TURN
+        server that could accommodate the flow characteristics conveyed by the
+        client. </t>
 
         <t>If the TURN server can accommodate the flow as described in the
         FLOWDATA attribute, it sends a success response and includes the
@@ -248,9 +255,8 @@
         target="RFC5766"></xref>. If the message does not include an FLOWDATA
         attribute, no additional processing is required. If the ChannelBind
         response contains the FLOWDATA option, the FLOWDATA fields indicate if
-        the TURN server could accommodate the requested flow characteristics.
-        TBD: The TURN client can use that information to influence the traffic
-        it sends to and receives from the TURN server.</t>
+        the TURN server could accommodate the requested flow characteristics
+        or not.</t>
       </section>
     </section>
 
@@ -432,7 +438,11 @@
 
       <?rfc include="reference.RFC.5389"?>
 
-      <?rfc include="reference.I-D.ietf-rtcweb-overview"?>
+      <?rfc include="reference.I-D.ietf-rtcweb-overview"  ?>
+
+      <?rfc include="reference.I-D.williams-peer-redirect" ?>
+
+      <?rfc include="reference.I-D.ietf-tsvwg-rtcweb-qos"?>
     </references>
 
     <references title="Informative References">
