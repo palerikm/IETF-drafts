@@ -77,54 +77,101 @@
 
     <date/>
 
-    <workgroup>Network Working Group</workgroup>
+    <workgroup>DNSOP Working Group</workgroup>
 
     <abstract>
-      <t>This document proposes the use of Datagram Transport Layer Security
-      (DTLS) for DNS. Encryption provided by DTLS eliminates opportunities for
-      eavesdropping of DNS messages. The proposed mechanism is backward
-      compatible with clients and servers that do not support DNS over
-      DTLS.</t>
+      <t>DNS queries and responses are visible to network elements on
+      the path between the DNS client and its server.  These queries
+      and responses can contain privacy-sensitive information which is
+      valuable to protect.  An active attacker can send bogus
+      responses causing misdirection of the subsequent connection.</t>
+
+      <t>To counter passive listening and active attacks, this
+      document proposes the use of Datagram Transport Layer Security
+      (DTLS) for DNS, to protect against passive listeners and certain
+      active attacks.  As DNS needs to remain fast, this proposal also
+      discusses mechanisms to reduce DTLS round trips and reduce DTLS 
+      handshake size.  The proposed mechanism runs over the default
+      DNS port and can also run over an alternate port.</t>
     </abstract>
   </front>
 
   <middle>
     <section anchor="introduction" title="Introduction">
-      <t>The Domain Name System is specified in <xref target="RFC1034"/> and
-      <xref target="RFC1035"/>. DNS messages, when exchanged unencrypted, are
-      vulnerable to eavesdropping on the network channel. Such eavesdropping
-      can result in an undesired entity learning domains that a host wishes to
-      access, thus resulting in privacy leakage. DNS privacy problem is
-      further discussed in <xref
-      target="I-D.bortzmeyer-dnsop-dns-privacy"/>.</t>
+      <t>The Domain Name System is specified in
+      <xref target="RFC1034"/> and <xref target="RFC1035"/>. DNS
+      queries and responses are normally exchanged unencrypted and are
+      thus vulnerable to eavesdropping.  Such
+      eavesdropping can result in an undesired entity learning domains
+      that a host wishes to access, thus resulting in privacy
+      leakage. DNS privacy problem is further discussed in
+      <xref target="I-D.bortzmeyer-dnsop-dns-privacy"/>.</t>
 
-      <t>The mechanism described in this document provides a means for
+      <t>Active attackers have long been successful at injecting bogus
+      responses, causing cache poisoning and causing misdirection of
+      the subsequent connection (if attacking A or AAAA records).  A
+      popular mitigation against that attack is to use ephemeral and
+      random source ports for DNS queries.</t>
+
+      <t>The mechanism described in this document provides 
       confidential DNS communication for stub resolvers, recursive resolvers,
       iterative resolvers and authoritative servers. The document only defines
-      protocol extensions necessary to support DTLS negotiation. Since clients
-      identify DNS servers by IP addresses, DNS servers have to acquire
-      certificates for IP addresses instead of the usual way of acquiring
-      certificates for domain/subject names. Unless a DNS server does this or
-      a DNS client is configured to trust specific certificates, a DNS client
-      may not be able to validate certificates. The docuement, thus, does not
-      describe how DNS clients might validate server certificates or specify
-      trusted certificate authorities. The DNS client MAY, in such cases,
-      perform opportunistic encryption.</t>
+      protocol extensions necessary to support DTLS negotiation.</t>
+</section>
 
-      <t>DNS Security Extensions (DNSSEC, <xref target="RFC4033"/>) provides
-      response integrity by defining mechanisms to cryptographically sign
-      zones, allowing end-users (or their first-hop resolver) to verify
-      replies are correct. DNSSEC however does nothing to ensure DNS request
-      or response privacy. Authenticity and integrity may be provided by
-      DNSSEC, DNS over DTLS does not change DNSSEC and does not offer the
-      means to authenticate responses. DNS over DTLS, however, does not
-      preclude the use of DNSSEC. Since, in some cases, encryption is
-      opportunistic with the use of DNS over DTLS, a DNS client may opt for
-      DNSSEC for security reasons.</t>
+<section title="Relationship to DNSSEC">
+      <t>DNS Security Extensions
+      (<xref target="RFC4033">DNSSEC</xref>) provides response
+      integrity by defining mechanisms to cryptographically sign
+      zones, allowing end-users (or their first-hop resolver) to
+      verify replies are correct. DNSSEC however does nothing to
+      ensure DNS request or response privacy. Authenticity and
+      integrity may be provided by DNSSEC, DNS over DTLS does not
+      change DNSSEC and does not offer the means to authenticate
+      responses. DNS over DTLS, however, does not preclude the use of
+      DNSSEC. Since, in some cases, encryption is opportunistic with
+      the use of DNS over DTLS, a DNS client may opt for DNSSEC for
+      security reasons.</t>
 
-      <t>DNS over DTLS can run over standard UDP port 53 (decimal) as defined
-      in <xref target="RFC1035"/>.</t>
-    </section>
+</section>
+
+<section title="Authenticating a DNS Server">
+<t>As DTLS provides integrity protection, some protection from on-path
+      attackers sending bogus responses is provided by simply using
+      DTLS.  That is, a device on the path between a DNS client and
+      its DNS server cannot simply inject a bogus DNS response, as
+      could be done without DNS-over-DTLS.  However, that protection
+      is not terribly strong, because that attacker could intercept the
+      DTLS handshake itself and pretend to be the actual DNS server.</t>
+
+      <t>To prevent an active attacker from pretending to be the
+      legitimate DNS server, we need to resolve two problems:
+      identifying the trusted servers and determinnig an appropriate
+      action when no trusted servers are available.</t>
+
+      <t>The first problem, of identifying the legitimate server,
+      requires extending the host configuration.  This is because
+      clients identify DNS servers by IP addresses (from DHCP or from
+      /etc/resolv.conf file), but certificates have a DNS name in
+      the SubjectAltName field.  It isn't useful to change how certificates
+      are issued, but we have to modify the DNS client anyway to support
+      DNS-over-DTLS.  With that in mind, the DNS client would have a
+      list of SubjectAltNames it trusts, configured by the user.</t>
+
+      <t>The second problem is an appropriate action when no trusted
+     servers are available.  The DNS client could still use DNS-over-DTLS
+     with an un-trusted server which still provides protection from 
+     on-path passive listeners and from on- and off-path active attackers,
+     but does not protect from a malicious server.  DNSSEC would protect
+     from a malicious server.
+	<list style="empty"><t>[[Editor's Note: Is there more we could
+     do?  Trust certain responses (like for my enterprise VPN or other
+     sites where I will be doing a TLS handshake)?  Keep in mind that
+     with web portals at hotels/airports, we won't have access to a
+     trusted DNS server on initial connect at all.]] </t></list></t>
+</section>
+
+
 
     <section anchor="term" title="Terminology">
       <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
@@ -135,7 +182,6 @@
 
     <section anchor="problem_stmt" title="Usage">
       <t><list style="letters">
-          <t>Incremental <list style="numbers">
               <t>DNS forwarder uses DNS over DTLS to communicate with ISP DNS
               resolver and thus offers confidentiality in the last mile even
               if the stub resolver does not support DNS over DTLS.</t>
@@ -143,45 +189,74 @@
               <t>If a DNS resolver in an ISP does not support DNS over DTLS,
               the DNS forwarder or stub resolver can be configured to send DNS
               queries to DNS resolvers offered by public DNS servers.</t>
-            </list></t>
         </list></t>
     </section>
 
-    <section title="Polling">
-      <t>[Note - This section requires further discussion]</t>
+    <section title="Polling, Port Usage, and Discovery">
+     <t>[Note - This section requires further discussion]</t>
 
-      <t>In this mechanism, a host, after joining a network, determines if a
-      DNS server supports DNS over DTLS by attempting to establish DTLS over
-      UDP port 53 (decimal). A DNS server that does not support DNS will not
-      respond to ClientHello messages sent by the client. The client MUST use
+     <t>Many modern operating systems already detect if a web proxy is
+     interfering with Internet communications, using proprietary
+     mechanisms that are out of scope of this document.  After that
+     mechanism has run (and detected Internet connectivity is
+     working), the DNS-over-DTLS procedure described in this document
+     should commence.  This timing avoids delays in joining the
+     network (and displaying an icon indicating successful Internet
+     connection), at the risk that those initial DNS queries will be
+     sent without protection afforded by DNS-over-DTLS.  </t>
+
+     <t>DNS-over-DTLS can run over standard UDP port 53 as defined in
+     <xref target="RFC1035"/>.  A DNS client or server that does not
+     implement this specification will not respond to the incoming
+     DTLS packets because they don't parse as DNS packets (the DNS
+     Opcode would be 15, which is undefined).  A DNS client or server
+     that does implement this specification can demultiplex DNS and
+     DTLS packets by examining the third octet.  For TLS 1.2, which is
+     what is defined by this specification, A DTLS packet will contain
+     253 in the third octet, whereas a DNS packet will never contain
+     253 in the third octet.</t>
+
+<t><list style="empty"><t>If this demultiplexing is useful, we should
+reserve the DNS Opcode 15.</t></list></t>
+
+<t>There has been some concern with sending DTLS-over-DNS traffic
+over the same port as normal, un-encrypted DNS traffic.  The intent
+of this section is to show that DNS-over-DTLS could successfully
+be sent over port 53.  Further analysis and testing on the Internet
+may be valuable to determine if multiplexing on port 53, using
+a separate port, or some fallback between a separate port and port
+53 brings the most success.</t>
+
+
+
+      <t>After performing the above steps, the host should determine
+      if the DNS server supports DNS-over-DTLS by sending a DTLS
+      ClientHello message.  A DNS server that does not support
+      DNS-over-DTLS will not respond to ClientHello messages sent by
+      the client, because they are not valid DNS requests
+      (specifically, the DNS Opcode is invalid).  The client MUST use
       timer values defined in 4.2.4.1 of <xref target="RFC6347"/> for
-      retransmission of ClientHello message and if no response is received
-      from the DNS server then give up sending ClientHello after 15 seconds.
-      The client may periodically probe and find if the DNS server has been
-      upgraded to support DNS over DTLS. This mechnism requires no additional
-      signaling between the client and server. </t>
+      retransmission of ClientHello message and if no response is
+      received from the DNS server.  After 15 seconds, it MUST cease
+      attempts to re-transmit its ClientHello.  Thereafter, the client
+      MAY repeat that procedure in the event the DNS server has been
+      upgraded to support DNS over DTLS, but such probing SHOULD NOT
+      be done more frequently than every 24 hours and MUST NOT be done
+      more frequently than every 15 minutes.  This mechnism requires
+      no additional signaling between the client and server. </t>
     </section>
 
-    <section anchor="protocol" title="In Band Signaling">
+    <section anchor="protocol" title="In-Band Signaling">
       <t>An alternate mechanism is to signal support for DTLS in band.</t>
 
-      <t>Clients and servers indicate their support for, and desire to use,
-      DNS over DTLS by setting a bit in the Flags field of the EDNS0 <xref
-      target="RFC6891"/> OPT meta-RR. The "DTLS OK" (SO) bit is defined as the
-      third bit of the third and fourth bytes of the "extended RCODE and
-      flags" portion of the EDNS0 OPT meta-RR, immediately adjacent to the
-      "TLS OK" (TO) bit <xref target="I-D.hzhwm-start-tls-for-dns"/>.</t>
+<t>The authors have also briefly considered a DNS SRV query to ask if the DNS
+server supports DTLS-over-DNS such as _dns_over_dtls._udp.well_known
+assuming "well_known" is defined as
+a <xref target="IANA-domain">special-use domain name</xref>.  That
+query doesn't need to go beyond the DNS server itself.  An SRV query
+is suggested so the port can be returned (assuming SRV is ubiquitously
+available on clients?)</t>
 
-      <t><figure title="OPT pseudo-RR">
-          <artwork align="left"><![CDATA[                       +0 (MSB)                +1 (LSB)
-              +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
-           0: |   EXTENDED-RCODE      |       VERSION         |
-              +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
-           2: |DO|TO|SO|               Z                      |
-              +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
-
-]]></artwork>
-        </figure></t>
 
       <section title="Use by  DNS clients">
         <section title="Sending Queries">
@@ -344,6 +419,23 @@
         </figure></t>
     </section>
 
+
+<section title="Performance Considerations">
+<t>To reduce number of octets of the DTLS handshake, especially the
+certificate sent by the server, we should examine viability of using
+plain public keys <xref target="I-D.ietf-tls-oob-pubkey"/>.  As the
+client already needs explicit configuration in a whitelist of the
+DNS servers it trusts, maybe the public key configuration problem
+is really no worse than the configuration problem of those whitelisted
+certificates?</t>
+
+<t>With normal DNS over UDP, the server maintains no state between
+queries.  To keep the server state similarly low between queries,
+the client can store the DTLS security association if both client
+and server implement <xref target="RFC5077"/>.</t>
+
+</section>
+
     <section title="IANA Considerations">
       <t>This document defines a new bit ("SO") in the Flags field of the
       EDNS0 OPT meta-RR. At the time of approval of this draft in the
@@ -385,10 +477,26 @@
     <references title="Informative References">
       <?rfc include='reference.I-D.bortzmeyer-dnsop-dns-privacy'?>
 
-      <?rfc include='reference.I-D.hzhwm-start-tls-for-dns'
-?>
+      <?rfc include='reference.I-D.hzhwm-start-tls-for-dns'?>
+      <?rfc include='reference.I-D.ietf-tls-oob-pubkey'?>
 
       <?rfc include="reference.RFC.4892"?>
+
+
+      <reference anchor="IANA-domain" target="http://www.iana.org/assignments/special-use-domain-names/special-use-domain-names.xhtml">
+	<front>
+          <title>Special-Use Domain Names</title>
+
+          <author>
+	    <organization>IANA</organization>
+          </author>
+
+          <date month="February" year="2013"/>
+	  </front>
+      </reference>
+
+
+
     </references>
   </back>
 </rfc>
