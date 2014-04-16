@@ -135,44 +135,6 @@
 
 </section>
 
-<section title="Authenticating a DNS Server">
-<t>As DTLS provides integrity protection, some protection from on-path
-      attackers sending bogus responses is provided by simply using
-      DTLS.  That is, a device on the path between a DNS client and
-      its DNS server cannot simply inject a bogus DNS response, as
-      could be done without DNS-over-DTLS.  However, that protection
-      is not terribly strong, because that attacker could intercept the
-      DTLS handshake itself and pretend to be the actual DNS server.</t>
-
-      <t>To prevent an active attacker from pretending to be the
-      legitimate DNS server, we need to resolve two problems:
-      identifying the trusted servers and determinnig an appropriate
-      action when no trusted servers are available.</t>
-
-      <t>The first problem, of identifying the legitimate server,
-      requires extending the host configuration.  This is because
-      clients identify DNS servers by IP addresses (from DHCP or from
-      /etc/resolv.conf file), but certificates have a DNS name in
-      the SubjectAltName field.  It isn't useful to change how certificates
-      are issued, but we have to modify the DNS client anyway to support
-      DNS-over-DTLS.  With that in mind, the DNS client would have a
-      list of SubjectAltNames it trusts, configured by the user.</t>
-
-      <t>The second problem is an appropriate action when no trusted
-     servers are available.  The DNS client could still use DNS-over-DTLS
-     with an un-trusted server which still provides protection from 
-     on-path passive listeners and from on- and off-path active attackers,
-     but does not protect from a malicious server.  DNSSEC would protect
-     from a malicious server.
-	<list style="empty"><t>[[Editor's Note: Is there more we could
-     do?  Trust certain responses (like for my enterprise VPN or other
-     sites where I will be doing a TLS handshake)?  Keep in mind that
-     with web portals at hotels/airports, we won't have access to a
-     trusted DNS server on initial connect at all.]] </t></list></t>
-</section>
-
-
-
     <section anchor="term" title="Terminology">
       <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
       "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
@@ -216,8 +178,8 @@
      253 in the third octet, whereas a DNS packet will never contain
      253 in the third octet.</t>
 
-<t><list style="empty"><t>If this demultiplexing is useful, we should
-reserve the DNS Opcode 15.</t></list></t>
+<t><list style="empty"><t>Note: If this demultiplexing is useful, we should
+reserve DNS Opcode 15.</t></list></t>
 
 <t>There has been some concern with sending DTLS-over-DNS traffic
 over the same port as normal, un-encrypted DNS traffic.  The intent
@@ -259,6 +221,54 @@ available on clients?)</t>
 
 
       <section title="Use by  DNS clients">
+
+<section title="Authenticating a DNS Server">
+<t>As DTLS provides integrity protection, some protection from on-path
+      attackers sending bogus responses is provided by simply using
+      DTLS.  That is, a device on the path between a DNS client and
+      its DNS server cannot simply inject a bogus DNS response, as
+      could be done with normal DNS.  However, that protection is not
+      terribly strong, because that attacker could intercept the DTLS
+      handshake itself and pretend to be the actual DNS server.  To
+      prevent that, we need to resolve two problems: identifying the
+      trusted servers and determinnig an appropriate action when no
+      trusted servers are available.</t>
+
+      <t>The first problem, of identifying the legitimate server,
+      requires extending the host configuration.  This is because DNS
+      clients have their DNS servers configured by IP address (from
+      DHCP or from a local configuration file such as
+      /etc/resolv.conf), but certificates have a DNS name in the
+      SubjectAltName field.  We can't change how certificates are
+      issued, but we already have to modify the DNS client to support
+      DNS-over-DTLS.  With that in mind, the DNS client would have a
+      list of SubjectAltNames it trusts, configured by the user.  That
+      could be configured in the resolv.conf file itself, as shown below,
+      or could be maintained in a separate file.</t>
+     <figure align="center">
+        <artwork align="center"><![CDATA[nameserver 192.0.2.1    dns.example.net
+nameserver 198.51.100.1 dns.example.com]]></artwork>
+      </figure>
+
+      <t>The second problem is determining an appropriate action when
+     no trusted servers are available.  Although the DNS client could
+     still use DNS-over-DTLS with an un-trusted server which still
+     provides protection from on-path passive listeners and from on-
+     and off-path active attackers, this use does not protect from a
+     malicious server returning bogus responses.  While DNSSEC can protect
+     against bogus responses (lies), DNSSEC cannot protect against a 
+     server that simply does not return certain answers.
+
+	<list style="empty"><t>[[Editor's Note: Is there more we could
+     do?  Trust certain responses (like for my enterprise VPN or other
+     sites where I will be doing a TLS handshake)?  Keep in mind that
+     with web portals at hotels/airports, we won't have access to a
+     trusted DNS server on initial connect at all.]] </t></list></t>
+</section>
+
+
+
+
         <section title="Sending Queries">
           <t>DNS clients MAY set the SO bit in queries sent using UDP
           transport to signal their general ability to support DNS over DTLS.
