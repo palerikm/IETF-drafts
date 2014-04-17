@@ -218,7 +218,7 @@ a <xref target="IANA-domain">special-use domain name</xref>.  That
 query doesn't need to go beyond the DNS server itself.  An SRV query
 is suggested so the port can be returned (assuming SRV is ubiquitously
 available on clients?)</t>
-
+</section>
 
       <section title="Use by  DNS clients">
 
@@ -348,7 +348,7 @@ nameserver 198.51.100.1 dns.example.com]]></artwork>
           or "NO_DTLS".</t>
         </section>
       </section>
-    </section>
+
 
     <section anchor="DTLS" title="Established sessions">
       <t>In DTLS, all data is protected using the same record encoding and
@@ -397,36 +397,7 @@ nameserver 198.51.100.1 dns.example.com]]></artwork>
 ]]></artwork>
       </figure>
 
-      <t/>
 
-      <t>After DTLS negotiation completes, the connection will be encrypted
-      and is now protected from eavesdropping and normal DNS queries SHOULD
-      take place. To avoid storing state on the DNS server and to reduce DTLS
-      round-trips for another query, it is strongly RECOMMENDED both client
-      and server support <xref target="RFC5077"/>.</t>
-
-      <t><figure
-          title="Message Flow for Abbreviated Handshake Using New Session Ticket">
-          <artwork align="left"><![CDATA[
-   Client                                          Server
-   ------                                          ------
-
-   ClientHello
-   (SessionTicket extension) -------->
-                                             ServerHello
-                          (empty SessionTicket extension)
-                                        NewSessionTicket
-                                      [ChangeCipherSpec]
-                             <--------          Finished
-   [ChangeCipherSpec]
-   Finished                  -------->
-
-   DNS Request             --------->
-
-                           <---------  DNS Response
-
-]]></artwork>
-        </figure></t>
     </section>
 
 
