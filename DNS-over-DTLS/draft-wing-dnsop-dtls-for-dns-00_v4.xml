@@ -13,7 +13,7 @@
 <rfc category="std" docName="draft-wing-dnsop-dtls-over-dns-00"
      ipr="trust200902">
   <front>
-    <title abbrev="DNS over DTLS">DNS over DTLS</title>
+    <title abbrev="DNS over DTLS (DNSoD)">DNS over DTLS (DNSoD)</title>
 
     <author fullname="Tirumaleswar Reddy" initials="T." surname="Reddy">
       <organization abbrev="Cisco">Cisco Systems, Inc.</organization>
@@ -113,10 +113,10 @@
       popular mitigation against that attack is to use ephemeral and
       random source ports for DNS queries.</t>
 
-      <t>The mechanism described in this document provides 
-      confidential DNS communication for stub resolvers, recursive resolvers,
-      iterative resolvers and authoritative servers. The document only defines
-      protocol extensions necessary to support DTLS negotiation.</t>
+      <t>This document defines DNS-over-DTLS (DNSoD, pronounced
+      "dee-enn-sod") which provies confidential DNS communication for
+      stub resolvers, recursive resolvers, iterative resolvers and
+      authoritative servers.</t>
 </section>
 
 <section title="Relationship to DNSSEC">
@@ -142,8 +142,8 @@
       target="RFC2119"/>.</t>
     </section>
 
-    <section anchor="problem_stmt" title="Usage">
-      <t><list style="letters">
+    <section anchor="problem_stmt" title="Incremental Deployment">
+    <t>DNSoD can be deployed incrementally.</t>
               <t>DNS forwarder uses DNS over DTLS to communicate with ISP DNS
               resolver and thus offers confidentiality in the last mile even
               if the stub resolver does not support DNS over DTLS.</t>
@@ -151,7 +151,7 @@
               <t>If a DNS resolver in an ISP does not support DNS over DTLS,
               the DNS forwarder or stub resolver can be configured to send DNS
               queries to DNS resolvers offered by public DNS servers.</t>
-        </list></t>
+
     </section>
 
     <section title="Polling, Port Usage, and Discovery">
@@ -161,13 +161,13 @@
      interfering with Internet communications, using proprietary
      mechanisms that are out of scope of this document.  After that
      mechanism has run (and detected Internet connectivity is
-     working), the DNS-over-DTLS procedure described in this document
+     working), the DNSoD procedure described in this document
      should commence.  This timing avoids delays in joining the
      network (and displaying an icon indicating successful Internet
      connection), at the risk that those initial DNS queries will be
-     sent without protection afforded by DNS-over-DTLS.  </t>
+     sent without protection afforded by DNSoD.  </t>
 
-     <t>DNS-over-DTLS can run over standard UDP port 53 as defined in
+     <t>DNSoD can run over standard UDP port 53 as defined in
      <xref target="RFC1035"/>.  A DNS client or server that does not
      implement this specification will not respond to the incoming
      DTLS packets because they don't parse as DNS packets (the DNS
@@ -183,7 +183,7 @@ reserve DNS Opcode 15.</t></list></t>
 
 <t>There has been some concern with sending DTLS-over-DNS traffic
 over the same port as normal, un-encrypted DNS traffic.  The intent
-of this section is to show that DNS-over-DTLS could successfully
+of this section is to show that DNSoD could successfully
 be sent over port 53.  Further analysis and testing on the Internet
 may be valuable to determine if multiplexing on port 53, using
 a separate port, or some fallback between a separate port and port
@@ -192,9 +192,9 @@ a separate port, or some fallback between a separate port and port
 
 
       <t>After performing the above steps, the host should determine
-      if the DNS server supports DNS-over-DTLS by sending a DTLS
+      if the DNS server supports DNSoD by sending a DTLS
       ClientHello message.  A DNS server that does not support
-      DNS-over-DTLS will not respond to ClientHello messages sent by
+      DNSoD will not respond to ClientHello messages sent by
       the client, because they are not valid DNS requests
       (specifically, the DNS Opcode is invalid).  The client MUST use
       timer values defined in 4.2.4.1 of <xref target="RFC6347"/> for
@@ -208,19 +208,77 @@ a separate port, or some fallback between a separate port and port
       no additional signaling between the client and server. </t>
     </section>
 
-    <section anchor="protocol" title="In-Band Signaling">
-      <t>An alternate mechanism is to signal support for DTLS in band.</t>
+<section title="Performance Considerations">
+<t>To reduce number of octets of the DTLS handshake, especially the
+size of the certificate sent by the server, we should examine
+viability of using plain public keys
+<xref target="I-D.ietf-tls-oob-pubkey"/>.  Considering that to
+authorize a certain DNS server the client already needs explicit
+configuration of a whitelist of the DNS servers it trusts, maybe the
+public key configuration problem is really no worse than the
+configuration problem of those whitelisted certificates?</t>
 
-<t>The authors have also briefly considered a DNS SRV query to ask if the DNS
-server supports DTLS-over-DNS such as _dns_over_dtls._udp.well_known
-assuming "well_known" is defined as
-a <xref target="IANA-domain">special-use domain name</xref>.  That
-query doesn't need to go beyond the DNS server itself.  An SRV query
-is suggested so the port can be returned (assuming SRV is ubiquitously
-available on clients?)</t>
+<t>Multiple DNS queries can be sent over a single DNSoD security
+association. The existing QueryID allows multiple requests and
+responses to be interleaved in whatever order they can be fulfilled by
+the DNS server.  This means DNSoD reduces the consumption of UDP port
+numbers, and because DTLS protects the communication between the DNS
+client and its server, the resolver SHOULD NOT use random ephemeral
+source ports (Section 9.2 of <xref target="RFC5452"/>) because such
+source port use would incur additional, unnecessary DTLS load on the
+DNSoD server.</t>
+
+<t>It is highly advantageous to avoid server-side DTLS state and
+reduce the number of new DTLS security associations on the servrer
+which can be done with <xref target="RFC5077"/>.  This also eliminates
+a round-trip for subsequent DNSoD queries, because with
+<xref target="RFC5077"/> the DTLS security association does not need
+to be re-established.</t>
 </section>
 
-      <section title="Use by  DNS clients">
+
+    <section anchor="protocol" title="In-Band Signaling">
+      <t>Instead of merely probing to determine if a DNS server
+supports DNSoD (which is somewhat inefficient, as it requires multiple
+probe packets to each DNS server), the authors have also considered
+using a DNS query to indicate the server supports DNSoD.  Two
+approaches are discussed below, one using DNS SRV queries and another
+extending the EDNS0 OPT meta-RR
+<xref target="I-D.hzhwm-start-tls-for-dns"/> to describe DNSoD
+support.</t>
+
+<t>To use SRV, we would define a
+new <xref target="IANA-domain">special-use domain name</xref>.  The
+name is not significant, so let's pretend it would be called "meta",
+the SRV query would be  _dns_over_dtls._udp.meta.  That query
+doesn't need to go beyond the DNS server itself.  By using SRV,
+the response can indicate the port and IP address of the DNS
+server that supports DNSoD.</t>
+
+
+      <t>To extend the EDNS0 OPT meta-RR defined in
+<xref target="I-D.hzhwm-start-tls-for-dns"/>, we can add another bit
+indicating support for DNSoD, denoted as "SO".  Clients and servers
+indicate their support for, and desire to use, DNS over DTLS by
+setting a bit in the Flags field of the EDNS0 <xref target="RFC6891"/>
+OPT meta-RR. The "DTLS OK" (SO) bit is defined as the third bit of the
+third and fourth bytes of the "extended RCODE and flags" portion of
+the EDNS0 OPT meta-RR, immediately adjacent to the "TLS OK" (TO) bit
+defined in <xref target="I-D.hzhwm-start-tls-for-dns"/>, as shown below:</t>
+
+      <figure align="center">
+          <artwork align="center"><![CDATA[
+           +0 (MSB)                +1 (LSB)
+   +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+0: |   EXTENDED-RCODE      |       VERSION         |
+   +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+2: |DO|TO|SO|            Must be zero              |
+   +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+]]></artwork>
+      </figure>
+
+</section>
+
+      <section title="Use by DNS clients">
 
 <section title="Authenticating a DNS Server">
 <t>As DTLS provides integrity protection, some protection from on-path
@@ -241,7 +299,7 @@ available on clients?)</t>
       /etc/resolv.conf), but certificates have a DNS name in the
       SubjectAltName field.  We can't change how certificates are
       issued, but we already have to modify the DNS client to support
-      DNS-over-DTLS.  With that in mind, the DNS client would have a
+      DNSoD.  With that in mind, the DNS client would have a
       list of SubjectAltNames it trusts, configured by the user.  That
       could be configured in the resolv.conf file itself, as shown below,
       or could be maintained in a separate file.</t>
@@ -252,7 +310,7 @@ nameserver 198.51.100.1 dns.example.com]]></artwork>
 
       <t>The second problem is determining an appropriate action when
      no trusted servers are available.  Although the DNS client could
-     still use DNS-over-DTLS with an un-trusted server which still
+     still use DNSoD with an un-trusted server which still
      provides protection from on-path passive listeners and from on-
      and off-path active attackers, this use does not protect from a
      malicious server returning bogus responses.  While DNSSEC can protect
@@ -401,21 +459,6 @@ nameserver 198.51.100.1 dns.example.com]]></artwork>
     </section>
 
 
-<section title="Performance Considerations">
-<t>To reduce number of octets of the DTLS handshake, especially the
-certificate sent by the server, we should examine viability of using
-plain public keys <xref target="I-D.ietf-tls-oob-pubkey"/>.  As the
-client already needs explicit configuration in a whitelist of the
-DNS servers it trusts, maybe the public key configuration problem
-is really no worse than the configuration problem of those whitelisted
-certificates?</t>
-
-<t>With normal DNS over UDP, the server maintains no state between
-queries.  To keep the server state similarly low between queries,
-the client can store the DTLS security association if both client
-and server implement <xref target="RFC5077"/>.</t>
-
-</section>
 
     <section title="IANA Considerations">
       <t>This document defines a new bit ("SO") in the Flags field of the
@@ -427,14 +470,24 @@ and server implement <xref target="RFC5077"/>.</t>
     </section>
 
     <section anchor="security" title="Security Considerations">
-      <t>Security considerations discussed in <xref target="RFC6347"/> apply
-      to this document.</t>
+      <t>Once a DNSoD client has established a security association
+     with a particular DNS server, and outstanding normal DNS queries
+     with that server (if any) have been received, the DNSoD client
+     MUST ignore any subsequent normal DNS responses from that server,
+     as all subsequent responses should be inside DNSoD.  This
+     behavior mitigates all (?) attacks described
+     in <xref target="RFC5452">Measures for Making DNS More Resilient
+     against Forged Answers</xref>.</t>
+
+     <t>Security considerations discussed
+      in <xref target="RFC6347">DTLS</xref> also apply to this
+      document.</t>
     </section>
 
     <section anchor="ack" title="Acknowledgements">
-      <t>The Protocol changes described in <xref target="protocol"/> of this
-      document was derived from the similar technique described in
-      DNS-over-TLS <xref target="I-D.hzhwm-start-tls-for-dns"/>.</t>
+      <t>The EDNS0 OPT meta-RR described in <xref target="protocol"/>
+      are an extension of the technique described in
+      <xref target="I-D.hzhwm-start-tls-for-dns">DNS-over-TLS</xref>.</t>
     </section>
   </middle>
 
@@ -453,6 +506,8 @@ and server implement <xref target="RFC5077"/>.</t>
       <?rfc include="reference.RFC.6347"?>
 
       <?rfc include="reference.RFC.6891"?>
+
+      <?rfc include="reference.RFC.5452"?>
     </references>
 
     <references title="Informative References">
