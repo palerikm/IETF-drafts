@@ -114,7 +114,7 @@
       random source ports for DNS queries.</t>
 
       <t>This document defines DNS-over-DTLS (DNSoD, pronounced
-      "dee-enn-sod") which provies confidential DNS communication for
+      "dee-enn-sod") which provides confidential DNS communication for
       stub resolvers, recursive resolvers, iterative resolvers and
       authoritative servers.</t>
 </section>
@@ -132,7 +132,7 @@ large responses to be sent over DTLS itself, see
       of DNS resource records, allowing end-users (or their resolver)
       to verify legitimacy of responses.  However, DNSSEC does not
       protect privacy of DNS requests or responses. DNSoD works in
-      conjuction with DNSSEC, but DNSoD does not replace the need or
+      conjunction with DNSSEC, but DNSoD does not replace the need or
       value of DNSSEC.</t>
 </section>
 
@@ -145,7 +145,7 @@ large responses to be sent over DTLS itself, see
 
     <section anchor="problem_stmt" title="Incremental Deployment">
     <t>DNSoD can be deployed incrementally by the Internet Service
-  Provider or as an Intenet service.</t>
+  Provider or as an Internet service.</t>
     <t>If the ISP's DNS resolver supports DNSoD, then DNS queries are
     protected from passive listening and from many active attacks along
     that path.</t>
@@ -202,7 +202,7 @@ a separate port, or some fallback between a separate port and port
       MAY repeat that procedure in the event the DNS server has been
       upgraded to support DNS over DTLS, but such probing SHOULD NOT
       be done more frequently than every 24 hours and MUST NOT be done
-      more frequently than every 15 minutes.  This mechnism requires
+      more frequently than every 15 minutes.  This mechanism requires
       no additional signaling between the client and server. </t>
     </section>
 
@@ -253,7 +253,7 @@ not rely on ICMP or ICMPv6, and would not affect DNS state or
 responsiveness on the client or server.  However, it would be
 additional chattiness.</t>
 <t>To avoid IP fragmentation, DTLS handshake messages incorporate their
-own fragmentat offset and fragment length.  We might utilize a similar
+own fragment offset and fragment length.  We might utilize a similar
 mechanism in a shim layer between DTLS and DNS, so that large DNS
 messages could be carried without causing IP fragmentation.</t>
 </list></t>
@@ -314,7 +314,7 @@ defined in <xref target="I-D.hzhwm-start-tls-for-dns"/>, as shown below:</t>
       terribly strong, because that attacker could intercept the DTLS
       handshake itself and pretend to be the actual DNS server.  To
       prevent that, we need to resolve two problems: identifying the
-      trusted servers and determinnig an appropriate action when no
+      trusted servers and determining an appropriate action when no
       trusted servers are available.</t>
 
       <t>The first problem, of identifying the legitimate server,
@@ -512,12 +512,12 @@ an DNS anycast network, <xref target="RFC5077"/> can instantiate
 the necessary DTLS state in the DNSoD server.</t>
 
 <t>However, because several DNS queries can be sent within one DTLS
-session (and thus it doesn't always start witha DTLS ClientHello), a
+session (and thus it doesn't always start with a DTLS ClientHello), a
 load balancer is necessary ensure the same source IP address and UDP
 port is routed to the same DNSoD server that has the necessary security
 association.  This only works within a datacenter, of course.  When
 anycast DNS servers are deployed across a geographic region, route
-flapping can cause subequent DNSoD traffic to arrive at an anycasted
+flapping can cause subsequent DNSoD traffic to arrive at an anycasted
 DNS server that has no security association.  When this occurs, to
 avoid the DNSoD client from timing out, the DNSoD server MUST 
 respond with a DTLS 'alert' error.</t>

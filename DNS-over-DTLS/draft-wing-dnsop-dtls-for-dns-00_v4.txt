@@ -121,7 +121,7 @@ Internet-Draft            DNS over DTLS (DNSoD)               April 2014
    ports for DNS queries.
 
    This document defines DNS-over-DTLS (DNSoD, pronounced "dee-enn-sod")
-   which provies confidential DNS communication for stub resolvers,
+   which provides confidential DNS communication for stub resolvers,
    recursive resolvers, iterative resolvers and authoritative servers.
 
 2.  Relationship to TCP Queries and to DNSSEC
@@ -135,8 +135,8 @@ Internet-Draft            DNS over DTLS (DNSoD)               April 2014
    DNS Security Extensions (DNSSEC [RFC4033]) provides object integrity
    of DNS resource records, allowing end-users (or their resolver) to
    verify legitimacy of responses.  However, DNSSEC does not protect
-   privacy of DNS requests or responses.  DNSoD works in conjuction with
-   DNSSEC, but DNSoD does not replace the need or value of DNSSEC.
+   privacy of DNS requests or responses.  DNSoD works in conjunction
+   with DNSSEC, but DNSoD does not replace the need or value of DNSSEC.
 
 3.  Terminology
 
@@ -147,7 +147,7 @@ Internet-Draft            DNS over DTLS (DNSoD)               April 2014
 4.  Incremental Deployment
 
    DNSoD can be deployed incrementally by the Internet Service Provider
-   or as an Intenet service.
+   or as an Internet service.
 
    If the ISP's DNS resolver supports DNSoD, then DNS queries are
    protected from passive listening and from many active attacks along
@@ -214,7 +214,7 @@ Internet-Draft            DNS over DTLS (DNSoD)               April 2014
    procedure in the event the DNS server has been upgraded to support
    DNS over DTLS, but such probing SHOULD NOT be done more frequently
    than every 24 hours and MUST NOT be done more frequently than every
-   15 minutes.  This mechnism requires no additional signaling between
+   15 minutes.  This mechanism requires no additional signaling between
    the client and server.
 
 
@@ -273,7 +273,7 @@ Internet-Draft            DNS over DTLS (DNSoD)               April 2014
       additional chattiness.
 
    o  To avoid IP fragmentation, DTLS handshake messages incorporate
-      their own fragmentat offset and fragment length.  We might utilize
+      their own fragment offset and fragment length.  We might utilize a
 
 
 
@@ -282,7 +282,7 @@ Reddy, et al.           Expires October 20, 2014                [Page 5]
 Internet-Draft            DNS over DTLS (DNSoD)               April 2014
 
 
-      a similar mechanism in a shim layer between DTLS and DNS, so that
+      similar mechanism in a shim layer between DTLS and DNS, so that
       large DNS messages could be carried without causing IP
       fragmentation.
 
@@ -338,7 +338,7 @@ Reddy, et al.           Expires October 20, 2014                [Page 6]
 Internet-Draft            DNS over DTLS (DNSoD)               April 2014
 
 
-   problems: identifying the trusted servers and determinnig an
+   problems: identifying the trusted servers and determining an
    appropriate action when no trusted servers are available.
 
    The first problem, of identifying the legitimate server, requires
@@ -438,7 +438,7 @@ Internet-Draft            DNS over DTLS (DNSoD)               April 2014
    in the DNSoD server.
 
    However, because several DNS queries can be sent within one DTLS
-   session (and thus it doesn't always start witha DTLS ClientHello), a
+   session (and thus it doesn't always start with a DTLS ClientHello), a
    load balancer is necessary ensure the same source IP address and UDP
    port is routed to the same DNSoD server that has the necessary
    security association.  This only works within a datacenter, of
@@ -451,10 +451,10 @@ Internet-Draft            DNS over DTLS (DNSoD)               April 2014
 
 
    course.  When anycast DNS servers are deployed across a geographic
-   region, route flapping can cause subequent DNSoD traffic to arrive at
-   an anycasted DNS server that has no security association.  When this
-   occurs, to avoid the DNSoD client from timing out, the DNSoD server
-   MUST respond with a DTLS 'alert' error.
+   region, route flapping can cause subsequent DNSoD traffic to arrive
+   at an anycasted DNS server that has no security association.  When
+   this occurs, to avoid the DNSoD client from timing out, the DNSoD
+   server MUST respond with a DTLS 'alert' error.
 
 11.  IANA Considerations
 
