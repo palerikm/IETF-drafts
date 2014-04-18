@@ -121,18 +121,12 @@
 
 <section title="Relationship to DNSSEC">
       <t>DNS Security Extensions
-      (<xref target="RFC4033">DNSSEC</xref>) provides response
-      integrity by defining mechanisms to cryptographically sign
-      zones, allowing end-users (or their first-hop resolver) to
-      verify replies are correct. DNSSEC however does nothing to
-      ensure DNS request or response privacy. Authenticity and
-      integrity may be provided by DNSSEC, DNS over DTLS does not
-      change DNSSEC and does not offer the means to authenticate
-      responses. DNS over DTLS, however, does not preclude the use of
-      DNSSEC. Since, in some cases, encryption is opportunistic with
-      the use of DNS over DTLS, a DNS client may opt for DNSSEC for
-      security reasons.</t>
-
+      (<xref target="RFC4033">DNSSEC</xref>) provides object integrity
+      of DNS resource records, allowing end-users (or their resolver)
+      to verify legitimacy of responses.  However, DNSSEC does not
+      protect privacy of DNS requests or responses. DNSoD works in
+      conjuction with DNSSEC, but DNSoD does not replace the need or
+      value of DNSSEC.</t>
 </section>
 
     <section anchor="term" title="Terminology">
@@ -143,15 +137,15 @@
     </section>
 
     <section anchor="problem_stmt" title="Incremental Deployment">
-    <t>DNSoD can be deployed incrementally.</t>
-              <t>DNS forwarder uses DNS over DTLS to communicate with ISP DNS
-              resolver and thus offers confidentiality in the last mile even
-              if the stub resolver does not support DNS over DTLS.</t>
+    <t>DNSoD can be deployed incrementally by the Internet Service
+  Provider or as an Intenet service.</t>
+    <t>If the ISP's DNS resolver supports DNSoD, then DNS queries are
+    protected from passive listening and from many active attacks along
+    that path.</t>
 
-              <t>If a DNS resolver in an ISP does not support DNS over DTLS,
-              the DNS forwarder or stub resolver can be configured to send DNS
-              queries to DNS resolvers offered by public DNS servers.</t>
-
+    <t>DNSoD can be offered as an Internet service, and a DNS resolver
+    can be configured to point that that DNSoD server (rather than
+    to the ISP-provided DNS server).</t>
     </section>
 
     <section title="Polling, Port Usage, and Discovery">
@@ -233,17 +227,18 @@ reduce the number of new DTLS security associations on the servrer
 which can be done with <xref target="RFC5077"/>.  This also eliminates
 a round-trip for subsequent DNSoD queries, because with
 <xref target="RFC5077"/> the DTLS security association does not need
-to be re-established.</t>
+to be re-established.  The use of <xref target="RFC5077"/> also assists
+with DNS anycast (see also <xref target="anycast"/>).</t>
 </section>
 
 
-    <section anchor="protocol" title="In-Band Signaling">
-      <t>Instead of merely probing to determine if a DNS server
-supports DNSoD (which is somewhat inefficient, as it requires multiple
-probe packets to each DNS server), the authors have also considered
-using a DNS query to indicate the server supports DNSoD.  Two
-approaches are discussed below, one using DNS SRV queries and another
-extending the EDNS0 OPT meta-RR
+    <section anchor="in_band_signaling" title="In-Band Signaling">
+      <t>Probing with DTLS ClientHello packets to determine if a DNS
+server supports DNSoD is somewhat inefficient, as it requires multiple
+probe packets to each DNS server.  It may well be preferable to have a
+method of determining, within the DNS protocol itself, if a certain
+DNS server supports DNSoD. Two approaches are discussed below, one
+using DNS SRV queries and another extending the EDNS0 OPT meta-RR
 <xref target="I-D.hzhwm-start-tls-for-dns"/> to describe DNSoD
 support.</t>
 
@@ -458,15 +453,36 @@ nameserver 198.51.100.1 dns.example.com]]></artwork>
 
     </section>
 
+<section anchor="anycast" title="Interaction with DNS Anycast">
+<t>DNS servers often use anycast, either within a single datacenter or
+in geographic regions.  Normal DNS is completely stateless so if two
+queries happen to arrive at two different anycasted DNS servers, normal
+DNS works fine.  However, because DNSoD also carries a security
+association, the queries have to be sent to a server that already has
+(or can acquire) the necessary security association.  If the DNSoD
+client sends <xref target="RFC5077"/> to a server that had never 
+seen a DNSoD request from this client, and that server is part of
+an DNS anycast network, <xref target="RFC5077"/> can instantiate
+the necessary DTLS state in the DNSoD server.</t>
 
-
+<t>However, because several DNS queries can be sent within one DTLS
+session (and thus it doesn't always start witha DTLS ClientHello), a
+load balancer is necessary ensure the same source IP address and UDP
+port is routed to the same DNSoD server that has the necessary security
+association.  This only works within a datacenter, of course.  When
+anycast DNS servers are deployed across a geographic region, route
+flapping can cause subequent DNSoD traffic to arrive at an anycasted
+DNS server that has no security association.  When this occurs, to
+avoid the DNSoD client from timing out, the DNSoD server MUST 
+respond with a DTLS 'alert' error.</t>
+</section>
     <section title="IANA Considerations">
       <t>This document defines a new bit ("SO") in the Flags field of the
       EDNS0 OPT meta-RR. At the time of approval of this draft in the
       standards track, as per the IANA Considerations of <xref
       target="RFC6891"/>, IANA is requested to reserve the third leftmost bit
       of the flags as the SO bit, immediately adjacent to the DNSSEC SO bit,
-      as shown in <xref target="protocol"/>.</t>
+      as shown in <xref target="in_band_signaling"/>.</t>
     </section>
 
     <section anchor="security" title="Security Considerations">
@@ -485,7 +501,7 @@ nameserver 198.51.100.1 dns.example.com]]></artwork>
     </section>
 
     <section anchor="ack" title="Acknowledgements">
-      <t>The EDNS0 OPT meta-RR described in <xref target="protocol"/>
+      <t>The EDNS0 OPT meta-RR described in <xref target="in_band_signaling"/>
       are an extension of the technique described in
       <xref target="I-D.hzhwm-start-tls-for-dns">DNS-over-TLS</xref>.</t>
     </section>
