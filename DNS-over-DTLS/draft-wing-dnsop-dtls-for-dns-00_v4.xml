@@ -10,7 +10,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="std" docName="draft-wing-dnsop-dtls-over-dns-00"
+<rfc category="std" docName="draft-wing-dnsop-dnsod-00"
      ipr="trust200902">
   <front>
     <title abbrev="DNS over DTLS (DNSoD)">DNS over DTLS (DNSoD)</title>
@@ -119,7 +119,14 @@
       authoritative servers.</t>
 </section>
 
-<section title="Relationship to DNSSEC">
+<section title="Relationship to TCP Queries and to DNSSEC">
+  <t>DNS queries can be sent over UDP or TCP.  This document scope is
+only UDP.  DNS over TCP could be protected with TLS, such as described
+by <xref target="I-D.hzhwm-start-tls-for-dns"/>.  Alternatively, a
+shim protocol could be defined by DNSoD between DTLS and DNS, allowing
+large responses to be sent over DTLS itself, see
+<xref target="performance"/>.</t>
+
       <t>DNS Security Extensions
       (<xref target="RFC4033">DNSSEC</xref>) provides object integrity
       of DNS resource records, allowing end-users (or their resolver)
@@ -148,7 +155,7 @@
     to the ISP-provided DNS server).</t>
     </section>
 
-    <section title="Polling, Port Usage, and Discovery">
+    <section anchor="demux" title="Demultiplexing, Polling, Port Usage, and Discovery">
      <t>[Note - This section requires further discussion]</t>
 
      <t>Many modern operating systems already detect if a web proxy is
@@ -171,9 +178,6 @@
      what is defined by this specification, A DTLS packet will contain
      253 in the third octet, whereas a DNS packet will never contain
      253 in the third octet.</t>
-
-<t><list style="empty"><t>Note: If this demultiplexing is useful, we should
-reserve DNS Opcode 15.</t></list></t>
 
 <t>There has been some concern with sending DTLS-over-DNS traffic
 over the same port as normal, un-encrypted DNS traffic.  The intent
@@ -202,10 +206,10 @@ a separate port, or some fallback between a separate port and port
       no additional signaling between the client and server. </t>
     </section>
 
-<section title="Performance Considerations">
+<section anchor="performance" title="Performance Considerations">
 <t>To reduce number of octets of the DTLS handshake, especially the
-size of the certificate sent by the server, we should examine
-viability of using plain public keys
+size of the certificate sent by the server (which can be several
+kilobytes), we should examine viability of using plain public keys
 <xref target="I-D.ietf-tls-oob-pubkey"/>.  Considering that to
 authorize a certain DNS server the client already needs explicit
 configuration of a whitelist of the DNS servers it trusts, maybe the
@@ -223,12 +227,37 @@ source port use would incur additional, unnecessary DTLS load on the
 DNSoD server.</t>
 
 <t>It is highly advantageous to avoid server-side DTLS state and
-reduce the number of new DTLS security associations on the servrer
+reduce the number of new DTLS security associations on the server
 which can be done with <xref target="RFC5077"/>.  This also eliminates
 a round-trip for subsequent DNSoD queries, because with
 <xref target="RFC5077"/> the DTLS security association does not need
 to be re-established.  The use of <xref target="RFC5077"/> also assists
-with DNS anycast (see also <xref target="anycast"/>).</t>
+with DNS anycast (see also <xref target="anycast"/>).  Note: with
+the shim (described below) perhaps we could send the query and
+the restore server-side state in the ClientHello packet.</t>
+
+<t>Compared to normal DNS, DTLS adds at least 13 octets of header,
+plus cipher and authentication overhead to every query and every
+response.  This reduces the size of the DNS payload that can be
+carried.  Certain DNS responses are large (e.g., many AAAA records,
+TXT, SRV) and don't fit into a single UDP packet, causing a partial
+response with the truncation (TC) bit set.  The client is then
+expected to repeat the query over TCP, which causes additional name
+resolution delay.  We have considered two ideas, one that reduces the
+need to switch to TCP and another that eliminates the need to switch
+to TCP:
+<list style="symbols"><t>Path MTU can be determined
+using <xref target="RFC4821">Packetization Layer Path MTU
+Discovery</xref> using DTLS heartbeat.  <xref target="RFC4821"/> does
+not rely on ICMP or ICMPv6, and would not affect DNS state or
+responsiveness on the client or server.  However, it would be
+additional chattiness.</t>
+<t>To avoid IP fragmentation, DTLS handshake messages incorporate their
+own fragmentat offset and fragment length.  We might utilize a similar
+mechanism in a shim layer between DTLS and DNS, so that large DNS
+messages could be carried without causing IP fragmentation.</t>
+</list></t>
+
 </section>
 
 
@@ -238,17 +267,16 @@ server supports DNSoD is somewhat inefficient, as it requires multiple
 probe packets to each DNS server.  It may well be preferable to have a
 method of determining, within the DNS protocol itself, if a certain
 DNS server supports DNSoD. Two approaches are discussed below, one
-using DNS SRV queries and another extending the EDNS0 OPT meta-RR
+using DNS SRV query or <xref target="RFC4892">Name Server
+Instance</xref> query, and another extending the EDNS0 OPT meta-RR
 <xref target="I-D.hzhwm-start-tls-for-dns"/> to describe DNSoD
 support.</t>
 
-<t>To use SRV, we would define a
-new <xref target="IANA-domain">special-use domain name</xref>.  The
-name is not significant, so let's pretend it would be called "meta",
-the SRV query would be  _dns_over_dtls._udp.meta.  That query
-doesn't need to go beyond the DNS server itself.  By using SRV,
-the response can indicate the port and IP address of the DNS
-server that supports DNSoD.</t>
+<t>To use <xref target="RFC4892">Name Server Instance</xref> query, we
+would define a new CHAOS class resource record.  The name is not
+significant, so let's pretend it would be called "DNSoD".  Note:
+we might to indicate an alternate port, querying a CHAOS SRV
+resource record is probably most ideal.</t>
 
 
       <t>To extend the EDNS0 OPT meta-RR defined in
@@ -273,7 +301,9 @@ defined in <xref target="I-D.hzhwm-start-tls-for-dns"/>, as shown below:</t>
 
 </section>
 
+<!--
       <section title="Use by DNS clients">
+-->
 
 <section title="Authenticating a DNS Server">
 <t>As DTLS provides integrity protection, some protection from on-path
@@ -320,7 +350,9 @@ nameserver 198.51.100.1 dns.example.com]]></artwork>
 </section>
 
 
+<!--
 
+dwing:  this section needs a re-write
 
         <section title="Sending Queries">
           <t>DNS clients MAY set the SO bit in queries sent using UDP
@@ -330,16 +362,15 @@ nameserver 198.51.100.1 dns.example.com]]></artwork>
 
           <t>DNS clients MAY set the SO bit in the initial query sent to a
           server using UDP transport to signal their desire that the UDP
-          connection be upgraded to DTLS. DNS clients MUST NOT set the SO bit
+          connection be upgraded to DTLS.  DNS clients MUST NOT set the SO bit
           on subsequent queries when already using DNS over DTLS.</t>
 
-          <t>Since the motivation for DNS over DTLS is to preserve privacy,
-          DNS clients SHOULD use a query that reveals no private information
-          in the initial SO=1 query to a server. To provide a standard "dummy"
-          query, it is RECOMMENDED to send the initial query with RD=0,
-          QNAME="STARTDTLS", QCLASS=CH, and QTYPE=TXT ("STARTDTLS/CH/TXT")
-          analogous to administrative queries already in widespread use <xref
-          target="RFC4892"/>.</t>
+          <t>Since the motivation for DNS over DTLS is to preserve
+          privacy, DNS clients SHOULD use a query that reveals no
+          private information in the initial SO=1 query to a
+          server. To provide a standard "dummy" query, it is
+          RECOMMENDED to do a CHAOS SRV resource record query
+          <xref target="RFC4892"/>.</t>
 
           <t>After sending the initial SO=1 query using UDP transport, DNS
           clients MUST wait for the initial response before sending any
@@ -347,9 +378,9 @@ nameserver 198.51.100.1 dns.example.com]]></artwork>
         </section>
 
         <section title="Receiving Responses">
-          <t>A DNS client that receives a response using UDP transport that
-          has the SO bit set MUST handle that response as usual. It MAY record
-          the server's support for DNS over DTLS and use that information as
+          <t>A DNS client that receives a response that matches its outstanding
+          request with the Meta RR with the SO bit set SHOULD record
+          the server's support for DNSoD and use that information as
           part of its server selection algorithm in the case where multiple
           servers are available to service a particular query. [For
           discussion: UDP is subject to spoofing and a client which depends on
@@ -357,7 +388,7 @@ nameserver 198.51.100.1 dns.example.com]]></artwork>
           DTLS.]</t>
 
           <t>A DNS client that receives a response to its initial query using
-          UDP transport that has the SO bit set MUST immediately initiate a
+          UDP transport that has the SO bit set SHOULD immediately initiate a
           DTLS handshake using the procedure described in <xref
           target="RFC6347"/>.</t>
 
@@ -369,15 +400,28 @@ nameserver 198.51.100.1 dns.example.com]]></artwork>
           DTLS from them for reasonable period. (We suggest 1 hour, or when
           the client discovers a new resolver)</t>
         </section>
+
       </section>
+-->
+
+
+
+<!-- dwing: this section also needs a re-write.  What new thing are we
+trying to explain?  We need more than just how to handle the Meta RR;
+we need to describe how to demultiplex the arriving packet (DNS or
+DTLS)
 
       <section title="Use by DNS Servers">
-        <section title="Receving Queries">
-          <t>A DNS server receiving a query over TCP MUST ignore the SO
-          bit.</t>
+        <section title="Receiving a Query">
+
+          <t>A DNS server receiving a query over TCP with the EDNS0
+          OPT meta Resource Record with the SO bit set it MUST ignore that
+          SO bit.  [Editor's Note:  is there interoperability harm if
+          it responds properly to that query?].</t>
 
           <t>A DNS server receiving a query over an existing DTLS session MUST
           ignore the SO bit.</t>
+why ignore?  what harm occurs?
 
           <t>A DNS server receiving an initial query over UDP that has the SO
           bit set MAY inform the client it is willing to establish a DTLS
@@ -385,6 +429,7 @@ nameserver 198.51.100.1 dns.example.com]]></artwork>
 
           <t>A DNS server receiving subsequent queries over a DTLS session
           MUST ignore the SO bit.</t>
+
         </section>
 
         <section title="Sending Responses">
@@ -401,6 +446,7 @@ nameserver 198.51.100.1 dns.example.com]]></artwork>
           or "NO_DTLS".</t>
         </section>
       </section>
+-->
 
 
     <section anchor="DTLS" title="Established sessions">
@@ -476,6 +522,8 @@ DNS server that has no security association.  When this occurs, to
 avoid the DNSoD client from timing out, the DNSoD server MUST 
 respond with a DTLS 'alert' error.</t>
 </section>
+
+
     <section title="IANA Considerations">
       <t>This document defines a new bit ("SO") in the Flags field of the
       EDNS0 OPT meta-RR. At the time of approval of this draft in the
@@ -483,6 +531,11 @@ respond with a DTLS 'alert' error.</t>
       target="RFC6891"/>, IANA is requested to reserve the third leftmost bit
       of the flags as the SO bit, immediately adjacent to the DNSSEC SO bit,
       as shown in <xref target="in_band_signaling"/>.</t>
+
+<t>If demultiplexing DTLS and DNS (using the third octet,
+<xref target="demux"/>) is useful, we should reserve DNS Opcode 15 to
+ensure DNS always has a 0 bit where DTLS always has a 1 bit.</t>
+
     </section>
 
     <section anchor="security" title="Security Considerations">
@@ -504,6 +557,8 @@ respond with a DTLS 'alert' error.</t>
       <t>The EDNS0 OPT meta-RR described in <xref target="in_band_signaling"/>
       are an extension of the technique described in
       <xref target="I-D.hzhwm-start-tls-for-dns">DNS-over-TLS</xref>.</t>
+
+      <t>Thanks to Phil Hedrick for his review comments on TCP.</t>
     </section>
   </middle>
 
@@ -533,6 +588,7 @@ respond with a DTLS 'alert' error.</t>
       <?rfc include='reference.I-D.ietf-tls-oob-pubkey'?>
 
       <?rfc include="reference.RFC.4892"?>
+      <?rfc include="reference.RFC.4821"?>
 
 
       <reference anchor="IANA-domain" target="http://www.iana.org/assignments/special-use-domain-names/special-use-domain-names.xhtml">
