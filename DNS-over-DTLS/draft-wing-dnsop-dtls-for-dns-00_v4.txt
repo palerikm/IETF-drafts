@@ -5,8 +5,8 @@
 DNSOP Working Group                                             T. Reddy
 Internet-Draft                                                   D. Wing
 Intended status: Standards Track                                P. Patil
-Expires: October 20, 2014                                          Cisco
-                                                          April 18, 2014
+Expires: October 24, 2014                                          Cisco
+                                                          April 22, 2014
 
 
                          DNS over DTLS (DNSoD)
@@ -43,25 +43,20 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on October 20, 2014.
-
-
-
-
-
-
-
-
-
-Reddy, et al.           Expires October 20, 2014                [Page 1]
-
-Internet-Draft            DNS over DTLS (DNSoD)               April 2014
-
+   This Internet-Draft will expire on October 24, 2014.
 
 Copyright Notice
 
    Copyright (c) 2014 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
+
+
+
+
+Reddy, et al.           Expires October 24, 2014                [Page 1]
+
+Internet-Draft            DNS over DTLS (DNSoD)               April 2014
+
 
    This document is subject to BCP 78 and the IETF Trust's Legal
    Provisions Relating to IETF Documents
@@ -79,19 +74,18 @@ Table of Contents
    2.  Relationship to TCP Queries and to DNSSEC . . . . . . . . . .   3
    3.  Terminology . . . . . . . . . . . . . . . . . . . . . . . . .   3
    4.  Incremental Deployment  . . . . . . . . . . . . . . . . . . .   3
-   5.  Demultiplexing, Polling, Port Usage, and Discovery  . . . . .   4
-   6.  Performance Considerations  . . . . . . . . . . . . . . . . .   5
-   7.  In-Band Signaling . . . . . . . . . . . . . . . . . . . . . .   6
+   5.  Demultiplexing, Polling, Port Usage, and Discovery  . . . . .   3
+   6.  Performance Considerations  . . . . . . . . . . . . . . . . .   4
+   7.  In-Band Signaling . . . . . . . . . . . . . . . . . . . . . .   5
    8.  Authenticating a DNS Server . . . . . . . . . . . . . . . . .   6
    9.  Established sessions  . . . . . . . . . . . . . . . . . . . .   7
-   10. Interaction with DNS Anycast  . . . . . . . . . . . . . . . .   8
-   11. IANA Considerations . . . . . . . . . . . . . . . . . . . . .   9
-   12. Security Considerations . . . . . . . . . . . . . . . . . . .   9
-   13. Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   9
-   14. References  . . . . . . . . . . . . . . . . . . . . . . . . .   9
-     14.1.  Normative References . . . . . . . . . . . . . . . . . .   9
-     14.2.  Informative References . . . . . . . . . . . . . . . . .  10
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  11
+   10. IANA Considerations . . . . . . . . . . . . . . . . . . . . .   8
+   11. Security Considerations . . . . . . . . . . . . . . . . . . .   9
+   12. Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   9
+   13. References  . . . . . . . . . . . . . . . . . . . . . . . . .   9
+     13.1.  Normative References . . . . . . . . . . . . . . . . . .   9
+     13.2.  Informative References . . . . . . . . . . . . . . . . .  10
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  10
 
 1.  Introduction
 
@@ -102,18 +96,6 @@ Table of Contents
    resulting in privacy leakage.  DNS privacy problem is further
    discussed in [I-D.bortzmeyer-dnsop-dns-privacy].
 
-
-
-
-
-
-
-
-Reddy, et al.           Expires October 20, 2014                [Page 2]
-
-Internet-Draft            DNS over DTLS (DNSoD)               April 2014
-
-
    Active attackers have long been successful at injecting bogus
    responses, causing cache poisoning and causing misdirection of the
    subsequent connection (if attacking A or AAAA records).  A popular
@@ -123,6 +105,14 @@ Internet-Draft            DNS over DTLS (DNSoD)               April 2014
    This document defines DNS-over-DTLS (DNSoD, pronounced "dee-enn-sod")
    which provides confidential DNS communication for stub resolvers,
    recursive resolvers, iterative resolvers and authoritative servers.
+
+
+
+
+Reddy, et al.           Expires October 24, 2014                [Page 2]
+
+Internet-Draft            DNS over DTLS (DNSoD)               April 2014
+
 
 2.  Relationship to TCP Queries and to DNSSEC
 
@@ -153,22 +143,9 @@ Internet-Draft            DNS over DTLS (DNSoD)               April 2014
    protected from passive listening and from many active attacks along
    that path.
 
-   DNSoD can be offered as an Internet service, and a DNS resolver can
-   be configured to point that that DNSoD server (rather than to the
-   ISP-provided DNS server).
-
-
-
-
-
-
-
-
-
-Reddy, et al.           Expires October 20, 2014                [Page 3]
-
-Internet-Draft            DNS over DTLS (DNSoD)               April 2014
-
+   DNSoD can be offered as an Internet service, and a stub resolver or
+   DNS resolver can be configured to point to that DNSoD server (rather
+   than to the ISP-provided DNS server).
 
 5.  Demultiplexing, Polling, Port Usage, and Discovery
 
@@ -183,6 +160,15 @@ Internet-Draft            DNS over DTLS (DNSoD)               April 2014
    indicating successful Internet connection), at the risk that those
    initial DNS queries will be sent without protection afforded by
    DNSoD.
+
+
+
+
+
+Reddy, et al.           Expires October 24, 2014                [Page 3]
+
+Internet-Draft            DNS over DTLS (DNSoD)               April 2014
+
 
    DNSoD can run over standard UDP port 53 as defined in [RFC1035].  A
    DNS client or server that does not implement this specification will
@@ -217,15 +203,6 @@ Internet-Draft            DNS over DTLS (DNSoD)               April 2014
    15 minutes.  This mechanism requires no additional signaling between
    the client and server.
 
-
-
-
-
-Reddy, et al.           Expires October 20, 2014                [Page 4]
-
-Internet-Draft            DNS over DTLS (DNSoD)               April 2014
-
-
 6.  Performance Considerations
 
    To reduce number of octets of the DTLS handshake, especially the size
@@ -241,6 +218,14 @@ Internet-Draft            DNS over DTLS (DNSoD)               April 2014
    association.  The existing QueryID allows multiple requests and
    responses to be interleaved in whatever order they can be fulfilled
    by the DNS server.  This means DNSoD reduces the consumption of UDP
+
+
+
+Reddy, et al.           Expires October 24, 2014                [Page 4]
+
+Internet-Draft            DNS over DTLS (DNSoD)               April 2014
+
+
    port numbers, and because DTLS protects the communication between the
    DNS client and its server, the resolver SHOULD NOT use random
    ephemeral source ports (Section 9.2 of [RFC5452]) because such source
@@ -251,10 +236,9 @@ Internet-Draft            DNS over DTLS (DNSoD)               April 2014
    the number of new DTLS security associations on the server which can
    be done with [RFC5077].  This also eliminates a round-trip for
    subsequent DNSoD queries, because with [RFC5077] the DTLS security
-   association does not need to be re-established.  The use of [RFC5077]
-   also assists with DNS anycast (see also Section 10).  Note: with the
-   shim (described below) perhaps we could send the query and the
-   restore server-side state in the ClientHello packet.
+   association does not need to be re-established.  Note: with the shim
+   (described below) perhaps we could send the query and the restore
+   server-side state in the ClientHello packet.
 
    Compared to normal DNS, DTLS adds at least 13 octets of header, plus
    cipher and authentication overhead to every query and every response.
@@ -274,14 +258,6 @@ Internet-Draft            DNS over DTLS (DNSoD)               April 2014
 
    o  To avoid IP fragmentation, DTLS handshake messages incorporate
       their own fragment offset and fragment length.  We might utilize a
-
-
-
-Reddy, et al.           Expires October 20, 2014                [Page 5]
-
-Internet-Draft            DNS over DTLS (DNSoD)               April 2014
-
-
       similar mechanism in a shim layer between DTLS and DNS, so that
       large DNS messages could be carried without causing IP
       fragmentation.
@@ -296,6 +272,15 @@ Internet-Draft            DNS over DTLS (DNSoD)               April 2014
    using DNS SRV query or Name Server Instance [RFC4892] query, and
    another extending the EDNS0 OPT meta-RR [I-D.hzhwm-start-tls-for-dns]
    to describe DNSoD support.
+
+
+
+
+
+Reddy, et al.           Expires October 24, 2014                [Page 5]
+
+Internet-Draft            DNS over DTLS (DNSoD)               April 2014
+
 
    To use Name Server Instance [RFC4892] query, we would define a new
    CHAOS class resource record.  The name is not significant, so let's
@@ -320,7 +305,6 @@ Internet-Draft            DNS over DTLS (DNSoD)               April 2014
            2: |DO|TO|SO|            Must be zero              |
               +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
 
-
 8.  Authenticating a DNS Server
 
    As DTLS provides integrity protection, some protection from on-path
@@ -330,14 +314,6 @@ Internet-Draft            DNS over DTLS (DNSoD)               April 2014
    normal DNS.  However, that protection is not terribly strong, because
    that attacker could intercept the DTLS handshake itself and pretend
    to be the actual DNS server.  To prevent that, we need to resolve two
-
-
-
-Reddy, et al.           Expires October 20, 2014                [Page 6]
-
-Internet-Draft            DNS over DTLS (DNSoD)               April 2014
-
-
    problems: identifying the trusted servers and determining an
    appropriate action when no trusted servers are available.
 
@@ -354,6 +330,12 @@ Internet-Draft            DNS over DTLS (DNSoD)               April 2014
 
                   nameserver 192.0.2.1    dns.example.net
                   nameserver 198.51.100.1 dns.example.com
+
+
+
+Reddy, et al.           Expires October 24, 2014                [Page 6]
+
+Internet-Draft            DNS over DTLS (DNSoD)               April 2014
 
 
    The second problem is determining an appropriate action when no
@@ -381,17 +363,41 @@ Internet-Draft            DNS over DTLS (DNSoD)               April 2014
    data write (e.g., SSL_write()).  A single DTLS session can be used to
    receive multiple DNS requests and generate DNS multiple responses.
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Reddy, et al.           Expires October 24, 2014                [Page 7]
+
+Internet-Draft            DNS over DTLS (DNSoD)               April 2014
+
+
       Client                                          Server
       ------                                          ------
 
       ClientHello             -------->
-
-
-
-
-Reddy, et al.           Expires October 20, 2014                [Page 7]
-
-Internet-Draft            DNS over DTLS (DNSoD)               April 2014
 
 
                               <-------    HelloVerifyRequest
@@ -424,39 +430,7 @@ Internet-Draft            DNS over DTLS (DNSoD)               April 2014
 
         Message Flow for Full Handshake Issuing New Session Ticket
 
-10.  Interaction with DNS Anycast
-
-   DNS servers often use anycast, either within a single datacenter or
-   in geographic regions.  Normal DNS is completely stateless so if two
-   queries happen to arrive at two different anycasted DNS servers,
-   normal DNS works fine.  However, because DNSoD also carries a
-   security association, the queries have to be sent to a server that
-   already has (or can acquire) the necessary security association.  If
-   the DNSoD client sends [RFC5077] to a server that had never seen a
-   DNSoD request from this client, and that server is part of an DNS
-   anycast network, [RFC5077] can instantiate the necessary DTLS state
-   in the DNSoD server.
-
-   However, because several DNS queries can be sent within one DTLS
-   session (and thus it doesn't always start with a DTLS ClientHello), a
-   load balancer is necessary ensure the same source IP address and UDP
-   port is routed to the same DNSoD server that has the necessary
-   security association.  This only works within a datacenter, of
-
-
-
-Reddy, et al.           Expires October 20, 2014                [Page 8]
-
-Internet-Draft            DNS over DTLS (DNSoD)               April 2014
-
-
-   course.  When anycast DNS servers are deployed across a geographic
-   region, route flapping can cause subsequent DNSoD traffic to arrive
-   at an anycasted DNS server that has no security association.  When
-   this occurs, to avoid the DNSoD client from timing out, the DNSoD
-   server MUST respond with a DTLS 'alert' error.
-
-11.  IANA Considerations
+10.  IANA Considerations
 
    This document defines a new bit ("SO") in the Flags field of the
    EDNS0 OPT meta-RR.  At the time of approval of this draft in the
@@ -469,7 +443,14 @@ Internet-Draft            DNS over DTLS (DNSoD)               April 2014
    useful, we should reserve DNS Opcode 15 to ensure DNS always has a 0
    bit where DTLS always has a 1 bit.
 
-12.  Security Considerations
+
+
+Reddy, et al.           Expires October 24, 2014                [Page 8]
+
+Internet-Draft            DNS over DTLS (DNSoD)               April 2014
+
+
+11.  Security Considerations
 
    Once a DNSoD client has established a security association with a
    particular DNS server, and outstanding normal DNS queries with that
@@ -482,29 +463,22 @@ Internet-Draft            DNS over DTLS (DNSoD)               April 2014
    Security considerations discussed in DTLS [RFC6347] also apply to
    this document.
 
-13.  Acknowledgements
+12.  Acknowledgements
 
    The EDNS0 OPT meta-RR described in Section 7 are an extension of the
    technique described in DNS-over-TLS [I-D.hzhwm-start-tls-for-dns].
 
    Thanks to Phil Hedrick for his review comments on TCP.
 
-14.  References
+13.  References
 
-14.1.  Normative References
+13.1.  Normative References
 
    [RFC1034]  Mockapetris, P., "Domain names - concepts and facilities",
               STD 13, RFC 1034, November 1987.
 
    [RFC1035]  Mockapetris, P., "Domain names - implementation and
               specification", STD 13, RFC 1035, November 1987.
-
-
-
-Reddy, et al.           Expires October 20, 2014                [Page 9]
-
-Internet-Draft            DNS over DTLS (DNSoD)               April 2014
-
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119, March 1997.
@@ -523,10 +497,19 @@ Internet-Draft            DNS over DTLS (DNSoD)               April 2014
    [RFC6347]  Rescorla, E. and N. Modadugu, "Datagram Transport Layer
               Security Version 1.2", RFC 6347, January 2012.
 
+
+
+
+
+Reddy, et al.           Expires October 24, 2014                [Page 9]
+
+Internet-Draft            DNS over DTLS (DNSoD)               April 2014
+
+
    [RFC6891]  Damas, J., Graff, M., and P. Vixie, "Extension Mechanisms
               for DNS (EDNS(0))", STD 75, RFC 6891, April 2013.
 
-14.2.  Informative References
+13.2.  Informative References
 
    [I-D.bortzmeyer-dnsop-dns-privacy]
               Bortzmeyer, S., "DNS privacy problem statement", draft-
@@ -546,21 +529,12 @@ Internet-Draft            DNS over DTLS (DNSoD)               April 2014
               January 2014.
 
    [IANA-domain]
-              IANA, "Special-Use Domain Names", February 2013, <http://
-              www.iana.org/assignments/special-use-domain-names/special-
-              use-domain-names.xhtml>.
+              IANA, "Special-Use Domain Names", February 2013,
+              <http://www.iana.org/assignments/special-use-domain-names/
+              special-use-domain-names.xhtml>.
 
    [RFC4821]  Mathis, M. and J. Heffner, "Packetization Layer Path MTU
               Discovery", RFC 4821, March 2007.
-
-
-
-
-
-Reddy, et al.           Expires October 20, 2014               [Page 10]
-
-Internet-Draft            DNS over DTLS (DNSoD)               April 2014
-
 
    [RFC4892]  Woolf, S. and D. Conrad, "Requirements for a Mechanism
               Identifying a Name Server Instance", RFC 4892, June 2007.
@@ -575,6 +549,17 @@ Authors' Addresses
    India
 
    Email: tireddy@cisco.com
+
+
+
+
+
+
+
+
+Reddy, et al.           Expires October 24, 2014               [Page 10]
+
+Internet-Draft            DNS over DTLS (DNSoD)               April 2014
 
 
    Dan Wing
@@ -613,4 +598,19 @@ Authors' Addresses
 
 
 
-Reddy, et al.           Expires October 20, 2014               [Page 11]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Reddy, et al.           Expires October 24, 2014               [Page 11]
