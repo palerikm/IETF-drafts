@@ -108,9 +108,7 @@
       ephemeral tokens that can be used for TURN authentication. The usage of
       ephemeral tokens ensure that access to a TURN server can be controlled
       even if the tokens are compromised, as is the case in WebRTC where TURN
-      credentials must be specified in Javascript. It also addresses the need
-      for stronger authentication described in <xref
-      target="I-D.ietf-tram-auth-problems"></xref>.</t>
+      credentials must be specified in Javascript.</t>
     </abstract>
   </front>
 
@@ -227,9 +225,25 @@
       client can obtain the token before making subsequent allocate
       requests.</t>
 
-      <t>Example: HTTP response from Authorization server</t>
+      <t>For example, the client makes the following HTTP request for the
+      access token using transport-layer security (with extra line breaks for
+      display purposes only):</t>
 
-      <figure anchor="Example" title="Example">
+      <t><figure anchor="Example1" title="Request">
+          <preamble></preamble>
+
+          <artwork align="left"><![CDATA[
+     POST /o/oauth2/token HTTP/1.1 
+     Host: server.example.com
+     Content-Type: application/x-www-form-urlencoded
+     kid=22BIjxU93h/IgwEb
+     timestamp=1361471629
+     grant_type=implicit
+              ]]></artwork>
+        </figure>If the client is authorized then the authorization server
+      issues an access token.An example of successful response:</t>
+
+      <figure anchor="Example2" title="Response">
         <preamble></preamble>
 
         <artwork align="left"><![CDATA[
@@ -244,10 +258,13 @@ HctuycAgsfRX7nJW2BdukGyKMXSiNGNnBzigkAofP6+Z3vkJ1Q5pWbfSRroOkWBn",
        "token_type":"mac",
        "expires_in":1800,
        "kid":"22BIjxU93h/IgwEb",
-       "mac_key":"v51N62OM65kyMvfTI08O1gI4512gCqsm"
+       "mac_key":"v51N62OM65kyMvfTI08O"
      }
               ]]></artwork>
       </figure>
+
+      <t>Access token and other attributes issued by the authorization server
+      are explained in <xref target="token"></xref>.</t>
     </section>
 
     <section anchor="oauth" title="Obtaining a Token Using OAuth">
@@ -303,9 +320,9 @@ HctuycAgsfRX7nJW2BdukGyKMXSiNGNnBzigkAofP6+Z3vkJ1Q5pWbfSRroOkWBn",
                         |               +<******+
          +------------->| Authorization |       *
          |              | Server        |       *    
-         |   +----------|(WebRTC Server)|       *  AS-RS Key 
-         |   |          |               |       *     (1) 
-(2)      |   |           +---------------+      *   
+         |   +----------|(WebRTC Server)|       *  AS-RS,  
+         |   |          |               |       *  AUTH keys    
+(2)      |   |           +---------------+      *   (1)
 Access   |   |  (3)                             *
 Token    |   | Access Token                     *
 Request  |   |    +                             *
@@ -336,12 +353,22 @@ User : Alice
       TURN.</t>
 
       <section title="Key Establishment">
-        <t>The TURN and Authorization Servers establish symmetric keys, using
-        an out of band mechanism. The Token is encrypted/decrypted using these
-        keys. Symmetric keys SHOULD be chosen to ensure that the size of
+        <t>The TURN and authorization servers establish symmetric key (AS-RS
+        key) for confidentiality and authentication key (AUTH key) for
+        integrity, using an out of band mechanism. The Token is encrypted
+        using Advanced Encryption Standard (AES) in Cipher Block Chaining
+        (CBC) mode, using the AS-RS key for confidentiality.The default AS-RS
+        key size is 128 bits, and all implementations MUST support this key
+        size. Implementations MAY also support key sizes of 192 bits and 256
+        bits. Symmetric keys MUST be chosen to ensure that the size of
         encrypted token is not large. Usage of asymmetric keys will result in
-        large encrypted tokens which may not fit into a single STUN
-        message.</t>
+        large encrypted tokens which may not fit into a single STUN message.
+        The integrity of the token is calculated with the AUTH key and using
+        HMAC-SHA-256-128 algorithm. AUTH key length MUST be 256-bit (section
+        2.6 of <xref target="RFC4868"></xref>). Authorization server MUST also
+        also signal a unique key identifier (kid) to the TURN server which
+        will be used to select the appropriate keying material for
+        decryption.</t>
 
         <t>The TURN and Authorization servers MUST establish the symmetric key
         over an authenticated secure channel. For example, the two servers
@@ -371,12 +398,14 @@ example: GET /?service=turn&domain=turn.example.com
 Response
 --------
 
-key - symmetric key
+ckey - symmetric key (AS-RS key)
+akey - authentication key (AUTH key)
 ttl - the duration for which the key is valid, in seconds.
 
 example:
     {
-     "key" : "ESIzRFVmd4iZABEiM0RVZgKn6WjLaTC1",
+     "ckey" : "ESIzRFVmd4iZABEiM0RVZgKn6WjLaTC1",
+     "akey" : "FXAghRMVTzkBGNaaN496523WIISKerLi",
      "ttl" : 86400,
      "kid" :"22BIjxU93h/IgwEb"
     }]]></artwork>
@@ -403,32 +432,32 @@ example:
       specification to accomplish third party authorization.</t>
 
       <section anchor="attribute" title="THIRD-PARTY-AUTHORIZATION">
-        <t>[Note - This section requires further discussion]</t>
-
         <t>This attribute is used by the TURN server to inform the client that
         it supports third party authorization. This attribute is used by the
         TURN server to inform the client that it supports third party
-        authorization. This attribute value be a URL that the client should
-        contact, to obtain a token for third party authorization. The format
-        for the URL will be as described in <xref target="RFC3986"></xref>.
-        The THIRD-PARTY-AUTHORIZATION attribute is a comprehension-optional
-        attribute (see Section 15 from <xref target="RFC5389"></xref>).</t>
+        authorization. This optional attribute value be a URL that the client
+        should contact, to obtain a token for third party authorization. The
+        format for the URL will be as described in <xref
+        target="RFC3986"></xref>. The THIRD-PARTY-AUTHORIZATION attribute is a
+        comprehension-optional attribute (see Section 15 from <xref
+        target="RFC5389"></xref>).</t>
 
-        <t>If the TURN server has tie-up with multiple authorization servers
-        then the client MUST provide the TURN server domain name or IP address
+        <t>The TURN server may have tie-up with multiple authorization servers
+        so the client MUST provide the TURN server domain name or IP address
         to the authorization server so that it can select the appropriate
         keying material to generate the self-contained token.</t>
       </section>
 
       <section anchor="token" title="ACCESS-TOKEN">
         <t>The access token is issued by the authorization server. OAuth does
-        not impose any limitation on the length of the access token but since
-        STUN messages cannot exceed 548 bytes (Section 7.1 of <xref
-        target="RFC5389"></xref>), access token length needs to be restricted
-        to fit within the maximum STUN message size. Note that the
-        self-contained token is opaque to the client and it MUST NOT examine
-        the ticket. The ACCESS-TOKEN attribute is a comprehension-optional
-        attribute (see Section 15 from <xref target="RFC5389"></xref>).</t>
+        not impose any limitation on the length of the access token but if
+        path MTU is unknown then STUN messages over IPv4 would need to be less
+        than 548 bytes (Section 7.1 of <xref target="RFC5389"></xref>), access
+        token length needs to be restricted to fit within the maximum STUN
+        message size. Note that the self-contained token is opaque to the
+        client and it MUST NOT examine the ticket. The ACCESS-TOKEN attribute
+        is a comprehension-optional attribute (see Section 15 from <xref
+        target="RFC5389"></xref>).</t>
 
         <t>The token is structured as follows:</t>
 
@@ -438,7 +467,7 @@ example:
           opaque mac_key[key_length];
           opaque timestamp[8];
           long   lifetime;
-          opaque mac[32];
+          opaque mac[16];
       } token;
 ]]></artwork>
           </figure></t>
@@ -446,8 +475,11 @@ example:
         <t>The fields are described below:</t>
 
         <t><list style="hanging">
-            <t hangText="key_length:">Length of the session key. The
-            RECOMMENDED length is either 128-bit or 256-bit.</t>
+            <t hangText="key_length:">Length of the session key. key length of
+            160-bits MUST be supported (i.e only 160-bit key is used by
+            HMAC-SHA-1 for message integrity of STUN message). The key length
+            facilitates the hash agility plan discussed in section 16.3 of
+            <xref target="RFC5389"></xref>.</t>
 
             <t hangText="mac_key:">The session key generated by the
             authorization server.</t>
@@ -465,8 +497,9 @@ example:
             defined in section 4.2.2 of <xref target="RFC6749"></xref>.</t>
 
             <t hangText="mac:">The Message Authentication Code (MAC) is
-            calculated using HMAC-SHA-256 over key, timestamp and lifetime
-            fields.</t>
+            calculated with AUTH key and using HMAC-SHA-256-128 algorithm over
+            key, timestamp and lifetime fields to verify the integrity of the
+            access token.</t>
           </list></t>
 
         <t>The token MUST be encoded as defined in Section 4 of <xref
@@ -495,8 +528,8 @@ example:
           (which requires decryption of the self-contained token using the
           AS-RS key).</t>
 
-          <t>The TURN server calculates HMAC-SHA-256 over key, timestamp and
-          lifetime fields in the self-contained token and if the resulting
+          <t>The TURN server calculates HMAC-SHA-256-128 over key, timestamp
+          and lifetime fields in the self-contained token and if the resulting
           value does not match the mac field in self-contained token then it
           rejects the request with an error response 401 (Unauthorized).</t>
 
@@ -582,6 +615,8 @@ example:
 
       <?rfc include="reference.RFC.4648"
 include="reference.RFC.6063"?>
+
+      <?rfc include="reference.RFC.4868"?>
 
       <reference anchor="iana-stun"
                  target="http://www.iana.org/assignments/stun-parameters/stun-pa rameters.xml">

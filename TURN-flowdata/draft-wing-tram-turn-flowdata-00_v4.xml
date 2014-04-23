@@ -105,43 +105,44 @@
     <workgroup>TRAM</workgroup>
 
     <abstract>
-      <t>This document defines a mechanism for a TURN client to signal flow
-      characteristics of the desired relay channel to a TURN server, and the
-      TURN server in turn uses this metadata to prioritize the relay channel
-      in it's network to improve QOE. The mechanism defines a new
-      comprehensive optional STUN attribute that may be carried in the
-      ChannelBind request.</t>
+      <t>There exists no mechanism for the TURN client to communicate flow
+      characteristics to the TURN server. This document defines such a
+      mechanism to communicate flow characteristics from the TURN client to
+      its TURN server, which the TURN server uses to enhance packet delivery
+      for the traffic on both client-to-server and server-to-peer legs.</t>
     </abstract>
   </front>
 
   <middle>
     <section title="Introduction">
-      <t>TURN <xref target="RFC5766"></xref> is a protocol that is often used
-      to improve the connectivity of P2P applications. TURN ensures that a
-      connection can be established even when one or both sides is incapable
-      of a direct P2P connection. TURN server could be provided by the
-      Enterprise network or by the Access network or by the application server
-      or by a globally distributed 3rd party provider. TURN server and the
-      network in which it is hosted needs a mechanism to identify and provide
-      differentiated service to flows relayed through the TURN server.
+      <t>Traversal Using Relay NAT (TURN) <xref target="RFC5766"></xref> is a
+      protocol that is often used to improve the connectivity of P2P
+      applications. TURN ensures that a connection can be established even
+      when one or both sides is incapable of a direct P2P connection. A TURN
+      server could be provided by an enterprise network, an access network, an
+      application service provider or a third party provider. A TURN server
+      and the network in which it is hosted need a mechanism to identify and
+      provide differentiated service to flows relayed through the TURN server.
+      </t>
+
+      <t>This specification provides a mechanism for the client to signal the
+      flow characteristics of a relay channel to the TURN server, so that
+      certain relay channels can receive service that is differentiated from
+      others. The TURN server authorizes the request and signals back to the
+      client that it can (fully or partially) accommodate the flow. The
+      proposed mechanism is applicable to channels and not for Send and Data
+      methods. This sort of signaling will be useful for long-lived flows such
+      as media streams, WebRTC data channels <xref
+      target="I-D.ietf-rtcweb-overview"></xref> etc traversing through the
+      TURN server. The TURN server can further communicate the flow
+      information to a number of on-path devices in its network using a Policy
+      decision Point (e.g. SDN controller). This way the network hosting the
+      TURN server can accommodate the flow. With this mechanism, a TURN client
+      can request the TURN server to provide certain characteristics for the
+      relayed channel on both legs (client-to-server, server-to-peer).
       Applications using TURN as a communication relay would benefit from such
       an arrangement as it would improve the Quality of Experience (QOE) of
       the end user.</t>
-
-      <t>This specification provides a mechanism for the client to signal the
-      flow characteristics of relay channel to the TURN server, so that
-      certain relay channels can receive service that is differentiated from
-      others. The TURN server authorizes the request and signals back to the
-      client that it can (fully or partially) accommodate the flow. This sort
-      of signaling is useful for long-lived flows such as media streams,
-      WebRTC data channels <xref target="I-D.ietf-rtcweb-overview"></xref> etc
-      traversing through the TURN server. TURN server can further communicate
-      the flow information to a number of on-path devices in its network using
-      a Policy decision Point (e.g. SDN controller). This way the network
-      hosting the TURN server can accommodate the flow. With this mechanism, a
-      TURN client can request the TURN server to provide certain
-      characteristics for the relayed channel on both legs (client-to-server,
-      server-to-peer).</t>
 
       <t>DSCP style markings can also help provide QOS, but has the following
       limitations:</t>
@@ -170,14 +171,11 @@
       properties and none of the above limitations:</t>
 
       <t><list style="symbols">
-          <t>Usable at the application level, without needing operating system
-          support.</t>
+          <t>Usable at the application level to the TURN client, without
+          needing operating system support.</t>
 
           <t>Robust metadata support, to convey sufficient information to the
           TURN server about the flow.</t>
-
-          <t>Provides differentiated service for both directions of a
-          flow.</t>
         </list></t>
 
       <t>Note, it is not the intent of this document to advocate in favor of
@@ -194,8 +192,8 @@
       target="RFC2119"></xref>.</t>
     </section>
 
-    <section anchor="design" title="Design consideraions">
-      <t>TURN client can then choose to either use Send and Data methods or
+    <section anchor="design" title="Design considerations">
+      <t>TURN client can choose to either use Send and Data methods or
       channels to exchange data with its peer. For bandwidth intensive
       applications (like video, audio, WebRTC data channels) a Send indication
       or Data indication (which adds 36 bytes overhead) can increase the
@@ -206,10 +204,11 @@
     </section>
 
     <section title="Solution Overview">
-      <t>During the TURN allocation, the TURN client indicates certain
-      characteristics of its flow to the TURN server. The TURN server uses
-      that information to prioritize the flow in it's network and signals back
-      to the client that it can (fully or partially) accommodate the flow.</t>
+      <t>When a channel binding is initiated by the client, it may also
+      indicate certain characteristics of its flow to the TURN server. The
+      TURN server uses that information to prioritize the flow in its network
+      and signals back to the client that it can (fully or partially)
+      accommodate the flow.</t>
 
       <t>This specification defines one new comprehension-optional STUN
       attribute: FLOWDATA. If a TURN client wishes to signal the flow
@@ -224,13 +223,13 @@
 
       <section title="Sending a ChannelBind Request">
         <t>The TURN client sends ChannelBind request with the FLOWDATA STUN
-        attribute to signal the flow characteristics of relay channel to the
-        TURN server. If the flow characteristics of a relay channel changes
-        then the client can send ChannelBind request with updated FLOWDATA
-        STUN attribute to refresh the binding. If binding is refreshed using
-        ChannelBind request then the client can also signal updated FLOWDATA
-        STUN attribute if the flow characteristics of the relay channel have
-        changed.</t>
+        attribute to signal the flow characteristics of the relay channel to
+        the TURN server. If the flow characteristics of a relay channel change
+        then the client MAY send ChannelBind request with an updated FLOWDATA
+        STUN attribute to refresh the binding. Similarly if the binding is
+        refreshed using ChannelBind request then the client can also signal
+        updated FLOWDATA STUN attribute if the flow characteristics of the
+        relay channel have changed.</t>
       </section>
 
       <section title="Receiving a ChannelBind Request">
@@ -251,14 +250,16 @@
         tolerance, jitter tolerance, minimum bandwidth, maximum bandwidth). If
         the TURN server determines the flow can only be partially accommodated
         and the client has also signaled CHECK- ALTERNATE attribute <xref
-        target="I-D.williams-peer-redirect"></xref> then the TURN server can
+        target="I-D.williams-peer-redirect"></xref> then the TURN server MAY
         re-direct the client to an alternate TURN server that could
         accommodate the flow characteristics conveyed by the client.</t>
 
         <t>If the TURN server can accommodate the flow as described in the
         FLOWDATA attribute, it sends a success response and includes the
         FLOWDATA attribute filled in according to <xref
-        target="FLOWDATA"></xref>.</t>
+        target="FLOWDATA"></xref>. The TURN server SHOULD include the FLOWDATA
+        attribute in ChannelBind response only when the client had signaled
+        FLOWDATA attribute in ChannelBind request.</t>
 
         <section title="Conflict Resolution">
           <t>It is possible that two hosts send requests with different
@@ -272,8 +273,7 @@
               title="Message diagram, resolving conflict">
               <artwork align="left"><![CDATA[   TURN Client A      TURN server           TURN Client B
      |                         |                       |
-     |-loss=med, delay=med---->|                       |
-     |                         |<-loss=hi, delay=hi----|
+     |-loss=med, delay=med---->|<-loss=hi, delay=hi----|
      |                         |                       |
      |                    (conflict!)                  |
      |                         |                       |
@@ -466,7 +466,8 @@
     </section>
 
     <section title="Acknowledgement">
-      <t>Authors would like to thank Anca Zamfir for comments and review.</t>
+      <t>Authors would like to thank Anca Zamfir and Charles Eckel for their
+      comments and review.</t>
     </section>
   </middle>
 
