@@ -175,7 +175,7 @@ large responses to be sent over DTLS itself, see
      Opcode would be 15, which is undefined).  A DNS client or server
      that does implement this specification can demultiplex DNS and
      DTLS packets by examining the third octet.  For TLS 1.2, which is
-     what is defined by this specification, A DTLS packet will contain
+     what is defined by this specification, a DTLS packet will contain
      253 in the third octet, whereas a DNS packet will never contain
      253 in the third octet.</t>
 
@@ -209,12 +209,12 @@ a separate port, or some fallback between a separate port and port
 <section anchor="performance" title="Performance Considerations">
 <t>To reduce number of octets of the DTLS handshake, especially the
 size of the certificate in the ServerHello (which can be several
-kilobytes), we should examine viability of using plain public keys
+kilobytes), we should consider using plain public keys
 <xref target="I-D.ietf-tls-oob-pubkey"/>.  Considering that to
 authorize a certain DNS server the client already needs explicit
-configuration of a whitelist of the DNS servers it trusts, maybe the
-public key configuration problem is really no worse than the
-configuration problem of those whitelisted certificates?</t>
+configuration of the DNS servers it trusts, maybe the public key
+configuration problem is really no worse than the configuration
+problem of those whitelisted certificates?</t>
 
 <t>Multiple DNS queries can be sent over a single DNSoD security
 association. The existing QueryID allows multiple requests and
