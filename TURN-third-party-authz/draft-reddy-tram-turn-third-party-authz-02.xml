@@ -10,7 +10,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="std" docName="draft-reddy-tram-turn-third-party-authz-01"
+<rfc category="std" docName="draft-reddy-tram-turn-third-party-authz-02"
      ipr="trust200902">
   <front>
     <title abbrev="TURN for 3rd party Authorization ">TURN Extension for Third
@@ -114,13 +114,13 @@
 
   <middle>
     <section anchor="introduction" title="Introduction">
-      <t>TURN <xref target="RFC5766"></xref> is a protocol that is often used
-      to improve the connectivity of P2P applications. By providing a
-      cloud-based relay service, TURN ensures that a connection can be
-      established even when one or both sides is incapable of a direct P2P
-      connection. However, as a relay service, it imposes a nontrivial cost on
-      the service provider. Therefore, access to a TURN service is almost
-      always access-controlled.</t>
+      <t>Traversal Using Relay NAT (TURN) TURN <xref target="RFC5766"></xref>
+      is a protocol that is often used to improve the connectivity of P2P
+      applications. By providing a cloud-based relay service, TURN ensures
+      that a connection can be established even when one or both sides is
+      incapable of a direct P2P connection. However, as a relay service, it
+      imposes a nontrivial cost on the service provider. Therefore, access to
+      a TURN service is almost always access-controlled.</t>
 
       <t>TURN provides a mechanism to control access via "long-term" username/
       password credentials that are provided as part of the TURN protocol. It
@@ -234,14 +234,13 @@
 
           <artwork align="left"><![CDATA[
      POST /o/oauth2/token HTTP/1.1 
-     Host: server.example.com
+     Host: 2001:db8:a000::1
      Content-Type: application/x-www-form-urlencoded
-     kid=22BIjxU93h/IgwEb
      timestamp=1361471629
      grant_type=implicit
               ]]></artwork>
         </figure>If the client is authorized then the authorization server
-      issues an access token.An example of successful response:</t>
+      issues an access token. An example of successful response:</t>
 
       <figure anchor="Example2" title="Response">
         <preamble></preamble>
@@ -353,35 +352,55 @@ User : Alice
       TURN.</t>
 
       <section title="Key Establishment">
-        <t>The TURN and authorization servers establish symmetric key (AS-RS
-        key) for confidentiality and authentication key (AUTH key) for
-        integrity, using an out of band mechanism. The Token is encrypted
-        using Advanced Encryption Standard (AES) in Cipher Block Chaining
-        (CBC) mode, using the AS-RS key for confidentiality.The default AS-RS
-        key size is 128 bits, and all implementations MUST support this key
-        size. Implementations MAY also support key sizes of 192 bits and 256
-        bits. Symmetric keys MUST be chosen to ensure that the size of
-        encrypted token is not large. Usage of asymmetric keys will result in
-        large encrypted tokens which may not fit into a single STUN message.
-        The integrity of the token is calculated with the AUTH key and using
-        HMAC-SHA-256-128 algorithm. AUTH key length MUST be 256-bit (section
-        2.6 of <xref target="RFC4868"></xref>). Authorization server MUST also
-        also signal a unique key identifier (kid) to the TURN server which
-        will be used to select the appropriate keying material for
-        decryption.</t>
+        <t>The TURN and authorization servers MUST establish a symmetric key
+        (K), using an out of band mechanism. Symmetric key MUST be chosen to
+        ensure that the size of encrypted token is not large because usage of
+        asymmetric keys will result in large encrypted tokens which may not
+        fit into a single STUN message. The AS-RS, AUTH keys will be derived
+        from K. AS-RS key is used for encrypting the self-contained token and
+        message integrity of the encrypted token is calculated using the AUTH
+        key. The TURN and authorization servers MUST establish the symmetric
+        key over an authenticated secure channel. The establishment of
+        symmetric key is outside the scope of this specification. For example,
+        implementations could use one of the following mechanisms to establish
+        a symmetric key.</t>
 
-        <t>The TURN and Authorization servers MUST establish the symmetric key
-        over an authenticated secure channel. For example, the two servers
-        could choose to use Dynamic Symmetric Key Provisioning Protocol <xref
-        target="RFC6063"></xref> or simply use HTTP for this exchange. The
-        following example describes HTTP interactions that could be used to
-        obtain the symmetric key.</t>
+        <section anchor="DSKPP" title="DSKPP">
+          <t>The two servers could choose to use Dynamic Symmetric Key
+          Provisioning Protocol <xref target="RFC6063">(DSKPP)</xref> to
+          establish a symmetric key (K). The encryption and MAC algorithms
+          will be negotiated using the KeyProvClientHello, KeyProvServerHello
+          messages. A unique key identifier (referred to as KeyID) for the
+          symmetric key is generated by the DSKPP server (i.e. Authorization
+          server) and signalled to the DSKPP client (i.e TURN server) which is
+          equivalent to the kid defined in this specification. The AS-RS, AUTH
+          keys would be derived from the symmetric key using (HMAC)-based key
+          derivation function (HKDF) <xref target="RFC5869">(DSKPP)</xref>.
+          For example if the input symmetric key (K) is 32 octets length,
+          encryption algorithm is AES_128_CBC and HMAC algorithm is
+          HMAC-SHA-256-128 then the secondary keys AS-RS, AUTH are generated
+          from the input key K as follows</t>
 
-        <section title="HTTP interactions">
-          <t>To retrieve a new set of symmetric keys, the TURN server makes an
-          HTTP GET request to the Authorization server, specifying TURN as the
-          service to allocate the symmetric keys for, and optionally
-          specifying the domain name/IP Address of the TURN server. The
+          <t><list style="numbers">
+              <t>HKDF-Extract(zero, K) -&gt; PRK</t>
+
+              <t>HKDF-Expand(PRK, zero, 8) -&gt; AS-RS key</t>
+
+              <t>HKDF-Expand(PRK, zero, 16) -&gt; AUTH key</t>
+            </list></t>
+
+          <t>NOTE: If Authenticated Encryption with Associated Data (AEAD)
+          algorithms <xref target="RFC5116"></xref> specified in <xref
+          target="I-D.mcgrew-aead-aes-cbc-hmac-sha2"></xref> are used then
+          there is no need to generate the AUTH key.</t>
+        </section>
+
+        <section anchor="HTTP" title="HTTP interactions">
+          <t>The two servers could choose to use REST API to establish a
+          symmetric key. To retrieve a new symmetric key, the TURN server
+          makes an HTTP GET request to the authorization server, specifying
+          TURN as the service to allocate the symmetric keys for, and
+          optionally specifying the IP Address of the TURN server. The
           response is returned with content-type "application/json", and
           consists of a JSON object containing the symmetric key.</t>
 
@@ -390,26 +409,47 @@ User : Alice
 -------
 
 service - specifies the desired service (turn)
-domain - an optional domain to be associated with the key
+myip    - an optional IP address to be associated with the key
 
-example: GET /?service=turn&domain=turn.example.com
+example: GET /?service=turn&myip=2001:db8:a000::1
 
 
 Response
 --------
 
-ckey - symmetric key (AS-RS key)
-akey - authentication key (AUTH key)
+key - Long-term key (K)
 ttl - the duration for which the key is valid, in seconds.
 
 example:
-    {
-     "ckey" : "ESIzRFVmd4iZABEiM0RVZgKn6WjLaTC1",
-     "akey" : "FXAghRMVTzkBGNaaN496523WIISKerLi",
-     "ttl" : 86400,
-     "kid" :"22BIjxU93h/IgwEb"
-    }]]></artwork>
+{
+   "key" : 
+"ESIzRFVmd4iZABEiM0RVZgKn6WjLaTC1FXAghRMVTzkBGNaaN496523WIISKerLi",
+   "ttl" : 86400,
+   "kid" :"22BIjxU93h/IgwEb"
+  }]]></artwork>
             </figure></t>
+
+          <t>The AS-RS, AUTH keys are derived from K using HKDF as discussed
+          in <xref target="DSKPP"></xref>. Authorization server must also
+          signal a unique key identifier (kid) to the TURN server which will
+          be used to select the appropriate keying material for decryption.
+          The default encryption algorithm to encrypt the self-contained token
+          could be Advanced Encryption Standard (AES) in Cipher Block Chaining
+          (CBC) mode (AES_128_CBC). The default HMAC algorithm to calculate
+          the integrity of the token could be HMAC-SHA-256-128. In this case
+          AS-RS key length must be 128-bit, AUTH key length must be 256-bit
+          (section 2.6 of <xref target="RFC4868"></xref>).</t>
+        </section>
+
+        <section anchor="Manual" title="Manual provisioning">
+          <t>TURN and authorization servers could be manually configured with
+          a symmetric key (K) and kid. The default encryption and HMAC
+          algorithms could be AES_256_CBC, HMAC-SHA-256-128.</t>
+
+          <t>Note : The mechanisms specified in <xref target="HTTP"></xref>
+          <xref target="Manual"></xref> are easy to implement and deploy
+          compared to DSKPP but lack encryption and HMAC algorithm
+          agility.</t>
         </section>
       </section>
     </section>
@@ -463,10 +503,12 @@ example:
 
         <t><figure anchor="token1" title="Self-contained token format">
             <artwork align="left"><![CDATA[      struct {
-          ushort key_length;
-          opaque mac_key[key_length];
-          opaque timestamp[8];
-          long   lifetime;
+          opaque {
+              ushort key_length;
+              opaque mac_key[key_length];
+              opaque timestamp[8];
+              long   lifetime;
+          } encrypted_block;
           opaque mac[16];
       } token;
 ]]></artwork>
@@ -475,7 +517,7 @@ example:
         <t>The fields are described below:</t>
 
         <t><list style="hanging">
-            <t hangText="key_length:">Length of the session key. key length of
+            <t hangText="key_length:">Length of the session key. Key length of
             160-bits MUST be supported (i.e only 160-bit key is used by
             HMAC-SHA-1 for message integrity of STUN message). The key length
             facilitates the hash agility plan discussed in section 16.3 of
@@ -496,10 +538,11 @@ example:
             Lifetime value SHOULD be equal to the "expires_in" parameter
             defined in section 4.2.2 of <xref target="RFC6749"></xref>.</t>
 
-            <t hangText="mac:">The Message Authentication Code (MAC) is
-            calculated with AUTH key and using HMAC-SHA-256-128 algorithm over
-            key, timestamp and lifetime fields to verify the integrity of the
-            access token.</t>
+            <t hangText="mac:">The Hashed Message Authentication Code (HMAC)
+            is calculated with AUTH key over the encrypted portion of the
+            token (encrypted_block). Thus encryption is applied before
+            authentication on the sender side and conversely on the receiver
+            side.</t>
           </list></t>
 
         <t>The token MUST be encoded as defined in Section 4 of <xref
@@ -512,6 +555,12 @@ example:
         token can be re-used for multiple Allocate requests to the same TURN
         server. The TURN client MUST only include the ACCESS-TOKEN attribute
         in Allocate and Refresh requests.</t>
+
+        <t>Note : If Authenticated Encryption with Associated Data (AEAD)
+        algorithm specified in <xref
+        target="I-D.mcgrew-aead-aes-cbc-hmac-sha2"></xref> are used then there
+        is no need to explicitly compute HMAC. In this scenario the mac field
+        must carry the initialization vector (IV).</t>
       </section>
     </section>
 
@@ -523,15 +572,19 @@ example:
       that the access token is valid:</t>
 
       <t><list style="symbols">
-          <t>When the TURN server receives a message with a new access token,
-          it obtains the mac_key by retrieving the content of the access token
-          (which requires decryption of the self-contained token using the
-          AS-RS key).</t>
+          <t>TURN server selects the keying material based on kid signalled in
+          the USERNAME attribute.</t>
 
-          <t>The TURN server calculates HMAC-SHA-256-128 over key, timestamp
-          and lifetime fields in the self-contained token and if the resulting
-          value does not match the mac field in self-contained token then it
-          rejects the request with an error response 401 (Unauthorized).</t>
+          <t>It performs the verification of the token message integrity by
+          calculating calculates HMAC over the encrypted_block in the
+          self-contained token using AUTH key and if the resulting value does
+          not match the mac field in the self-contained token then it rejects
+          the request with an error response 401 (Unauthorized). If AEAD
+          algorithm is used then this step is skipped.</t>
+
+          <t>TURN server obtains the mac_key by retrieving the content of the
+          access token (which requires decryption of the self-contained token
+          using the AS-RS key).</t>
 
           <t>The TURN server verifies that no replay took place by performing
           the following check:</t>
@@ -547,8 +600,8 @@ example:
               response 401 (Unauthorized).</t>
             </list></t>
 
-          <t>The TURN server uses the mac_key to compute the value for the
-          message integrity and if the resulting value does not match the
+          <t>The TURN server uses the mac_key to compute the message integrity
+          over the request and if the resulting value does not match the
           contents of the MESSAGE-INTEGRITY attribute then it rejects the
           request with an error response 401 (Unauthorized).</t>
 
@@ -561,7 +614,7 @@ example:
       responses MUST be less than or equal to the lifetime of the token.</t>
     </section>
 
-    <section anchor="client" title="Changes to Client">
+    <section anchor="client" title="Changes to TURN Client">
       <t><list style="symbols">
           <t>A TURN response is discarded by the client if the value computed
           for message integrity using mac_key does not match the contents of
@@ -639,11 +692,17 @@ include="reference.RFC.6063"?>
 
       <?rfc include='reference.I-D.ietf-oauth-v2-http-mac'?>
 
+      <?rfc include='reference.I-D.mcgrew-aead-aes-cbc-hmac-sha2'?>
+
       <?rfc include="reference.RFC.5766"?>
 
       <?rfc include="reference.RFC.6819"?>
 
       <?rfc include="reference.RFC.6063"?>
+
+      <?rfc include="reference.RFC.5116"?>
+
+      <?rfc include="reference.RFC.5869"?>
 
       <!---->
     </references>
