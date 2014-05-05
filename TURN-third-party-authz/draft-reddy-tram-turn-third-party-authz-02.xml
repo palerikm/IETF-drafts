@@ -553,7 +553,7 @@ example:
         time the resource server MUST cache it so that it need not to be
         provided in every request within an existing allocation. The access
         token can be re-used for multiple Allocate requests to the same TURN
-        server. The TURN client MUST only include the ACCESS-TOKEN attribute
+        server. The TURN client MUST include the ACCESS-TOKEN attribute only
         in Allocate and Refresh requests.</t>
 
         <t>Note : If Authenticated Encryption with Associated Data (AEAD)
@@ -633,11 +633,14 @@ example:
       authorization server requires Transport Layer Security (TLS) with a
       ciphersuite offering confidentiality protection. The session key MUST
       NOT be transmitted in clear since this would completely destroy the
-      security benefits of the proposed scheme.</t>
+      security benefits of the proposed scheme. If an attacker tries to replay
+      message with ACCESS-TOKEN attribute then the server can detect that the
+      transaction id was used for an old request and thus prevent the replay
+      attack.</t>
 
       <t>Security considerations discussed in <xref
-      target="I-D.ietf-oauth-v2-http-mac"></xref> are to be taken into
-      account.</t>
+      target="I-D.ietf-oauth-v2-http-mac"></xref> and <xref
+      target="RFC5766"></xref> are to be taken into account.</t>
     </section>
 
     <section anchor="iana" title="IANA Considerations">
