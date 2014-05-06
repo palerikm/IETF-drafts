@@ -375,11 +375,12 @@ User : Alice
           server) and signalled to the DSKPP client (i.e TURN server) which is
           equivalent to the kid defined in this specification. The AS-RS, AUTH
           keys would be derived from the symmetric key using (HMAC)-based key
-          derivation function (HKDF) <xref target="RFC5869">(DSKPP)</xref>.
-          For example if the input symmetric key (K) is 32 octets length,
-          encryption algorithm is AES_128_CBC and HMAC algorithm is
-          HMAC-SHA-256-128 then the secondary keys AS-RS, AUTH are generated
-          from the input key K as follows</t>
+          derivation function (HKDF) <xref target="RFC5869">(DSKPP)</xref> and
+          the default hash function is SHA-256. For example if the input
+          symmetric key (K) is 32 octets length, encryption algorithm is
+          AES_128_CBC and HMAC algorithm is HMAC-SHA-256-128 then the
+          secondary keys AS-RS, AUTH are generated from the input key K as
+          follows</t>
 
           <t><list style="numbers">
               <t>HKDF-Extract(zero, K) -&gt; PRK</t>
@@ -460,11 +461,11 @@ example:
       access token and kid values in ACCESS-TOKEN and USERNAME STUN
       attributes. The TURN client includes a MESSAGE-INTEGRITY attribute as
       the last attribute in the message over the contents of the TURN message.
-      MESSAGE-INTEGRITY attribute is calculated using the long-term
-      credentials mechanism specified in section 10.2 of <xref
-      target="RFC5389"></xref>, using the "kid" value from the returned JSON
-      for its USERNAME attribute, and the mac_key for computing the message
-      integrity.</t>
+      The HMAC for the MESSAGE-INTEGRITY attribute is computed as described in
+      section 15.4 of <xref target="RFC5389"></xref> where the mac_key is used
+      as the input key for the HMAC computation. The TURN client and server
+      will use the mac_key to compute the message integrity and doesn't have
+      to perform MD5 hash on the credentials. </t>
     </section>
 
     <section title="STUN Attributes">
@@ -587,17 +588,14 @@ example:
           using the AS-RS key).</t>
 
           <t>The TURN server verifies that no replay took place by performing
-          the following check:</t>
-
-          <t><list style="symbols">
-              <t>The received timestamp (timestamp field in self-contained
-              token) is checked and the access token is accepted if the
-              timestamp is recent enough to the reception time of the TURN
-              request (RDnew) using the following formula: Lifetime + Delta
-              &gt; abs(RDnew - TSnew). The RECOMMENDED value for the allowed
-              Delta is 5 seconds. If the timestamp is NOT within the
-              boundaries then the TURN server discards the request with error
-              response 401 (Unauthorized).</t>
+          the following check: <list style="symbols">
+              <t> The access token is accepted if the timestamp field in the
+              self-contained token (TS) is recent enough to the reception time
+              of the TURN request (RDnew) using the following formula:
+              Lifetime + Delta &gt; abs(RDnew - TS). The RECOMMENDED value for
+              the allowed Delta is 5 seconds. If the timestamp is NOT within
+              the boundaries then the TURN server discards the request with
+              error response 401 (Unauthorized).</t>
             </list></t>
 
           <t>The TURN server uses the mac_key to compute the message integrity
