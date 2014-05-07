@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rfc SYSTEM "rfc2629xslt/rfc2629.dtd" [
+      <!ENTITY rfc3667 PUBLIC '' 'http://xml.resource.org/public/rfc/bibxml/reference.RFC.3667.xml'>
+    ]>
+<?rfc toc='yes'?>
+<?rfc tocdepth='4'?>
+<?rfc compact="yes"?>
+<!--rfc category="info" ipr="full3978"-->
+<rfc category="std" ipr='trust200902'>
+	<front>
+		<title abbrev="DTLS-SRTP handling in SIP B2BUA">DTLS-SRTP handling in Session initiation protocol Back to back user agent </title>
+		  <author initials="Parthasarathi" surname="Ravindran" fullname="Parthasarathi Ravindran">
+			<organization>Nokia Solutions and Networks</organization>
+			<address>
+				<postal>
+					<street> Manyata Embassy Business park </street>
+					<city>Bangalore</city>
+                           <code>560045</code>
+					<region>Karnataka</region>
+					<country>India</country>
+				</postal>
+				<email>partha@parthasarathi.co.in</email>
+			</address>
+		</author>
+    <author fullname="Ram Mohan Ravindranath" initials="R"
+            surname="Ravindranath">
+      <organization>Cisco Systems</organization>
+
+      <address>
+        <postal>
+          <street>Cessna Business Park</street>
+
+          <street>Sarjapur-Marathahalli Outer Ring Road</street>
+
+          <city>Bangalore</city>
+
+          <region>Karnataka</region>
+
+          <code>560103</code>
+
+          <country>India</country>
+        </postal>
+
+        <email>rmohanr@cisco.com</email>
+      </address>
+    </author>
+    <author fullname="Tirumaleswar Reddy" initials="T." surname="Reddy">
+      <organization>Cisco Systems</organization>
+
+      <address>
+        <postal>
+          <street>Cessna Business Park, Varthur Hobli</street>
+
+          <street>Sarjapur Marathalli Outer Ring Road</street>
+
+          <city>Bangalore</city>
+
+          <region>Karnataka</region>
+
+          <code>560103</code>
+
+          <country>India</country>
+        </postal>
+
+        <email>tireddy@cisco.com</email>
+      </address>
+    </author>
+		<date year="2014" />
+		<area>Transport</area>
+		<workgroup>STRAW</workgroup>
+		<abstract>
+		   <t>
+		    SIP Back-to-Back User Agents (B2BUAs) as defined in <xref target="RFC7092"/>
+		    are often envisaged to also be on the media path, rather than just intercepting signalling.  This document describes the behaviour B2BUAs should follow when acting on the media plane that use Secure Real-time Transport Protocol (SRTP) security context setup using the Datagram Transport Layer Security (DTLS) protocol.
+          </t>
+		</abstract>
+	</front>
+	<middle>
+
+ <section title="Introduction">
+<t>
+	<xref target="RFC5763"/> describes how Session Initiation Protocol
+   (SIP) can be used to establish a Secure Real-time Transport Protocol (SRTP)
+   security context using the Datagram Transport Layer Security (DTLS)
+   protocol.  It describes a mechanism of transporting a fingerprint attribute in the 
+   Session Description Protocol (SDP) that identifies the key that will be presented during the DTLS handshake. DTLS-SRTP is defined for point-to-point media sessions, in which there are exactly two participants.  Each DTLS-SRTP session contains
+   a single DTLS association, and either two SRTP contexts (if media traffic is flowing in both directions on the same host/port quartet) or one SRTP context (if media traffic is only flowing in one direction).  </t>
+   <t>
+   In may SIP deployments, SIP  entities exist in the SIP signaling path between the originating and final terminating endpoints. These SIP entities as described in  <xref target="RFC7092"/> modifies SIP and SDP bodies and also are likely to be on the media path. Such Entities when present in the signalling/media path are likely to do several things. For example some B2BUA may modify parts of SDP (like address) and subsequently modify the RTP headers as well. There may be other types of B2BUA's that would completely modify the RTP packet (like transcoder). In all these cases a DTLS association would break unless the B2BUA participates in the DTLS setup and ensures the context are setup properly. It is envisioned that B2BUA that are in media path have to support DTLS stack and SRTP extensions needed for DTLS as described in <xref target="RFC5763"/> to make this work properly.
+			</t>
+			<t>
+			<xref target="RFC7092"/> describes three different categories of such B2BUAs, according to the level of activities performed on the media plane:</t>
+			<t><list style="hanging">
+			 <t> A B2BUA that act as a simple media relay effectively unaware of anything that is transported. </t>
+			 <t> It may be a media-aware relay, also inspecting and/or modifying RTP and RTCP packets as they flow by. </t>
+			 <t> It may be a full-fledged media-termination entity, terminating and
+   generating RTP and RTCP packets as needed. (For example Transcoder). </t>
+			</list></t>
+   
+<t>
+The following sections will describe the proper behaviour B2BUAs, whatever above category they fall in, should follow in order to avoid, or at least minimize, any impact on end-to-end DTLS-SRTP flows.</t>
+</section>
+
+<section title="Terminology" anchor="sec-term">
+	<t>
+		The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+		"SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+		document are to be interpreted as described in <xref target="RFC2119"/>.
+				
+	Readers of this document are expected to be aware of different B2BUA's defined in <xref target="RFC7092"/>.
+	</t>
+</section>
+		
+ <section title="Media plane B2BUAs">
+
+   <section title="Media relay">
+   <t>
+    A media relay as identified in <xref target="RFC7092"/> basically just forwards, from an application level point of view, all packets it receives on a negotiated UDP connection, without either inspecting or modifying them.  Media relays are not aware of what traffic they're handling, meaning that not only the packet payloads are opaque to them, but headers as well.  So they just forward the UDP payload as is by changing only the UDP/IP header. Many Session Border Controllers (SBC) implement this kind of behaviour, e.g., when acting as a bridge between an inner and outer network.  
+   </t>
+   <t> A media relay B2BUA SHOULD forward the DTLS fingerprint attribute it receives in SDP from the endpoint as is to the remote side. Below example shows a sample flow of Early Offer SIP SIP call with Both endpoints doing DTLS-SRTP with a media relay B2BUA that just changes the IP address/port.</t>
+   
+   <t><figure anchor="Figure1" title="Early Offer Media Relay B2BUA">
+          <artwork align="left"><![CDATA[
+ +-------+              +-----------------+        +-----------+         
+ |  Alice|              | MediaRelay B2BUA|        |      Bob  |
+ +-------+              +-----------------+        +-----------+
+     |(1) INVITE               |  (3)INVITE                |
+     |   a=setup:actpass       |   a=setup:actpass         |
+     |   a=fingerprint1        |   a= fingerprint1         | 
+     |   (alice's IP/port)     |   (B2BUA's IP, port)      |                        
+     |------------------------>|  ------------------------>|
+     |                         |                           |
+     |    (2)  100 trying      |                           |
+     | <-----------------------|                           |
+     |                         | (4) 100 trying            |
+     |                         | <-------------------------|
+     |                         |                           |
+     |                         |  (5)200 OK                |
+     |                         |   a=setup:active          |
+     |                         |    a=fingerprint2         |
+     |                         |  (Bob's IP, port)         |
+     |                         | <-------------------------|
+     |    (6) 200 OK           |                           |
+     |    a=setup:active       |                           |
+     |    a=fingerprint2       |                           |
+     |    B2BUA's address,port |                           |
+     |               (7, 8)ClientHello + use_srtp          |
+     |<------------------------|---------------------------|
+     |                  [B2BUA changes the UDP/IP addr]    |
+     |                         |                           |
+     |           (9,10)ServerHello + use_srtp              |
+     | ------------------------|-------------------------->|
+     |                 (11)    |                           |
+     |  [Certificate exchange between Alice and Bob over   | 
+     |   DTLS or DTLS-SRTP channel as described in RFC5764]|  
+     |                         |                           |
+     |         (12)            |                           |
+     |<---------SRTP/SRTCP---->|<----SRTP/SRTCP----------->|
+     |   [B2BUA just changes UDP/IP header]                |   
+      
+     
+     
+     For the sake of brevity the entire fingerprint attribute is not shown.
+     Also the same flow would be applicable for Delayed Offer calls. 
+          ]]></artwork></figure></t>
+          
+    <t> For each RTP or RTCP flow the peers do a DTLS handshake on the same source and destination port pair to establish a DTLS association. In this case Bob After he receives an INVITE triggers a DTLS connection. Note the DTLS handshake as well as the response to INVITE may happen in parallel and so the B2BUA SHOULD be prepared to receive media on the ports it advertised to Bob in the OFFER. Since a media relay B2BUA does not differentiate between a DTLS or RTP or any packet sent it just changes the UDP/IP addresses and forwards the packet on either leg.</t>
+    
+    <t>TBD: In some domains SBC's MAY be deployed for privacy reasons and can have policies that requires them to hide the endpoints information. In such cases a media relay B2BUA may end up in disclosing the identity of the endpoints. For example <xref target="RFC5763"/> describes how SIP endpoints that setup DTLS-SRTP session can use SIP identity to protect the integrity of the fingerprint attribute that it sends in the SDP from modification. To avoid this kind of privacy issues, the B2BUA SHOULD setup a DTLS connection with the peers by offer its own certificate. This is further described in the next section.</t>
+   </section>
+   
+   <section title="Media-aware relay or Media terminator">
+   <t>A Media-aware relay, unlike the the Media Relay addressed in the
+   previous section, is actually aware of the media traffic it is
+   handling.  As such, it is able to inspect SRTP and SRTCP packets
+   flowing by, and may even be able to modify the headers in any of them
+   before forwarding them.  A B2BUA implementing this role would not,
+   though, inspect the payloads as well, which would be opaque to
+   them. </t>
+   <t> A media terminator B2BUA in addition to modifying the header can modify parts of the payload. For example a Transcoder is a type of Media terminator that modifies the payload before it forwards the packet. It is envisioned that  these B2BUA's SHOULD have the capability the distinguish DTLS or SRTP or SRTCP or other packets (like STUN) received on the same udp port by using the algorithm mentioned in section 5.1.2 of <xref target="RFC5764"/> and takes care of handling them separately.</t>
+   <t>Below example shows how a DTLS-SRTP session is setup for these B2BUA</t>
+   
+   <t><figure anchor="Figure2" title="Early Offer Media aware B2BUA">
+          <artwork align="left"><![CDATA[
+ +-------+              +-----------------+        +-----------+         
+ |  Alice|              | MediaAware B2BUA|        |      Bob  |
+ +-------+              +-----------------+        +-----------+
+     |(1) INVITE               |  (3)INVITE                |
+     |   a=setup:actpass       |   a=setup:actpass         |
+     |   a=fingerprint1        |   a= fingerprint2         | 
+     |   (alice's IP/port)     |   (B2BUA's IP, port)      |                        
+     |------------------------>|  ------------------------>|
+     |                         |                           |
+     |    (2)  100 trying      |                           |
+     | <-----------------------|                           |
+     |                         | (4) 100 trying            |
+     |                         | <-------------------------|
+     |                         |                           |
+     |                         |  (5)200 OK                |
+     |                         |   a=setup:active          |
+     |                         |    a=fingerprint3         |
+     |                         |  (Bob's IP, port)         |
+     |                         | <-------------------------|
+     |                         |(6)ClientHello + use_srtp  |
+     |                         |<--------------------------|
+     |    (7) 200 OK           |                           |
+     |    a=setup:active       | ServerHello + use_srtp (8)|
+     |    a=fingerprint4       | ------------------------->|
+     |    B2BUA's address,port |                           |
+     | <-----------------------|   [Cert Exchange] (9,10)  |
+     |  (11)ClientHello+       |                           |
+     |     use_srtp            |                           |
+     |<------------------------|                           |
+     |  (12)ServerHello+       |                           |
+     |   use_srtp              |                           |
+     |------------------------>|                           |
+     |                 (13,14  |                           |
+     |  [Cert exchange between Alice and B2BUA             | 
+     |   DTLS or DTLS-SRTP channel as described in RFC5764]|  
+     |                         |                           |
+     |         (15)            |          (16)             |
+     |<---------SRTP/SRTCP---->|<----SRTP/SRTCP----------->|
+     |   [B2BUA modifes SRTP/SRTCP header and/or payload]  |   
+      
+     
+     
+     For the sake of brevity the entire fingerprint attribute is not shown.
+     Also the same flow would be applicable for Delayed Offer calls. 
+          ]]></artwork></figure></t>
+          
+    <t>NOTE: Steps 5,6 may be parallel and so the B2BUA MAY receive ClientHello before it sees a 200OK. Steps 7,8 can happen in any order. Also steps 9,10, 11 may be parallel. B2BUA should be prepared to handle these responses on each leg independently.</t>
+   </section>
+   
+ </section>
+		
+		
+           
+<section title="DTLS-SRTP handling in B2BUA with signaling forking">
+ <t> B2BUA's may receive multiple answers for an outbound INVITE due to downstream proxy forking the INVITE to multiple targes. It is possible that each of these responses have DTLS-SRTP context and finger print attributes. The B2BUA SHOULD take care of setting separate DTLS-SRTP associations with each of the forked target.</t>
+ </section>
+
+   <section title="Security Considerations">
+       <t> TBD  </t>
+			
+ </section>
+
+<section title="IANA Considerations" anchor="sec.iana-considerations">
+	<t>
+      This document makes no request of IANA.
+    </t>
+</section>
+	
+<section title="Acknowledgement">
+			
+</section>
+
+</middle>
+	<back>
+ 		<references title="Normative References">
+            <?rfc include="reference.RFC.2119"?>
+            <?rfc include="reference.RFC.5764"?>
+            <?rfc include="reference.RFC.5763"?>
+            <?rfc include="reference.RFC.7092"?>
+            </references>
+	</back>
+</rfc>
+
