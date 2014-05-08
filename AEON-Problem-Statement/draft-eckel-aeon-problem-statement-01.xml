@@ -10,9 +10,12 @@
 <!ENTITY RFC5389 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5389.xml">
 <!ENTITY RFC5766 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5766.xml">
 <!ENTITY RFC5978 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5978.xml">
+<!ENTITY RFC6241 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6241.xml">
 <!ENTITY RFC6601 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6601.xml">
 <!ENTITY RFC6887 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6887.xml">
 <!ENTITY RFC7011 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7011.xml">
+<!ENTITY I-D.ietf-rtcweb-use-cases-and-requirements SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-rtcweb-use-cases-and-requirements.xml">
+<!ENTITY I-D.ietf-netconf-restconf SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-netconf-restconf.xml">
 <!-- One method to get references from the online citation libraries.
      There has to be one entity for each item to be referenced.
      An alternate method (rfc include) is described in the references. -->
@@ -188,6 +191,14 @@
       signaling and secured media. An additional drawback of DPI is that any
       insights are not available, or need to be recomputed, at network nodes
       further down the application flow path.</t>
+
+      <t>As the IETF establishes default behaviors that thwart pervasive
+      surveillance, it will be important to provide mechanisms for
+      applications that want to have the network provide differential flow
+      treatment for their data. The intent is to have applications protect the
+      contents of their flows, yet have the ability to opt-in to information
+      exchanges that provide a more precise allocation of network resources
+      and thus a better user experience.</t>
     </section>
 
     <section title="Definitions and Terminology">
@@ -214,13 +225,13 @@
 
     <section title="Typical Workflows">
       <t>Various heuristic based approaches are used prevalently and
-      successfully for two types of work flows:<list counter="1"
+      successfully for two types of workflows:<list counter="1"
           style="numbers">
           <t>Provide network operators with visibility into traffic for
           troubleshooting, capacity planning, accounting and billing, and
-          other off network work flows. This is done by exporting observed
+          other off network workflows. This is done by exporting observed
           traffic analysis via protocols such as IPFIX <xref
-          target="RFC7011"/>and SNMP <xref target="RFC3416"/>.</t>
+          target="RFC7011"/> and SNMP <xref target="RFC3416"/>.</t>
 
           <t>Provide differentiated network services for specific traffic
           according to network operator defined policies, including traffic
@@ -232,9 +243,9 @@
     </section>
 
     <section title="Limitations of Heuristic Based Solutions">
-      <t>These typical work flows, visibility and differentiated network
+      <t>These typical workflows, visibility and differentiated network
       services, are critical in many networks. However, their reliance on
-      inspection and observation limits the ability to enable these work flows
+      inspection and observation limits the ability to enable these workflows
       more widely. Reasons for this include the following:<list
           style="symbols">
           <t>Simple observation based classification based on TCP/UDP port
@@ -266,12 +277,12 @@
     <section title="Limitations of Existing Signaling Mechanisms">
       <t>The IETF has standardized several mechanisms involving explicit
       signaling between applications and the network that may be used to
-      support visibility and differentiated network services work flows.
+      support visibility and differentiated network services workflows.
       Unfortunately, none of these has experienced widespread deployment
       success, nor are they well suited for the applications usages described
       previously. Existing signaling options include the following:<list
           style="symbols">
-          <t>RSVP <xref target="RFC2205"/>is the original on-path signaling
+          <t>RSVP <xref target="RFC2205"/> is the original on-path signaling
           protocol standardized by the IETF. It is transported out-of-band and
           could be used to signal information about any transport protocol
           traffic (it currently supports TCP and UDP). Its original goal was
@@ -282,38 +293,38 @@
           filtered by intervening networks, and by its requirement for access
           to a raw socket, something that is generally not available to
           applications running in user space. To date, more lightweight
-          signaling work flows utilizing RSVP have not been standardized
-          within the IETF.</t>
+          signaling workflows utilizing RSVP have not been standardized within
+          the IETF.</t>
 
-          <t>NSIS (next Steps in Signaling) <xref target="RFC5978"/>is the
+          <t>NSIS (next Steps in Signaling) <xref target="RFC5978"/> is the
           next iteration of RSVP-like signaling defined by the IETF. It
-          focused on the same fundamental work flow as RSVP admission control
+          focused on the same fundamental workflow as RSVP admission control
           as its main driver, and because it did not provide significant
           enough use-case benefits over RSVP, it has seen even less adoption
           than RSVP.</t>
 
-          <t>DiffServ style packet marking <xref target="RFC4594"/>can help
-          provide QoS in some environments but DSCP markings are often
-          modified or removed at various points in the network or when
-          crossing network boundaries. There are additional limitations when
-          using DiffServ with real-time communications applications, and the
-          DART working group has been chartered to write a document that
-          explains the limitations that exist with DiffServ when used with RTP
-          in general as well in the specific RTCWeb cases.</t>
+          <t>DiffServ <xref target="RFC4594"/> and VAN Tagging <xref
+          target="IEEE-802.1Q"/> style packet marking can help provide QoS in
+          some environments, but such markings are often modified or removed
+          at various points in the network or when crossing network
+          boundaries. There are additional limitations when using DiffServ
+          with real-time communications applications, and the DART working
+          group has been chartered to write a document that explains the
+          limitations that exist with DiffServ when used with RTP in general
+          as well in the specific RTCWeb use cases <xref
+          target="I-D.ietf-rtcweb-use-cases-and-requirements"/>.</t>
         </list></t>
     </section>
 
     <section title="Efforts in Progress">
-      <t>There are a variety of evolving signaling options proposals for
-      identification and differentiated treatment of application flows to fill
-      where heuristic based approached or not sufficient.s are currently being
-      used. It seems clear that there will be not be a one-protocol-fits-all
-      solution. Every protocol is currently defined in its own silo, creating
-      duplicate or inconsistent information models. This results in duplicate
-      work, more operational complexity and an inability to convert
-      information between protocols to leverage the best protocol option for
-      each specific use case. Examples of evolving signaling options include
-      the following:<list style="symbols">
+      <t>Not surprisingly, there are several evolving proposals that aim to
+      address the visibility and differentiated network services workflows
+      where existing approaches are not sufficient. Protocol specific
+      extensions are being defined, creating duplicate or inconsistent
+      information models. This results operational complexity and a need to
+      convert information between protocols to leverage the best protocol
+      option for each specific use case. Examples of evolving signaling
+      options include the following:<list style="symbols">
           <t>STUN <xref target="RFC5389"/> is an on-path, in-band signaling
           protocol that could be extended to provide signaling to on-path
           network devices. It provides an easily inspected packet signature,
@@ -332,10 +343,19 @@
           network (specifically to the network's NAT or firewall device), and
           receives information back from the network (from the NAT or firewall
           device). It is not meant to be used end-to-end but rather
-          independently on one "edge" of a traffic flow. It is therefore an
-          attractive alternative because it allows the introduction of
-          application to network signaling without relying on the remote peer.
-          This is especially useful in multi-domain communications.</t>
+          independently on one "edge" of a flow. It is therefore an attractive
+          alternative because it allows the introduction of application to
+          network signaling without relying on the remote peer. This is
+          especially useful in multi-domain communications.</t>
+
+          <t>RESTCONF <xref target="I-D.ietf-netconf-restconf"/> is a
+          REST-like protocol that provides a programmatic interface over HTTP
+          for accessing data defined in YANG, using the datastores defined in
+          NETCONF <xref target="RFC6241"/>. It is meant to provide a standard
+          mechanism for web applications to access the configuration data,
+          operational data, data-model specific protocol operations, and
+          notification events within a networking device, in a modular and
+          extensible manner.</t>
 
           <t>Interface to the Routing System (I2RS) is a working group
           chartered to provide interfaces for management applications, network
@@ -375,17 +395,18 @@
           ordered set of instances of such service functions, and the
           subsequent "steering" of traffic flows through those service
           functions. Flow characteristics communicated via AEON could be used
-          as input into the an SFC classifier and it could be transported as
-          SFC metadata.</t>
+          as input into an SFC classifier and it could be transported as SFC
+          metadata.</t>
         </list></t>
     </section>
 
     <section title="Requirements">
       <t>Rather than encourage independent, protocol specific solutions to
-      this problem, this document calls for a protocol and application
+      this problem, this document advocates a protocol and application
       independent information model and individual data models that can be
-      applied in a consistent fashion across a variety of protocols. The
-      requirements are:<list style="hanging">
+      applied in a consistent fashion across a variety of protocols to enable
+      explicit communication between applications and the networks on which
+      they are used. The requirements are:<list style="hanging">
           <t hangText="Req-1:">Allow applications to explicitly signal their
           flow characteristics to the network.</t>
 
@@ -418,8 +439,8 @@
 
     <section anchor="Acknowledgements" title="Acknowledgements">
       <t>The authors thank Toerless Eckert, Reinaldo Penno, Dan Wing, Amine
-      Choukir, Paul Jones, and Mohamed Boucadair for their contributions to
-      this document.</t>
+      Choukir, Paul Jones, Mohamed Boucadair, and Bill VerSteeg for their
+      contributions to this document.</t>
     </section>
   </middle>
 
@@ -456,11 +477,33 @@
 
       &RFC5978;
 
+      &RFC6241;
+
       &RFC6601;
 
       &RFC6887;
 
       &RFC7011;
+
+      &I-D.ietf-rtcweb-use-cases-and-requirements;
+
+      &I-D.ietf-netconf-restconf;
+
+      <reference anchor="IEEE-802.1Q"
+                 target="http://standards.ieee.org/getieee802/download/802.1Q-2005.pdf">
+        <front>
+          <title>IEEE Standards for Local and Metropolitan Area Networks:
+          Virtual Bridged Local Area Networks</title>
+
+          <author>
+            <organization/>
+          </author>
+
+          <date year="2005"/>
+        </front>
+
+        <seriesInfo name="IEEE" value="802.1Q"/>
+      </reference>
     </references>
   </back>
 </rfc>
