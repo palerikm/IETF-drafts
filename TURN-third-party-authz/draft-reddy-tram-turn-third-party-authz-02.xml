@@ -234,7 +234,7 @@
 
           <artwork align="left"><![CDATA[
      POST /o/oauth2/token HTTP/1.1 
-     Host: 2001:db8:a000::1
+     Audience: turnserver1.example.com
      Content-Type: application/x-www-form-urlencoded
      timestamp=1361471629
      grant_type=implicit
@@ -362,8 +362,8 @@ User : Alice
         key. The TURN and authorization servers MUST establish the symmetric
         key over an authenticated secure channel. The establishment of
         symmetric key is outside the scope of this specification. For example,
-        implementations could use one of the following mechanisms to establish
-        a symmetric key.</t>
+        implementations could use one of the following mechanisms in to
+        establish a symmetric key.</t>
 
         <section anchor="DSKPP" title="DSKPP">
           <t>The two servers could choose to use Dynamic Symmetric Key
@@ -401,18 +401,18 @@ User : Alice
           symmetric key. To retrieve a new symmetric key, the TURN server
           makes an HTTP GET request to the authorization server, specifying
           TURN as the service to allocate the symmetric keys for, and
-          optionally specifying the IP Address of the TURN server. The
-          response is returned with content-type "application/json", and
-          consists of a JSON object containing the symmetric key.</t>
+          specifying the name of the TURN server. The response is returned
+          with content-type "application/json", and consists of a JSON object
+          containing the symmetric key.</t>
 
           <t><figure>
               <artwork><![CDATA[Request
 -------
 
 service - specifies the desired service (turn)
-myip    - an optional IP address to be associated with the key
+domain  -  TURN server name be associated with the key
 
-example: GET /?service=turn&myip=2001:db8:a000::1
+example: GET /?service=turn&domain=turnserver1.example.com
 
 
 Response
@@ -465,7 +465,7 @@ example:
       section 15.4 of <xref target="RFC5389"></xref> where the mac_key is used
       as the input key for the HMAC computation. The TURN client and server
       will use the mac_key to compute the message integrity and doesn't have
-      to perform MD5 hash on the credentials. </t>
+      to perform MD5 hash on the credentials.</t>
     </section>
 
     <section title="STUN Attributes">
@@ -474,19 +474,13 @@ example:
 
       <section anchor="attribute" title="THIRD-PARTY-AUTHORIZATION">
         <t>This attribute is used by the TURN server to inform the client that
-        it supports third party authorization. This attribute is used by the
-        TURN server to inform the client that it supports third party
-        authorization. This optional attribute value be a URL that the client
-        should contact, to obtain a token for third party authorization. The
-        format for the URL will be as described in <xref
-        target="RFC3986"></xref>. The THIRD-PARTY-AUTHORIZATION attribute is a
-        comprehension-optional attribute (see Section 15 from <xref
-        target="RFC5389"></xref>).</t>
-
-        <t>The TURN server may have tie-up with multiple authorization servers
-        so the client MUST provide the TURN server domain name or IP address
-        to the authorization server so that it can select the appropriate
-        keying material to generate the self-contained token.</t>
+        it supports third party authorization. This attribute value contains
+        the TURN server name. The TURN server may have tie-up with multiple
+        authorization servers and vice versa, so the client MUST provide the
+        TURN server name to the authorization server so that it can select the
+        appropriate keying material to generate the self-contained token. The
+        THIRD-PARTY-AUTHORIZATION attribute is a comprehension-optional
+        attribute (see Section 15 from <xref target="RFC5389"></xref>).</t>
       </section>
 
       <section anchor="token" title="ACCESS-TOKEN">
@@ -541,27 +535,45 @@ example:
 
             <t hangText="mac:">The Hashed Message Authentication Code (HMAC)
             is calculated with AUTH key over the encrypted portion of the
-            token (encrypted_block). Thus encryption is applied before
+            token and the TURN server name (N) conveyed in the
+            THIRD-PARTY-AUTHORIZATION response . Encryption is applied before
             authentication on the sender side and conversely on the receiver
             side.</t>
           </list></t>
+
+        <t>The encryption process can be illustrated as follows. Here C, N
+        denote the ciphertext and TURN server name.<list style="symbols">
+            <t>C = AES_128_CBC(AS-RS, encrypted_block)</t>
+
+            <t>mac = HMAC-SHA-256-128(AUTH, C | | N)</t>
+          </list></t>
+
+        <t></t>
 
         <t>The token MUST be encoded as defined in Section 4 of <xref
         target="RFC4648"></xref> and then encrypted using the symmetric
         long-term key established between the resource server and the
         authorization server, as shown in <xref target="interactions"></xref>
-        as AS-RS key. Since the access token is valid for a specific period of
-        time the resource server MUST cache it so that it need not to be
-        provided in every request within an existing allocation. The access
-        token can be re-used for multiple Allocate requests to the same TURN
-        server. The TURN client MUST include the ACCESS-TOKEN attribute only
-        in Allocate and Refresh requests.</t>
+        as AS-RS key. HMAC is computed using the encrypted portion of the
+        token and TURN server name to ensure that the client does not use the
+        same token to gain illegal access to other TURN servers provided by
+        the same administrative domain. This attack is possible when multiple
+        TURN servers in a single administrative domain share the same
+        symmetric key with the authorization server. Since the access token is
+        valid for a specific period of time the resource server MUST cache it
+        so that it need not to be provided in every request within an existing
+        allocation. The access token can be re-used for multiple Allocate
+        requests to the same TURN server.</t>
+
+        <t>The TURN client MUST include the ACCESS-TOKEN attribute only in
+        Allocate and Refresh requests.</t>
 
         <t>Note : If Authenticated Encryption with Associated Data (AEAD)
         algorithm specified in <xref
-        target="I-D.mcgrew-aead-aes-cbc-hmac-sha2"></xref> are used then there
-        is no need to explicitly compute HMAC. In this scenario the mac field
-        must carry the initialization vector (IV).</t>
+        target="I-D.mcgrew-aead-aes-cbc-hmac-sha2"></xref> is used then there
+        is no need to explicitly compute HMAC. In this scenario the associated
+        data MUST be the TURN server name (N) and the mac field MUST carry the
+        initialization vector (IV).</t>
       </section>
     </section>
 
@@ -577,11 +589,13 @@ example:
           the USERNAME attribute.</t>
 
           <t>It performs the verification of the token message integrity by
-          calculating calculates HMAC over the encrypted_block in the
-          self-contained token using AUTH key and if the resulting value does
-          not match the mac field in the self-contained token then it rejects
-          the request with an error response 401 (Unauthorized). If AEAD
-          algorithm is used then this step is skipped.</t>
+          calculating HMAC over the encrypted portion in the self-contained
+          token and TURN server name using AUTH key and if the resulting value
+          does not match the mac field in the self-contained token then it
+          rejects the request with an error response 401 (Unauthorized). Note
+          : If AEAD algorithm is used then it has only a single output, either
+          a plaintext or a special symbol FAIL that indicates that the inputs
+          are not authentic.</t>
 
           <t>TURN server obtains the mac_key by retrieving the content of the
           access token (which requires decryption of the self-contained token
@@ -589,7 +603,7 @@ example:
 
           <t>The TURN server verifies that no replay took place by performing
           the following check: <list style="symbols">
-              <t> The access token is accepted if the timestamp field in the
+              <t>The access token is accepted if the timestamp field in the
               self-contained token (TS) is recent enough to the reception time
               of the TURN request (RDnew) using the following formula:
               Lifetime + Delta &gt; abs(RDnew - TS). The RECOMMENDED value for
@@ -664,8 +678,6 @@ example:
       <?rfc include="reference.RFC.5389"?>
 
       <?rfc include="reference.RFC.6749"?>
-
-      <?rfc include="reference.RFC.3986"?>
 
       <?rfc include="reference.RFC.4648"
 include="reference.RFC.6063"?>
