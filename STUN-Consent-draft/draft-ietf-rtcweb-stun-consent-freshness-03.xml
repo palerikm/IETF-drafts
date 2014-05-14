@@ -247,9 +247,7 @@ falsifying consent</t>
       <section title="Stopping Consent checks">
         <t>Consent is ended immediately by receipt of a an
         authenticated message that closes the connection (for
-        instance, a TLS fatal alert).  Note that an authenticated
-        SRTCP BYE indicates the RTP session is finished, but it does
-        not indicate the connection should be terminated.</t>
+        instance, a TLS fatal alert).</t>
 
         <t>Receipt of an unauthenticated message that closes a connection (e.g., TCP
         FIN) does not indicate loss of consent. Thus, an endpoint receiving an
