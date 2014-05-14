@@ -220,7 +220,7 @@
       Transport Address. These ICE binding requests and responses are authenticated
       using the same short-term credentials as the initial ICE exchange, but
       using a new (fresh) transaction-id each time consent needs to be
-      refresh. Implementations MUST obtain fresh consent before their existing
+      refreshed. Implementations MUST obtain fresh consent before their existing
       consent expires. When obtaining fresh consent a STUN connectivity check
       (or response) could be lost, and re-transmissions MUST use the same STUN
       transaction-id, and re-transmissions MUST NOT be sent more frequently
@@ -234,27 +234,24 @@
       has not been received from the inverted 5-tuple after 15 seconds, the
       application MUST cease transmission on that 5-tuple.</t>
 
-      <t>Although receiving authenticated packets is sufficient for consent,
+      <t>Although receiving authenticated ICE packets is sufficient for consent,
       it is still RECOMMENDED to send messages to keep NAT or firewall
       bindings alive (see Section 10 of <xref target="RFC5245"></xref> and
       <xref target="RFC6263"></xref>).</t>
 
-      <t>To meet the security needs of consent, an implementation MUST ensure
-      that an application (e.g., Javascript application) is not able to obtain
-      or control STUN information relevant to consent, specifically the ICE
-      transaction-id MUST NOT be accessible to upper-level applications.</t>
+      <t>To meet the security needs of consent, an untrusted application (e.g., JavaScript) MUST NOT be able to obtain or control the ICE transaction-id.</t>
 
       <section title="Stopping Consent checks">
         <t>Consent is ended immediately by receipt of a an authenticated
         message that closes the connection (for instance, a TLS fatal
         alert).</t>
 
-        <t>Receipt of an unauthenticated end-of-session message (e.g., TCP
+        <t>Receipt of an unauthenticated message that closes a connection (e.g., TCP
         FIN) does not indicate loss of consent. Thus, an endpoint receiving an
         unauthenticated end-of-session message SHOULD continue sending media
         (over connectionless transport) or attempt to re-establish the
         connection (over connection-oriented transport) until consent expires
-        or it receives an authenticated message revoking consent.</t>
+        or it receives an authenticated message revoking consent. Note that authenticated SRTCP BYE indicates the RTP session is finished, but does not indicate the connection should be terminated.</t>
       </section>
     </section>
 
