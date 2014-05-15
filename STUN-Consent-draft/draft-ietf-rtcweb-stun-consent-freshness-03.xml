@@ -11,7 +11,7 @@
 <?rfc inline ="yes"?>
 <?rfc subcompact="no"?>
 <?rfc tocompact="yes"?>
-<rfc category="std" docName="draft-ietf-rtcweb-stun-consent-freshness-01"
+<rfc category="std" docName="draft-ietf-rtcweb-stun-consent-freshness-03"
      ipr="trust200902">
   <front>
     <title abbrev="STUN Usage for Consent Freshness">STUN Usage for Consent
@@ -110,7 +110,9 @@
 
       <address>
         <postal>
-          <street>331 E Evelyn Street</street>
+          <street>Suite 300</street>
+
+          <street>650 Castro Street</street>
 
           <city>Mountain View</city>
 
@@ -210,98 +212,98 @@
       endpoint consents to receive the data. After a successful ICE
       connectivity check on a particular transport address, subsequent consent
       MUST be obtained following the procedure described in this document. The
-      consent expires after a fixed amount of time. Explicit consent to send
-      is indicated by: <list style="numbers">
-          <t>Sending an ICE binding request to the remote peer's Transport
-          Address and receiving a matching and authenticated ICE binding
-          response from the inverted remote peer's Transport Address. These
-          ICE binding request/response are authenticated using the same short-
-          term credentials as the initial ICE exchange, but using a new
-          (fresh) transaction-id each time consent needs to be refresh.
-          Implementations MUST obtain fresh consent before their existing
-          consent expires. When obtaining fresh consent a STUN connectivity
-          check (or response) could be lost, and re-transmissions MUST use the
-          same STUN transaction-id, and re-transmissions MUST NOT be sent more
-          frequently than every 500ms or the smoothed round-trip time (from
-          previous consent freshness checks or RTP round-trip time), whichever
-          is less. For the purposes of this document, receipt of an ICE
-          response with the matching transaction-id of its request with a
-          valid MESSAGE-INTEGRITY is considered an authenticated packet.</t>
-        </list></t>
+      consent expires after a fixed amount of time.</t>
 
-      <t>Consent expires after 15 seconds. That is, if an authenticated packet
-      (e.g., DTLS, SRTP, ICE) has not been received from the inverted 5-tuple
-      after 15 seconds, the application MUST cease transmission on that
-      5-tuple.</t>
+      <t>Explicit consent to send is indicated by sending an ICE binding
+      request to the remote peer's Transport Address and receiving a matching
+      and authenticated ICE binding response from the inverted remote peer's
+      Transport Address. These ICE binding requests and responses are authenticated
+      using the same short-term credentials as the initial ICE exchange, but
+      using a new (fresh) transaction-id each time consent needs to be
+      refreshed. Implementations MUST obtain fresh consent before their existing
+      consent expires. When obtaining fresh consent a STUN connectivity check
+      (or response) could be lost, and re-transmissions MUST use the same STUN
+      transaction-id, and re-transmissions MUST NOT be sent more frequently
+      than every 500ms or the smoothed round-trip time (from previous consent
+      freshness checks or RTP round-trip time), whichever is less. For the
+      purposes of this document, receipt of an ICE response with the matching
+      transaction-id of its request with a valid MESSAGE-INTEGRITY is
+      considered an consent response.</t>
 
-      <t>Consent is ended immediately by receipt of a an authenticated message
-      that closes the connection (for instance, a TLS fatal alert).</t>
+      <t>Consent expires after 15 seconds. That is, if a STUN binding response
+      has not been received from the inverted 5-tuple after 15 seconds, the
+      application MUST cease transmission on that 5-tuple.</t>
 
-      <t>Receipt of an unauthenticated end-of-session message (e.g., TCP FIN)
-      does not indicate loss of consent. Thus, an endpoint receiving an
-      unauthenticated end-of-session message SHOULD continue sending media
-      (over connectionless transport) or attempt to re-establish the
-      connection (over connection-oriented transport) until consent expires or
-      it receives an authenticated message revoking consent.</t>
-
-      <t>Although receiving authenticated packets is sufficient for consent,
+      <t>Although receiving authenticated ICE packets is sufficient for consent,
       it is still RECOMMENDED to send messages to keep NAT or firewall
       bindings alive (see Section 10 of <xref target="RFC5245"></xref> and
       <xref target="RFC6263"></xref>).</t>
 
-      <t>To meet the security needs of consent, an implementation MUST ensure
-      that an application (e.g., Javascript application) is not able to obtain
-      or control STUN information relevant to consent, specifically the ICE
-      transaction-id MUST NOT be accessible to upper-level applications.</t>
+      <t>To meet the security needs of consent, an untrusted
+application (e.g., JavaScript) MUST NOT be able to obtain or control
+the ICE transaction-id, because that enables spoofing STUN responses,
+falsifying consent</t>
+
+      <section title="Stopping Consent checks">
+        <t>Consent is ended immediately by receipt of a an
+        authenticated message that closes the connection (for
+        instance, a TLS fatal alert).</t>
+
+        <t>Receipt of an unauthenticated message that closes a connection (e.g., TCP
+        FIN) does not indicate loss of consent. Thus, an endpoint receiving an
+        unauthenticated end-of-session message SHOULD continue sending media
+        (over connectionless transport) or attempt to re-establish the
+        connection (over connection-oriented transport) until consent expires
+        or it receives an authenticated message revoking consent.</t>
+      </section>
     </section>
 
     <!--
 
-      <t>Consent freshness serves as a circuit breaker (so that if the
-      path or remote peer fails the WebRTC browser stops sending all
-      traffic to that remote peer), determining session liveness
-      serves the purpose of notifying the application of connectivity
-      failure so that the application can take appropriate action. For
-      the rest of the document, peer is the sink for the traffic
-      originated from the sender for that flow (5 tuple). If a browser
-      uses different 5 tuple for each stream(Audio, video e.t.c) then
-      it has to do consent for each flow. Consent has to be done for
-      each component of a media stream when they use different
-      tuple. For example if RTCP uses different port then consent has
-      to be done for that as well. </t>
+<t>Consent freshness serves as a circuit breaker (so that if the
+path or remote peer fails the WebRTC browser stops sending all
+traffic to that remote peer), determining session liveness
+serves the purpose of notifying the application of connectivity
+failure so that the application can take appropriate action. For
+the rest of the document, peer is the sink for the traffic
+originated from the sender for that flow (5 tuple). If a browser
+uses different 5 tuple for each stream(Audio, video e.t.c) then
+it has to do consent for each flow. Consent has to be done for
+each component of a media stream when they use different
+tuple. For example if RTCP uses different port then consent has
+to be done for that as well. </t>
 
-      <t>Every Tc seconds, the WebRTC browser sends a STUN Binding Request to
-      the peer. This request MUST use a new, cryptographically random
-      Transaction ID <xref target="RFC4086"></xref>, and is formatted as for
-      an <xref target="RFC5245">ICE connectivity check</xref>. A valid STUN
-      Binding Response is also formatted as for an <xref target="RFC5245">ICE
-      connectivity check</xref>. The STUN Binding Request and STUN Binding
-      Response are validated as for an <xref target="RFC5245">ICE connectivity
-      check</xref>. The difference from ICE connectivity check is that there is no exponential back off for retransmissions.</t>
+<t>Every Tc seconds, the WebRTC browser sends a STUN Binding Request to
+the peer. This request MUST use a new, cryptographically random
+Transaction ID <xref target="RFC4086"></xref>, and is formatted as for
+an <xref target="RFC5245">ICE connectivity check</xref>. A valid STUN
+Binding Response is also formatted as for an <xref target="RFC5245">ICE
+connectivity check</xref>. The STUN Binding Request and STUN Binding
+Response are validated as for an <xref target="RFC5245">ICE connectivity
+check</xref>. The difference from ICE connectivity check is that there is no exponential back off for retransmissions.</t>
 
-      <t>If a valid STUN Binding Response is received, the consent timer is
-      reset to the time of receiving the response and fires again Tc seconds later. Multiple response on the same Transaction ID MUST reset the Tc timer.</t>
+<t>If a valid STUN Binding Response is received, the consent timer is
+reset to the time of receiving the response and fires again Tc seconds later. Multiple response on the same Transaction ID MUST reset the Tc timer.</t>
 
-      <t>If a valid STUN Binding Response is not received after Tret milliseconds, the
-      STUN Binding Request is retransmitted (with the same Transaction ID and
-      all other fields). As long as a valid STUN Binding Response is not
-      received, this retransmission is repeated every Tret milliseconds until Tf seconds
-      have elapsed or a valid response is received. If no valid response is
-      received after Tf seconds, the WebRTC browser MUST quit transmitting
-      traffic to this remote peer. The streams that are being sent on a flow(5 tuple) for which a consent has failed will be stopped.  Considering the default value of Tf=15 seconds, this means transmission will stop after 30 consent check
-      packets have resulted in no response.</t>
+<t>If a valid STUN Binding Response is not received after Tret milliseconds, the
+STUN Binding Request is retransmitted (with the same Transaction ID and
+all other fields). As long as a valid STUN Binding Response is not
+received, this retransmission is repeated every Tret milliseconds until Tf seconds
+have elapsed or a valid response is received. If no valid response is
+received after Tf seconds, the WebRTC browser MUST quit transmitting
+traffic to this remote peer. The streams that are being sent on a flow(5 tuple) for which a consent has failed will be stopped. Considering the default value of Tf=15 seconds, this means transmission will stop after 30 consent check
+packets have resulted in no response.</t>
 
-      <t>Liveness timer: If no packets have been received on the local port in
-      Tr seconds, the WebRTC browser MUST inform the JavaScript that
-      connectivity has been lost. The JavaScript application will use this
-      notification however it desires (e.g., cease transmitting to the remote
-      peer, provide a notification to the user, etc.). Note the definition of
-      a received packet is liberal, and includes an SRTP packet that fails
-      authentication, a STUN Binding Request with an invalid USERNAME or
-      PASSWORD, or any other packet.</t>
-    </section>
+<t>Liveness timer: If no packets have been received on the local port in
+Tr seconds, the WebRTC browser MUST inform the JavaScript that
+connectivity has been lost. The JavaScript application will use this
+notification however it desires (e.g., cease transmitting to the remote
+peer, provide a notification to the user, etc.). Note the definition of
+a received packet is liberal, and includes an SRTP packet that fails
+authentication, a STUN Binding Request with an invalid USERNAME or
+PASSWORD, or any other packet.</t>
+</section>
 
-    
 -->
 
     <section anchor="liveness" title="Connection Liveness">
@@ -365,7 +367,7 @@
       Descriptions</xref>, and <xref
       target="I-D.ietf-avtcore-srtp-ekt">EKT</xref>. Thus, in such shared
       keying distributions, receipt of an authenticated SRTP packet is not
-      sufficient. </t>
+      sufficient.</t>
     </section>
 
     <section anchor="sec.iana-considerations" title="IANA Considerations">
@@ -397,5 +399,52 @@
 
       <?rfc include="reference.I-D.ietf-avtcore-srtp-ekt"?>
     </references>
+
+    <section title="">
+      <t>This section describes one possible implementation algorithm of
+      consent. The solution uses three values:</t>
+
+      <t><list style="numbers">
+          <t>A consent timer, Tc, whose value is set to 15 seconds.</t>
+
+          <t>A packet receipt timer, Tr, whose value is determined by the
+          application. Tr can be greater than 1 but less than 15 seconds and
+          has a default value of 5 seconds.</t>
+
+          <t>A consent timeout, Tf, which is how many seconds elapse without a
+          consent response before the browser ceases transmission of media.
+          Its value is be 15 seconds or less.</t>
+
+          <t>A retransmission Timer, Tret, whose value is determined by the
+          RTT of a given path. An ICE agent can learn the RTT of a given path
+          from RTCP reports (if present). If there is no RTCP reports then it
+          can learn the RTT from the time it sends the STUN Binding Request to
+          receiving a STUN binding response for a given path. Tret has a
+          default value of 500ms.</t>
+        </list></t>
+
+      <t>A WebRTC browser performs a combined consent freshness and session
+      liveness test using STUN request/response as described below:</t>
+
+      <t>Every Tc seconds, the WebRTC browser sends a STUN Binding Request to
+      the peer. The difference from ICE connectivity check is that there is no
+      exponential back off for retransmissions.</t>
+
+      <t>If a valid STUN Binding Response is received, the consent timer is
+      reset to the time of receiving the response and fires again Tc seconds
+      later.</t>
+
+      <t>If a valid STUN Binding Response is not received after Tret
+      milliseconds, the STUN Binding Request is retransmitted (with the same
+      Transaction ID and all other fields). As long as a valid STUN Binding
+      Response is not received, this retransmission is repeated every Tret
+      milliseconds until Tf seconds have elapsed or a valid response is
+      received. If no valid response is received after Tf seconds, the WebRTC
+      browser quits transmitting traffic to this remote peer. The streams that
+      are being sent on a flow(5-tuple) for which a consent has failed will be
+      stopped. If the default value of Tf is 15 seconds then media
+      transmission will stop after 30 consent check packets have resulted in
+      no responses.</t>
+    </section>
   </back>
 </rfc>
