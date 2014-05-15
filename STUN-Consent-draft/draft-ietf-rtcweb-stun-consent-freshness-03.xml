@@ -207,12 +207,13 @@
       <t>A WebRTC browser performs a combined consent freshness and session
       liveness test using STUN request/response as described below:</t>
 
-      <t>An endpoint MUST NOT send application data (in WebRTC this means RTP
-      or SCTP data) on an ICE-initiated connection unless the receiving
+      <t>An endpoint MUST NOT send application data (e.g., RTP, SCTP,
+      DTLS) on an ICE-initiated connection unless the receiving
       endpoint consents to receive the data. After a successful ICE
-      connectivity check on a particular transport address, subsequent consent
-      MUST be obtained following the procedure described in this document. The
-      consent expires after a fixed amount of time.</t>
+      connectivity check on a particular transport address, subsequent
+      consent MUST be obtained following the procedure described in
+      this document. The consent expires after a fixed amount of
+      time.</t>
 
       <t>Explicit consent to send is indicated by sending an ICE binding
       request to the remote peer's Transport Address and receiving a matching
@@ -232,29 +233,37 @@
 
       <t>Consent expires after 15 seconds. That is, if a STUN binding response
       has not been received from the inverted 5-tuple after 15 seconds, the
-      application MUST cease transmission on that 5-tuple.</t>
+      endpoint MUST cease transmission on that 5-tuple.</t>
 
+<!--
       <t>Although receiving authenticated ICE packets is sufficient for consent,
       it is still RECOMMENDED to send messages to keep NAT or firewall
       bindings alive (see Section 10 of <xref target="RFC5245"></xref> and
       <xref target="RFC6263"></xref>).</t>
+-->
 
       <t>To meet the security needs of consent, an untrusted
 application (e.g., JavaScript) MUST NOT be able to obtain or control
 the ICE transaction-id, because that enables spoofing STUN responses,
 falsifying consent</t>
 
-      <section title="Stopping Consent checks">
-        <t>Consent is ended immediately by receipt of a an
-        authenticated message that closes the connection (for
-        instance, a TLS fatal alert).</t>
+      <section title="Revoking Consent">
+	<t>It is useful to signal both ends when a connection is terminated,
+so that one end does not unnecessarily continue sending packets.  This is
+done by revoking consent.</t>
 
-        <t>Receipt of an unauthenticated message that closes a connection (e.g., TCP
-        FIN) does not indicate loss of consent. Thus, an endpoint receiving an
-        unauthenticated end-of-session message SHOULD continue sending media
-        (over connectionless transport) or attempt to re-establish the
-        connection (over connection-oriented transport) until consent expires
-        or it receives an authenticated message revoking consent.</t>
+        <t>Consent is revoked by receipt of a an authenticated message
+        that closes the connection (for instance, a TLS fatal
+        alert).</t>
+
+        <t>Receipt of an unauthenticated message that closes a
+        connection (e.g., TCP FIN) does not indicate revocation of
+        consent. Thus, an endpoint receiving an unauthenticated
+        end-of-session message SHOULD continue sending media (over
+        connectionless transport) or attempt to re-establish the
+        connection (over connection-oriented transport) until consent
+        expires or it receives an authenticated message revoking
+        consent.</t>
       </section>
     </section>
 
