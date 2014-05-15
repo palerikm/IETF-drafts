@@ -45,7 +45,7 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="info" docName="draft-eckel-aeon-problem-statement-01"
+<rfc category="info" docName="draft-conet-aeon-problem-statement-00"
      ipr="trust200902">
   <!--  category values: std, bcp
 , info, exp, and historic
@@ -59,8 +59,8 @@
     <!-- The abbreviated title is used in the page header - it is only necessary if the
          full title is longer than 39 characters -->
 
-    <title abbrev="AEON Problem Statement and Req">Application Enabled Open
-    Networking: Problem Statement and Requirements</title>
+    <title abbrev="AEON/CONET Problem Statement and Req">Application Enabled
+    Collaborative Networking: Problem Statement and Requirements</title>
 
     <!-- add 'role="editor"' below for the editors if appropriate -->
 
@@ -110,6 +110,60 @@
       </address>
     </author>
 
+    <author fullname="Peng Fan" initials="P." surname="Fan">
+      <organization>China Mobile</organization>
+
+      <address>
+        <postal>
+          <street>32 Xuanwumen West Street, Xicheng District</street>
+
+          <city>Beijing</city>
+
+          <code>100053</code>
+
+          <country>P.R. China</country>
+        </postal>
+
+        <email>fanpeng@chinamobile.com</email>
+      </address>
+    </author>
+
+    <author fullname="Hui Deng" initials="H." surname="Fan">
+      <organization>China Mobile</organization>
+
+      <address>
+        <postal>
+          <street>32 Xuanwumen West Street, Xicheng District</street>
+
+          <city>Beijing</city>
+
+          <code>100053</code>
+
+          <country>P.R. China</country>
+        </postal>
+
+        <email>denghui@chinamobile.com</email>
+      </address>
+    </author>
+
+    <author fullname="Mohamed Boucadair" initials="M." surname="Boucadair">
+      <organization>France Telecom</organization>
+
+      <address>
+        <postal>
+          <street/>
+
+          <city>Rennes</city>
+
+          <code>35000</code>
+
+          <country>France</country>
+        </postal>
+
+        <email>mohamed.boucadair@orange.com</email>
+      </address>
+    </author>
+
     <date/>
 
     <!-- If the month and year are both specified and are the current ones, xml2rfc will fill
@@ -135,7 +189,7 @@
          output. If you submit your draft to the RFC Editor, the
          keywords will be used for the search engine. -->
 
-    <keyword>aeon visibility heuristics</keyword>
+    <keyword>aeon conet visibility heuristics</keyword>
 
     <abstract>
       <t>Identification and treatment of application flows are important to
@@ -146,7 +200,7 @@
       made known to the network. Historically, this functionality has been
       implemented to the extent possible using heuristics, which inspect and
       infer flow characteristics. Heuristics may be based on port ranges,
-      network separation (e.g. subnets or VLANS), or Deep Packet Inspection
+      network separation (e.g. subnets or VLANS, or Deep Packet Inspection
       (DPI). But many application flows in current usages are dynamic,
       adaptive, time-bound, encrypted, peer-to-peer, asymmetric, used on
       multipurpose devices, and have different priorities depending on
@@ -194,9 +248,11 @@
 
       <t>As the IETF establishes default behaviors that thwart pervasive
       surveillance, it will be important to provide mechanisms for
-      applications to protect the contents of their flows, yet have the
-      ability to opt-in to information exchanges that provide a more precise
-      allocation of network resources and thus a better user experience.</t>
+      applications that want to have the network provide differential flow
+      treatment for their data. The intent is to have applications protect the
+      contents of their flows, yet have the ability to opt-in to information
+      exchanges that provide a more precise allocation of network resources
+      and thus a better user experience.</t>
     </section>
 
     <section title="Definitions and Terminology">
