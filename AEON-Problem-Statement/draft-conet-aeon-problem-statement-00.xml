@@ -45,7 +45,7 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="info" docName="draft-eckel-aeon-problem-statement-01"
+<rfc category="info" docName="draft-conet-aeon-problem-statement-00"
      ipr="trust200902">
   <!--  category values: std, bcp
 , info, exp, and historic
@@ -59,8 +59,8 @@
     <!-- The abbreviated title is used in the page header - it is only necessary if the
          full title is longer than 39 characters -->
 
-    <title abbrev="AEON Problem Statement and Req">Application Enabled Open
-    Networking: Problem Statement and Requirements</title>
+    <title abbrev="AEON/CONET Problem Statement and Req">Application Enabled
+    Collaborative Networking: Problem Statement and Requirements</title>
 
     <!-- add 'role="editor"' below for the editors if appropriate -->
 
@@ -110,6 +110,60 @@
       </address>
     </author>
 
+    <author fullname="Peng Fan" initials="P." surname="Fan">
+      <organization>China Mobile</organization>
+
+      <address>
+        <postal>
+          <street>32 Xuanwumen West Street, Xicheng District</street>
+
+          <city>Beijing</city>
+
+          <code>100053</code>
+
+          <country>P.R. China</country>
+        </postal>
+
+        <email>fanpeng@chinamobile.com</email>
+      </address>
+    </author>
+
+    <author fullname="Hui Deng" initials="H." surname="Fan">
+      <organization>China Mobile</organization>
+
+      <address>
+        <postal>
+          <street>32 Xuanwumen West Street, Xicheng District</street>
+
+          <city>Beijing</city>
+
+          <code>100053</code>
+
+          <country>P.R. China</country>
+        </postal>
+
+        <email>denghui@chinamobile.com</email>
+      </address>
+    </author>
+
+    <author fullname="Mohamed Boucadair" initials="M." surname="Boucadair">
+      <organization>France Telecom</organization>
+
+      <address>
+        <postal>
+          <street/>
+
+          <city>Rennes</city>
+
+          <code>35000</code>
+
+          <country>France</country>
+        </postal>
+
+        <email>mohamed.boucadair@orange.com</email>
+      </address>
+    </author>
+
     <date/>
 
     <!-- If the month and year are both specified and are the current ones, xml2rfc will fill
@@ -135,7 +189,7 @@
          output. If you submit your draft to the RFC Editor, the
          keywords will be used for the search engine. -->
 
-    <keyword>aeon visibility heuristics</keyword>
+    <keyword>aeon conet visibility heuristics</keyword>
 
     <abstract>
       <t>Identification and treatment of application flows are important to
@@ -146,13 +200,13 @@
       made known to the network. Historically, this functionality has been
       implemented to the extent possible using heuristics, which inspect and
       infer flow characteristics. Heuristics may be based on port ranges,
-      network separation (e.g. subnets or VLANS), or Deep Packet Inspection
-      (DPI). But many application flows in current usages are dynamic,
-      adaptive, time-bound, encrypted, peer-to-peer, asymmetric, used on
-      multipurpose devices, and have different priorities depending on
-      direction of flow, user preferences, and other factors. Any combination
-      of these properties renders heuristic based techniques less effective
-      and may result in compromises to application security or user
+      network separation (e.g. subnets or VLANS, Deep Flow Inspection (DFI),
+      or Deep Packet Inspection (DPI). But many application flows in current
+      usages are dynamic, adaptive, time-bound, encrypted, peer-to-peer,
+      asymmetric, used on multipurpose devices, and have different priorities
+      depending on direction of flow, user preferences, and other factors. Any
+      combination of these properties renders heuristic based techniques less
+      effective and may result in compromises to application security or user
       privacy.</t>
     </abstract>
   </front>
@@ -177,26 +231,32 @@
       applications are used.</t>
 
       <t>Historically, identification of application flows has been
-      accomplished using heuristics, which inspect and infer flow
-      characteristics based on port ranges, network separation, or DPI. Each
-      of these techniques suffers from a set of limitations, particularly in
-      the face of challenges on the network outlined previously.</t>
+      accomplished using heuristics, which infer flow characteristics based on
+      port ranges, network separation, or inspection of the flow itself.
+      Inspection techniques include DPI, which matches against characteristic
+      signatures (e.g. key string, binary sequence, etc.) and DFI, which
+      analyzes statistical characteristics and connection behavior of flows.
+      Each of these techniques suffers from a set of limitations, particularly
+      in the face of the challenges on the network outlined previously.</t>
 
       <t>Heuristic-based approaches may not be efficient and require
       continuous updates of application signatures. Port based solutions
       suffer from port overloading and inconsistent port usage. Network
       separation techniques like IP subnetting are error prone and increase
-      network management complexity. DPI is computationally expensive and
-      becomes a greater challenge with the wider adoption of encrypted
-      signaling and secured media. An additional drawback of DPI is that any
-      insights are not available, or need to be recomputed, at network nodes
-      further down the application flow path.</t>
+      network management complexity. DPI and DFI are computationally
+      expensive, prone to error, and become more challenging with greater
+      adoption of encrypted signaling and secured media. An additional
+      drawback of DPI and DFI is that any insights are not available, or need
+      to be recomputed, at network nodes further down the application flow
+      path.</t>
 
       <t>As the IETF establishes default behaviors that thwart pervasive
       surveillance, it will be important to provide mechanisms for
-      applications to protect the contents of their flows, yet have the
-      ability to opt-in to information exchanges that provide a more precise
-      allocation of network resources and thus a better user experience.</t>
+      applications that want to have the network provide differential flow
+      treatment for their data. The intent is to have applications protect the
+      contents of their flows, yet have the ability to opt-in to information
+      exchanges that provide a more precise allocation of network resources
+      and thus a better user experience.</t>
     </section>
 
     <section title="Definitions and Terminology">
@@ -246,26 +306,38 @@
       inspection and observation limits the ability to enable these workflows
       more widely. Reasons for this include the following:<list
           style="symbols">
-          <t>Simple observation based classification based on TCP/UDP port
-          numbers often result in incorrect results due to port overloading
-          (i.e. ports used by applications other than those claiming the port
-          with IANA).</t>
+          <t>Identification based on IP address lists is difficult to manage.
+          The addresses may be numerous and may change, or they may be
+          dynamic, private, or otherwise not meant to be exposed. Even in
+          cases where identification by IP addresses is possible, more
+          granular identification of individual flows is not possible (e.g.
+          audio vs. video vs. data).</t>
 
-          <t>More and more traffic is encrypted, rendering DPI impossible,
-          inefficient, or much more complex, and sometimes at the expense of
-          privacy or security (e.g. need to share encryption keys with
-          intermediary proxy performing DPI).</t>
+          <t>Classification based on TCP/UDP port numbers often result in
+          incorrect results due to port overloading (i.e. ports used by
+          applications other than those claiming the port with IANA).</t>
+
+          <t>More and more traffic is encrypted, rendering DPI and DFI
+          impossible, inefficient, or much more complex, and sometimes at the
+          expense of privacy or security (e.g. need to share encryption keys
+          with intermediary proxy performing DPI/DFI).</t>
 
           <t>Visibility generally requires inspecting the signaling traffic of
           applications. This traffic may flow through a different network path
           than the actual application data traffic. Impacting the traffic
           behavior is ineffective in those scenarios.</t>
 
-          <t>Extensions to signaling protocols can result in false negatives
-          or false positives during inspection.</t>
+          <t>Extensions to signaling protocols and changes in the ways
+          application use them can result in false negatives or false
+          positives during inspection.</t>
 
-          <t>Network services leveraging DPI traffic classification impact the
-          application behavior by impacting its traffic, but they do not
+          <t>Inspection techniques are completely non-standard, so the ability
+          and accuracy to identify traffic varies across vendors, and
+          different implementation are likely to give different results for
+          the same traffic. </t>
+
+          <t>Network services leveraging heuristic based classification impact
+          the application behavior by impacting its traffic, but they do not
           provide explicit feedback to the application. This results in a lost
           opportunity for the application to gain insight and adjust its
           operation accordingly.</t>
@@ -437,8 +509,8 @@
 
     <section anchor="Acknowledgements" title="Acknowledgements">
       <t>The authors thank Toerless Eckert, Reinaldo Penno, Dan Wing, Amine
-      Choukir, Paul Jones, Mohamed Boucadair, and Bill VerSteeg for their
-      contributions to this document.</t>
+      Choukir, Paul Jones, and Bill VerSteeg for their contributions to this
+      document.</t>
     </section>
   </middle>
 
