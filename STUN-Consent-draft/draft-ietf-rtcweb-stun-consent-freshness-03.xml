@@ -201,40 +201,49 @@
       consent freshness. ICE can be used for that mechanism because ICE
       already requires ICE agents continue listening for ICE messages, as
       described in section 10 of <xref target="RFC5245"></xref>.</t>
+
+
     </section>
 
     <section title="Solution Overview">
+      <t>There are two ways consent to send traffic is revoked:  expiration
+of consent and immediate revocation of consent, which are discussed in 
+the following sections.</t>
+
+    <section title="Expiration of Consent">
       <t>A WebRTC browser performs a combined consent freshness and session
       liveness test using STUN request/response as described below:</t>
 
-      <t>An endpoint MUST NOT send application data (e.g., RTP, SCTP,
-      DTLS) on an ICE-initiated connection unless the receiving
+      <t>An endpoint MUST NOT send application data (e.g., RTP, RTCP,
+      SCTP, DTLS) on an ICE-initiated connection unless the receiving
       endpoint consents to receive the data. After a successful ICE
       connectivity check on a particular transport address, subsequent
       consent MUST be obtained following the procedure described in
       this document. The consent expires after a fixed amount of
       time.</t>
 
-      <t>Explicit consent to send is indicated by sending an ICE binding
-      request to the remote peer's Transport Address and receiving a matching
-      and authenticated ICE binding response from the inverted remote peer's
-      Transport Address. These ICE binding requests and responses are authenticated
-      using the same short-term credentials as the initial ICE exchange, but
-      using a new (fresh) transaction-id each time consent needs to be
-      refreshed. Implementations MUST obtain fresh consent before their existing
-      consent expires. When obtaining fresh consent a STUN connectivity check
-      (or response) could be lost, and re-transmissions MUST use the same STUN
-      transaction-id, and re-transmissions MUST NOT be sent more frequently
-      than every 500ms or the smoothed round-trip time (from previous consent
-      freshness checks or RTP round-trip time), whichever is less. For the
-      purposes of this document, receipt of an ICE response with the matching
-      transaction-id of its request with a valid MESSAGE-INTEGRITY is
-      considered an consent response.</t>
+      <t>Explicit consent to send is indicated by sending an ICE
+      binding request to the remote peer's Transport Address and
+      receiving a matching and authenticated ICE binding response from
+      the inverted remote peer's Transport Address. These ICE binding
+      requests and responses are authenticated using the same
+      short-term credentials as the initial ICE exchange, but using a
+      new (fresh) transaction-id each time consent needs to be
+      refreshed.  Implementations MUST obtain fresh consent before
+      their existing consent expires.  If an ICE binding response is
+      not received within 1.5 times the previous round trip time,
+      another identical ICE binding request is sent using the same
+      transaction-id, and re-transmissions MUST NOT be sent more
+      frequently than every 500ms or the smoothed round-trip time
+      (from previous consent freshness checks or RTP round-trip time),
+      whichever is less. For the purposes of this document, receipt of
+      an ICE response with the matching transaction-id of its request
+      with a valid MESSAGE-INTEGRITY is considered a consent
+      response.</t>
 
       <t>Consent expires after 15 seconds. That is, if a STUN binding response
       has not been received from the inverted 5-tuple after 15 seconds, the
       endpoint MUST cease transmission on that 5-tuple.</t>
-
 <!--
       <t>Although receiving authenticated ICE packets is sufficient for consent,
       it is still RECOMMENDED to send messages to keep NAT or firewall
@@ -247,14 +256,26 @@ application (e.g., JavaScript) MUST NOT be able to obtain or control
 the ICE transaction-id, because that enables spoofing STUN responses,
 falsifying consent</t>
 
-      <section title="Revoking Consent">
-	<t>It is useful to signal both ends when a connection is terminated,
-so that one end does not unnecessarily continue sending packets.  This is
-done by revoking consent.</t>
+<t>An endpoint that is only receiving application traffic (recvonly)
+does not need to obtain consent which can slightly conserve its
+resources.  However, the endpoint needs to ensure its NAT or firewall
+mappings persist which can be done using keepalive or other techniques
+(see Section 10 of <xref target="RFC5245"></xref> and
+see <xref target="RFC6263"></xref>).  If the endpoint wants send
+application traffic, it needs to first obtain consent if its consent
+expired.</t>
 
-        <t>Consent is revoked by receipt of a an authenticated message
-        that closes the connection (for instance, a TLS fatal
-        alert).</t>
+
+</section>
+      <section title="Immediate Revocation of Consent">
+	<t>The previous section explained how consent expires due to a
+timeout.  In some cases it is useful to signal a connection is
+terminated, rather than relying on a timeout.  This is done by
+immediately revoking consent.</t>
+
+        <t>Consent for sending traffic on the media or data channel is
+        revoked by receipt of a an authenticated message that closes
+        the connection (for instance, a TLS fatal alert).</t>
 
         <t>Receipt of an unauthenticated message that closes a
         connection (e.g., TCP FIN) does not indicate revocation of
@@ -265,6 +286,7 @@ done by revoking consent.</t>
         expires or it receives an authenticated message revoking
         consent.</t>
       </section>
+
     </section>
 
     <!--
