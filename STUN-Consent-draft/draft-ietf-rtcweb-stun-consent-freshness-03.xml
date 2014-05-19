@@ -232,18 +232,20 @@ the following sections.</t>
       refreshed.  Implementations MUST obtain fresh consent before
       their existing consent expires.  If an ICE binding response is
       not received within 1.5 times the previous round trip time,
-      another identical ICE binding request is sent using the same
-      transaction-id, and re-transmissions MUST NOT be sent more
-      frequently than every 500ms or the smoothed round-trip time
-      (from previous consent freshness checks or RTP round-trip time),
-      whichever is less. For the purposes of this document, receipt of
-      an ICE response with the matching transaction-id of its request
-      with a valid MESSAGE-INTEGRITY is considered a consent
-      response.</t>
+      another ICE binding request is sent using the a new (fresh)
+      transaction-id (so that round-trip time can be calculated), and
+      re-transmissions MUST NOT be sent more frequently than every
+      500ms or the smoothed round-trip time (from previous consent
+      freshness checks or RTP round-trip time), whichever is less. For
+      the purposes of this document, receipt of an ICE response with
+      the matching transaction-id of its request with a valid
+      MESSAGE-INTEGRITY is considered a consent response.</t>
 
-      <t>Consent expires after 15 seconds. That is, if a STUN binding response
-      has not been received from the inverted 5-tuple after 15 seconds, the
-      endpoint MUST cease transmission on that 5-tuple.</t>
+      <t>Consent expires after 30 seconds. That is, if a valid STUN
+      binding response corresponding to one of the STUN requests sent
+      in the last 30 seconds has not been received from the inverted
+      5-tuple, the endpoint MUST cease transmission on that
+      5-tuple.</t>
 <!--
       <t>Although receiving authenticated ICE packets is sufficient for consent,
       it is still RECOMMENDED to send messages to keep NAT or firewall
@@ -431,20 +433,23 @@ PASSWORD, or any other packet.</t>
       <?rfc include="reference.I-D.ietf-avtcore-srtp-ekt"?>
     </references>
 
-    <section title="">
-      <t>This section describes one possible implementation algorithm of
-      consent. The solution uses three values:</t>
+    <section title="Example Implementation">
+      <t>This section describes one possible implementation algorithm
+      of consent. This section is non-normative and provided for
+      reference only.</t>
+
+  <t>The solution uses three values:</t>
 
       <t><list style="numbers">
-          <t>A consent timer, Tc, whose value is set to 15 seconds.</t>
+          <t>A consent timer, Tc, whose value is set to 30 seconds.</t>
 
           <t>A packet receipt timer, Tr, whose value is determined by the
-          application. Tr can be greater than 1 but less than 15 seconds and
+          application. Tr can be greater than 1 but less than 30 seconds and
           has a default value of 5 seconds.</t>
 
           <t>A consent timeout, Tf, which is how many seconds elapse without a
           consent response before the browser ceases transmission of media.
-          Its value is be 15 seconds or less.</t>
+          Its value is be 30 seconds or less.</t>
 
           <t>A retransmission Timer, Tret, whose value is determined by the
           RTT of a given path. An ICE agent can learn the RTT of a given path
@@ -473,7 +478,7 @@ PASSWORD, or any other packet.</t>
       received. If no valid response is received after Tf seconds, the WebRTC
       browser quits transmitting traffic to this remote peer. The streams that
       are being sent on a flow(5-tuple) for which a consent has failed will be
-      stopped. If the default value of Tf is 15 seconds then media
+      stopped. If the default value of Tf is 30 seconds then media
       transmission will stop after 30 consent check packets have resulted in
       no responses.</t>
     </section>
