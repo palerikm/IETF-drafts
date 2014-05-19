@@ -174,9 +174,10 @@
       target="RFC2119"></xref>.</t>
 
       <t><list style="hanging">
-          <t hangText="Consent:">It is the mechanism of obtaining permission
-          to send traffic to a certain transport address. This is usually
-          obtained via ICE.</t>
+          <t hangText="Consent:">It is the mechanism of obtaining
+          permission to send traffic to a certain transport address.
+          This is the initial consent to send traffic, which is
+          obtained by ICE or a TCP handshake.</t>
 
           <t hangText="Consent Freshness:">Permission to continue sending
           traffic to a certain transport address. This is performed by the
