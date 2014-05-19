@@ -242,7 +242,8 @@ the following sections.</t>
       the matching transaction-id of its request with a valid
       MESSAGE-INTEGRITY is considered a consent response.</t>
 
-      <t>Consent expires after 30 seconds. That is, if a valid STUN
+      <t>The initial Consent to send traffic is obtained by ICE.Consent 
+      expires after 30 seconds. That is, if a valid STUN
       binding response corresponding to one of the STUN requests sent
       in the last 30 seconds has not been received from the inverted
       5-tuple, the endpoint MUST cease transmission on that
@@ -453,11 +454,9 @@ PASSWORD, or any other packet.</t>
           Its value is be 30 seconds or less.</t>
 
           <t>A retransmission Timer, Tret, whose value is determined by the
-          RTT of a given path. An ICE agent can learn the RTT of a given path
-          from RTCP reports (if present). If there is no RTCP reports then it
-          can learn the RTT from the time it sends the STUN Binding Request to
-          receiving a STUN binding response for a given path. Tret has a
-          default value of 500ms.</t>
+          RTT of a given path. The duration of this timer is set to 500 ms or 
+          the smoothened round-trip time (from previous consent freshness checks 
+          or RTP round-trip time), whichever is less.</t>
         </list></t>
 
       <t>A WebRTC browser performs a combined consent freshness and session
@@ -472,16 +471,15 @@ PASSWORD, or any other packet.</t>
       later.</t>
 
       <t>If a valid STUN Binding Response is not received after Tret
-      milliseconds, the STUN Binding Request is retransmitted (with the same
-      Transaction ID and all other fields). As long as a valid STUN Binding
+      milliseconds, the STUN Binding Request is retransmitted (with a new
+      Transaction ID). As long as a valid STUN Binding
       Response is not received, this retransmission is repeated every Tret
       milliseconds until Tf seconds have elapsed or a valid response is
       received. If no valid response is received after Tf seconds, the WebRTC
       browser quits transmitting traffic to this remote peer. The streams that
       are being sent on a flow(5-tuple) for which a consent has failed will be
       stopped. If the default value of Tf is 30 seconds then media
-      transmission will stop after 30 consent check packets have resulted in
-      no responses.</t>
+      transmission will stop Consent (Tf) expires.</t>
     </section>
   </back>
 </rfc>
