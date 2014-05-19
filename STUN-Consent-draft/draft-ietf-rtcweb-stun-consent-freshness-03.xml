@@ -242,7 +242,7 @@ the following sections.</t>
       the matching transaction-id of its request with a valid
       MESSAGE-INTEGRITY is considered a consent response.</t>
 
-      <t>The initial Consent to send traffic is obtained by ICE.Consent 
+      <t>The initial Consent to send traffic is obtained by ICE. Consent 
       expires after 30 seconds. That is, if a valid STUN
       binding response corresponding to one of the STUN requests sent
       in the last 30 seconds has not been received from the inverted
@@ -454,9 +454,9 @@ PASSWORD, or any other packet.</t>
           Its value is be 30 seconds or less.</t>
 
           <t>A retransmission Timer, Tret, whose value is determined by the
-          RTT of a given path. The duration of this timer is set to 500 ms or 
+          RTT of a given path. The duration of this timer is set to 1.5 times of ( 500 ms or 
           the smoothened round-trip time (from previous consent freshness checks 
-          or RTP round-trip time), whichever is less.</t>
+          or RTP round-trip time)), whichever is less.</t>
         </list></t>
 
       <t>A WebRTC browser performs a combined consent freshness and session
