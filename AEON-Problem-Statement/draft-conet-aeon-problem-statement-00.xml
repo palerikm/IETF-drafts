@@ -12,8 +12,10 @@
 <!ENTITY RFC5978 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5978.xml">
 <!ENTITY RFC6241 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6241.xml">
 <!ENTITY RFC6601 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6601.xml">
+<!ENTITY RFC6770 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6770.xml">
 <!ENTITY RFC6887 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6887.xml">
 <!ENTITY RFC7011 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7011.xml">
+<!ENTITY RFC7258 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7258.xml">
 <!ENTITY I-D.ietf-rtcweb-use-cases-and-requirements SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-rtcweb-use-cases-and-requirements.xml">
 <!ENTITY I-D.ietf-netconf-restconf SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-netconf-restconf.xml">
 <!-- One method to get references from the online citation libraries.
@@ -66,50 +68,6 @@
 
     <!-- Another author who claims to be an editor -->
 
-    <author fullname="Charles Eckel" initials="C." surname="Eckel">
-      <organization>Cisco Systems, Inc.</organization>
-
-      <address>
-        <postal>
-          <street>170 West Tasman Drive</street>
-
-          <city>San Jose</city>
-
-          <region>CA</region>
-
-          <code>95134</code>
-
-          <country>USA</country>
-        </postal>
-
-        <email>eckelcu@cisco.com</email>
-
-        <!-- uri and facsimile elements may also be added -->
-      </address>
-    </author>
-
-    <author fullname="Tirumaleswar Reddy" initials="T." surname="Reddy">
-      <organization>Cisco Systems, Inc.</organization>
-
-      <address>
-        <postal>
-          <street>Cessna Business Park, Varthur Hobli</street>
-
-          <street>Sarjapur Marathalli Outer Ring Road</street>
-
-          <city>Bangalore</city>
-
-          <region>Karnataka</region>
-
-          <code>560103</code>
-
-          <country>India</country>
-        </postal>
-
-        <email>tireddy@cisco.com</email>
-      </address>
-    </author>
-
     <author fullname="Peng Fan" initials="P." surname="Fan">
       <organization>China Mobile</organization>
 
@@ -128,7 +86,7 @@
       </address>
     </author>
 
-    <author fullname="Hui Deng" initials="H." surname="Fan">
+    <author fullname="Hui Deng" initials="H." surname="Deng">
       <organization>China Mobile</organization>
 
       <address>
@@ -161,6 +119,50 @@
         </postal>
 
         <email>mohamed.boucadair@orange.com</email>
+      </address>
+    </author>
+
+    <author fullname="Tirumaleswar Reddy" initials="T." surname="Reddy">
+      <organization>Cisco Systems, Inc.</organization>
+
+      <address>
+        <postal>
+          <street>Cessna Business Park, Varthur Hobli</street>
+
+          <street>Sarjapur Marathalli Outer Ring Road</street>
+
+          <city>Bangalore</city>
+
+          <region>Karnataka</region>
+
+          <code>560103</code>
+
+          <country>India</country>
+        </postal>
+
+        <email>tireddy@cisco.com</email>
+      </address>
+    </author>
+
+    <author fullname="Charles Eckel" initials="C." surname="Eckel">
+      <organization>Cisco Systems, Inc.</organization>
+
+      <address>
+        <postal>
+          <street>170 West Tasman Drive</street>
+
+          <city>San Jose</city>
+
+          <region>CA</region>
+
+          <code>95134</code>
+
+          <country>USA</country>
+        </postal>
+
+        <email>eckelcu@cisco.com</email>
+
+        <!-- uri and facsimile elements may also be added -->
       </address>
     </author>
 
@@ -200,7 +202,7 @@
       made known to the network. Historically, this functionality has been
       implemented to the extent possible using heuristics, which inspect and
       infer flow characteristics. Heuristics may be based on port ranges,
-      network separation (e.g. subnets or VLANS, Deep Flow Inspection (DFI),
+      network separation (e.g. subnets or VLANs, Deep Flow Inspection (DFI),
       or Deep Packet Inspection (DPI). But many application flows in current
       usages are dynamic, adaptive, time-bound, encrypted, peer-to-peer,
       asymmetric, used on multipurpose devices, and have different priorities
@@ -251,12 +253,12 @@
       path.</t>
 
       <t>As the IETF establishes default behaviors that thwart pervasive
-      surveillance, it will be important to provide mechanisms for
-      applications that want to have the network provide differential flow
-      treatment for their data. The intent is to have applications protect the
-      contents of their flows, yet have the ability to opt-in to information
-      exchanges that provide a more precise allocation of network resources
-      and thus a better user experience.</t>
+      surveillance (e.g. <xref target="RFC7258"/>), it will be important to
+      provide mechanisms for applications that want to have the network
+      provide differential flow treatment for their data. The intent is to
+      have applications protect the contents of their flows, yet have the
+      ability to opt-in to information exchanges that provide a more precise
+      allocation of network resources and thus a better user experience.</t>
     </section>
 
     <section title="Definitions and Terminology">
@@ -283,13 +285,17 @@
 
     <section title="Typical Workflows">
       <t>Various heuristic based approaches are used prevalently and
-      successfully for two types of workflows:<list counter="1"
+      successfully for the following workflows:<list counter="1"
           style="numbers">
-          <t>Provide network operators with visibility into traffic for
-          troubleshooting, capacity planning, accounting and billing, and
-          other off network workflows. This is done by exporting observed
-          traffic analysis via protocols such as IPFIX <xref
-          target="RFC7011"/> and SNMP <xref target="RFC3416"/>.</t>
+          <t>Provide network operators with visibility of traffic usage and
+          patterns for troubleshooting, capacity planning, and other off
+          network workflows. This is done by exporting observed traffic
+          analysis via standard protocols such as IPFIX <xref
+          target="RFC7011"/> and SNMP <xref target="RFC3416"/>as well as by
+          proprietary protocols and methods.</t>
+
+          <t>Provide network operators with visibility of application and data
+          usage for accounting and billing.</t>
 
           <t>Provide differentiated network services for specific traffic
           according to network operator defined policies, including traffic
@@ -308,7 +314,11 @@
           style="symbols">
           <t>Identification based on IP address lists is difficult to manage.
           The addresses may be numerous and may change, or they may be
-          dynamic, private, or otherwise not meant to be exposed. Even in
+          dynamic, private, or otherwise not meant to be exposed. With Content
+          Delivery Network InterConnection (CDNI) <xref target="RFC6770"/>,
+          content could be served either from an upstream CDN (uCDN) or any of
+          a number of downstream CDNs (dCDN), and it will not be possible to
+          manually track the IP addresses of all the CDN surrogates. Even in
           cases where identification by IP addresses is possible, more
           granular identification of individual flows is not possible (e.g.
           audio vs. video vs. data).</t>
@@ -334,7 +344,12 @@
           <t>Inspection techniques are completely non-standard, so the ability
           and accuracy to identify traffic varies across vendors, and
           different implementation are likely to give different results for
-          the same traffic. </t>
+          the same traffic.</t>
+
+          <t>Inspection techniques that require parsing the payload of packets
+          (e.g. DPI) impact performance due to additional processing, and
+          impact memory due to the growing number and size of signatures to
+          identify new protocols.</t>
 
           <t>Network services leveraging heuristic based classification impact
           the application behavior by impacting its traffic, but they do not
@@ -551,9 +566,13 @@
 
       &RFC6601;
 
+      &RFC6770;
+
       &RFC6887;
 
       &RFC7011;
+
+      &RFC7258;
 
       &I-D.ietf-rtcweb-use-cases-and-requirements;
 
