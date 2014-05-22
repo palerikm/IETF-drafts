@@ -261,28 +261,6 @@
       allocation of network resources and thus a better user experience.</t>
     </section>
 
-    <section title="Definitions and Terminology">
-      <t/>
-
-      <t/>
-
-      <section title="Types of Signaling">
-        <t>The following terms describe the relationship between signaling and
-        the media to which it is associated.<list counter="" style="symbols">
-            <t>off-path: signaling along a different network path than the
-            media flow</t>
-
-            <t>on-path: signaling along the same network path as the media
-            flow<list style="symbols">
-                <t>in-band: signaling on the same port as the media flow</t>
-
-                <t>out-of-band: signaling on a different port than the media
-                flow</t>
-              </list></t>
-          </list></t>
-      </section>
-    </section>
-
     <section title="Typical Workflows">
       <t>Various heuristic based approaches are used prevalently and
       successfully for the following workflows:<list counter="1"
