@@ -240,7 +240,7 @@ the following sections.</t>
       their existing consent expires.  If an ICE binding response is not 
       received after waiting for 5 (+/-1) seconds (giving ample time for 
       the response to be received), another ICE binding request is sent using 
-      a newnew (fresh) transaction-id (so that round-trip time can be calculated), 
+      a new (fresh) transaction-id (so that round-trip time can be calculated), 
       and re-transmissions MUST NOT be sent more frequently than every
       500ms or the smoothed round-trip time (from previous consent
       freshness checks or RTP round-trip time), whichever is less. For
