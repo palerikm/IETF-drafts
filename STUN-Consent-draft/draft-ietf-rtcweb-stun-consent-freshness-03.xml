@@ -165,6 +165,12 @@
       <t>This document describes a new STUN usage with a request and response
       messages which verifies the remote peer's consent to receive traffic,
       and can also detect loss of liveness.</t>
+      
+      <t>Consent is done irrespective of transport protocol used for media. When
+      TCP is used as transport for media from a TURN client to a TURN server and
+      UDP is used from the server to the remote peer, Consent MUST be done by the
+      TURN Client. For other cases where TCP is used for media, Consent MAY be done
+      by the endpoints.</t>
     </section>
 
     <section anchor="sec-term" title="Terminology">
@@ -231,11 +237,11 @@ the following sections.</t>
       short-term credentials as the initial ICE exchange, but using a
       new (fresh) transaction-id each time consent needs to be
       refreshed.  Implementations MUST obtain fresh consent before
-      their existing consent expires.  If an ICE binding response is
-      not received within 1.5 times the previous round trip time,
-      another ICE binding request is sent using the a new (fresh)
-      transaction-id (so that round-trip time can be calculated), and
-      re-transmissions MUST NOT be sent more frequently than every
+      their existing consent expires.  If an ICE binding response is not 
+      received after waiting for 5 (+/-1) seconds (giving ample time for 
+      the response to be received), another ICE binding request is sent using 
+      a new (fresh) transaction-id (so that round-trip time can be calculated), 
+      and re-transmissions MUST NOT be sent more frequently than every
       500ms or the smoothed round-trip time (from previous consent
       freshness checks or RTP round-trip time), whichever is less. For
       the purposes of this document, receipt of an ICE response with
