@@ -229,19 +229,17 @@ the following sections.</t>
       receiving a matching and authenticated ICE binding response from
       the inverted remote peer's Transport Address. These ICE binding
       requests and responses are authenticated using the same
-      short-term credentials as the initial ICE exchange, but using a
-      new (fresh) transaction-id each time consent needs to be
-      refreshed.  Implementations MUST obtain fresh consent before
-      their existing consent expires.  If an ICE binding response is not 
-      received after waiting for 5 (+/-1) seconds (giving ample time for 
-      the response to be received), another ICE binding request is sent using 
-      a new (fresh) transaction-id (so that round-trip time can be calculated), 
-      and re-transmissions MUST NOT be sent more frequently than every
-      500ms or the smoothed round-trip time (from previous consent
-      freshness checks or RTP round-trip time), whichever is less. For
-      the purposes of this document, receipt of an ICE response with
-      the matching transaction-id of its request with a valid
-      MESSAGE-INTEGRITY is considered a consent response.</t>
+      short-term credentials as the initial ICE exchange.
+      Implementations MUST cease sending data if their consent
+      expires.  To prevent expiry of consent, a STUN binding request
+      is sent every N milliseconds, where N is a random value (to
+      prevent network synchronization) between 4000 and 6000.  These
+      STUN binding requests for consent are not re-transmitted.  Each
+      STUN binding request for consent re-calculates a new random
+      value N and a
+      new <xref target="RFC4086">cryptographically-random</xref> STUN
+      transaction ID.</t>
+
 
       <t>The initial Consent to send traffic is obtained by ICE. Consent 
       expires after 30 seconds. That is, if a valid STUN
@@ -258,7 +256,7 @@ the following sections.</t>
 
       <t>To meet the security needs of consent, an untrusted
 application (e.g., JavaScript) MUST NOT be able to obtain or control
-the ICE transaction-id, because that enables spoofing STUN responses,
+the STUN transaction ID, because that enables spoofing STUN responses,
 falsifying consent.</t>
 
 <t>While TCP affords some protection from off-path attackers
@@ -433,6 +431,8 @@ PASSWORD, or any other packet.</t>
       <?rfc include="reference.RFC.2119"?>
 
       <?rfc include="reference.RFC.5245"?>
+
+      <?rfc include="reference.RFC.4086"?>
 
       <?rfc include="reference.RFC.6263"?>
     </references>
