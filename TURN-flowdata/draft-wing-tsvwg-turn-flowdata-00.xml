@@ -102,14 +102,15 @@
 
     <date />
 
-    <workgroup>TRAM</workgroup>
+    <workgroup>TSVWG</workgroup>
 
     <abstract>
       <t>There exists no mechanism for the TURN client to communicate flow
-      characteristics to the TURN server. This document defines such a
-      mechanism to communicate flow characteristics from the TURN client to
-      its TURN server, which the TURN server uses to enhance packet delivery
-      for the traffic on both client-to-server and server-to-peer legs.</t>
+      characteristics to the TURN server which can be used by the network
+      hosting the TURN server to enhance packet delivery for the traffic on
+      both client-to-server and server-to-peer legs. This document defines
+      such a mechanism to communicate flow characteristics from the TURN
+      client to its TURN server.</t>
     </abstract>
   </front>
 
@@ -121,28 +122,29 @@
       when one or both sides is incapable of a direct P2P connection. A TURN
       server could be provided by an enterprise network, an access network, an
       application service provider or a third party provider. A TURN server
-      and the network in which it is hosted need a mechanism to identify and
-      provide differentiated service to flows relayed through the TURN server.
-      </t>
+      could be used to relay media streams, WebRTC data channels <xref
+      target="I-D.ietf-rtcweb-overview"></xref> , gaming, file transfer etc. A
+      TURN server and the network in which it is hosted could have
+      insufficient bandwidth or other characteristics that could adversely
+      impact the traffic relayed through it and need a mechanism to identify
+      and provide differentiated service to flows relayed through the TURN
+      server.</t>
 
       <t>This specification provides a mechanism for the client to signal the
       flow characteristics of a relay channel to the TURN server, so that
       certain relay channels can receive service that is differentiated from
       others. The TURN server authorizes the request and signals back to the
-      client that it can (fully or partially) accommodate the flow. The
-      proposed mechanism is applicable to channels and not for Send and Data
-      methods. This sort of signaling will be useful for long-lived flows such
-      as media streams, WebRTC data channels <xref
-      target="I-D.ietf-rtcweb-overview"></xref> etc traversing through the
-      TURN server. The TURN server can further communicate the flow
-      information to a number of on-path devices in its network using a Policy
-      decision Point (e.g. SDN controller). This way the network hosting the
-      TURN server can accommodate the flow. With this mechanism, a TURN client
-      can request the TURN server to provide certain characteristics for the
-      relayed channel on both legs (client-to-server, server-to-peer).
-      Applications using TURN as a communication relay would benefit from such
-      an arrangement as it would improve the Quality of Experience (QOE) of
-      the end user.</t>
+      client that it can (fully or partially) accommodate the flow. This sort
+      of signaling will be useful for long-lived flows such as media streams,
+      WebRTC data channels etc traversing through the TURN server. The TURN
+      server can further communicate the flow information to a number of
+      on-path devices in its network using a Policy decision Point (e.g. SDN
+      controller). This way the network hosting the TURN server can
+      accommodate the flow. With this mechanism, a TURN client can request the
+      TURN server to provide certain characteristics for the relayed channel
+      on both legs (client-to-server, server-to-peer). Applications using TURN
+      as a communication relay would benefit from such an arrangement as it
+      would improve the Quality of Experience (QOE) of the end user.</t>
 
       <t>DSCP style markings can also help provide QOS, but has the following
       limitations:</t>
@@ -178,7 +180,7 @@
           TURN server about the flow.</t>
         </list></t>
 
-      <t>Note, it is not the intent of this document to advocate in favor of
+      <t>Note: It is not the intent of this document to advocate in favor of
       prioritizing relayed candidates over host, server-reflexive candidates,
       but to highlight the proposed mechanism only when TURN server is
       selected for various reasons like privacy, ICE connectivity checks with
@@ -195,12 +197,15 @@
     <section anchor="design" title="Design considerations">
       <t>TURN client can choose to either use Send and Data methods or
       channels to exchange data with its peer. For bandwidth intensive
-      applications (like video, audio, WebRTC data channels) a Send indication
-      or Data indication (which adds 36 bytes overhead) can increase the
-      bandwidth required between the client and the server. Hence channels are
-      commonly used for bandwidth intensive applications to exchange data. In
-      this specification we will focus on conveying the flow characteristics
-      only in ChannelBind request.</t>
+      applications (like video, audio, WebRTC data channels) using Send
+      indication or Data indication adds 36 bytes overhead to the application
+      data and substantially increases the bandwidth required between the
+      client and the server. Hence channels are commonly used for bandwidth
+      intensive applications to exchange data. The other problem with using
+      Send/Data indications is that if the TURN server determines that a flow
+      can only be partially accommodated then this feedback cannot be conveyed
+      back to the client. Hence in this specification focuses on conveying the
+      flow characteristics only in ChannelBind request/response.</t>
     </section>
 
     <section title="Solution Overview">
@@ -265,7 +270,7 @@
           <t>It is possible that two hosts send requests with different
           thresholds for delay or jitter in each direction for the same flow,
           and their requests arrive at the same TURN server. If this occurs,
-          it is RECOMMENDED that the TURN server use the stricter delay/loss
+          it is RECOMMENDED that the TURN server uses the stricter delay/loss
           tolerance (that is, the lower tolerance to delay or jitter). The
           diagram below depicts a conflict message flow.</t>
 
@@ -283,6 +288,11 @@
 
 ]]></artwork>
             </figure></t>
+
+          <t>In the above example if the TURN server has already responded to
+          client B before it receives the request from client A then the TURN
+          server can correct the conflict only when the client B refreshes the
+          binding.</t>
         </section>
       </section>
 
@@ -347,7 +357,9 @@
       <t>Different applications have different needs for their flows. The
       following table is derived from <xref target="RFC4594"></xref> to serve
       as a guideline for tolerance to loss, delay and jitter for some sample
-      applications.</t>
+      applications. The range 0 to 4 used for the fields in FLOWDATA
+      attribute, meets the need to convey the tolerance levels for the traffic
+      serviced by the service classes in the below table.</t>
 
       <t><figure anchor="Figure2" title="Flow characteristics">
           <artwork align="left"><![CDATA[
