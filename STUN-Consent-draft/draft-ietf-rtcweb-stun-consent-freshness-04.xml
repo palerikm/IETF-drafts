@@ -290,8 +290,10 @@ terminated, rather than relying on a timeout.  This is done by
 immediately revoking consent.</t>
 
         <t>Consent for sending traffic on the media or data channel is
-        revoked by receipt of a an authenticated message that closes
-        the connection (for instance, a TLS fatal alert).</t>
+        immediately revoked by receipt of a an authenticated message
+        that closes the connection (e.g., a TLS fatal alert) or
+        receipt of a valid and authenticated STUN response with error
+        code Forbidden (403).</t>
 
         <t>Receipt of an unauthenticated message that closes a
         connection (e.g., TCP FIN) does not indicate revocation of
