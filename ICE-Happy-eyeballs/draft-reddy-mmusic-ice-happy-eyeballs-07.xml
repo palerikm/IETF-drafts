@@ -155,9 +155,9 @@
       <t>The list below shows a sorted local candidate list where the
       priority is calculated in such a way that the IPv4 and IPv6
       candidates are intermingled. To allow for earlier connectivity
-      checks for the IPv4 RFLX candidates, some of the IPv6 host
-      candidates was demoted. This is just an example of how a
-      candidate priorities can be calculated to provide better
+      checks for the IPv4 server reflexive candidates, some of the
+      IPv6 host candidates was demoted. This is just an example of how
+      a candidate priorities can be calculated to provide better
       fairness between IPv4 and IPv6 candidates without breaking any
       of the ICE connectivity checks.
       </t>
