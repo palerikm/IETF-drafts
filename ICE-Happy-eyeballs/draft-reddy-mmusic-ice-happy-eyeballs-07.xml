@@ -77,19 +77,20 @@
       following the recommendations from the updated RFC will lead to
       prioritization of IPv6 over IPv4 for the same candidate
       type. Due to this, connectivity checks for candidates of the
-      same type (HOST, RFLX, RELAY) are sent such that an IP address
-      family is completely depleted before checks on the other address
-      family are started. This results in user noticeable setup delays
-      if the path for the prioritized address family is broken.</t>
+      same type (host, reflexive or relay) are sent such that an IP
+      address family is completely depleted before checks on the other
+      address family are started. This results in user noticeable
+      setup delays if the path for the prioritized address family is
+      broken.</t>
 
       <t>To avoid such user noticeable delays when either IPv6 or IPv4
-      path is broken, this specification encourages intermingling the
-      different address families when connectivity checks are
-      conducted. Introducing IP address family fairness into ICE
-      connectivity checks will lead to more sustained dual-stack
-      IPv4/IPv6 deployment as users will no longer have an incentive
-      to disable IPv6. The cost is a small penalty to the address type
-      that otherwise would have been prioritized.</t>
+      path is broken or excessive slow, this specification encourages
+      intermingling the different address families when connectivity
+      checks are conducted. Introducing IP address family fairness
+      into ICE connectivity checks will lead to more sustained
+      dual-stack IPv4/IPv6 deployment as users will no longer have an
+      incentive to disable IPv6. The cost is a small penalty to the
+      address type that otherwise would have been prioritized.</t>
     </section>
 
     <section anchor="notation" title="Notational Conventions">
@@ -139,24 +140,26 @@
 
       <t>ICE <xref target="RFC5245"/> section 4.1.2.2 has guidelines
       for how the type preference and local preference value should be
-      chosen. Instead of having a static value for IPv4 and a static
-      value for IPv6 type of addresses for the local preference, it is
-      possible to choose this value dynamically in such a way that
-      IPv4 and IPv6 address candidate priorities ends up intermingled
-      within the same candidate type (HOST, RFLX or RELAY).</t>
+      chosen.  Instead of having a static local preference value for
+      IPv4 and IPv6 addresses, it is possible to choose this value
+      dynamically in such a way that IPv4 and IPv6 address candidate
+      priorities ends up intermingled within the same candidate
+      type.</t>
 
       <t>It is also possible to dynamically change the type preference
-      in in such a way that IPv4 and IPv6 address candidates ends up
-      intermingled regardless of candidate type (HOST, RFLX or
-      RELAY). This can for example be useful if there are a lot of
-      IPv6 HOST candidates effectively blocking for testing any IPv4
-      RFLX candidates.</t>
+      in such a way that IPv4 and IPv6 address candidates end up
+      intermingled regardless of candidate type.  This is useful if
+      there are a lot of IPv6 host candidates effectively blocking
+      connectivity checks for IPv4 server reflexive candidates.</t>
 
       <t>The list below shows a sorted local candidate list where the
       priority is calculated in such a way that the IPv4 and IPv6
       candidates are intermingled. To allow for earlier connectivity
       checks for the IPv4 RFLX candidates, some of the IPv6 HOST
-      candidates was demoted.
+      candidates was demoted. This is just an example of how a
+      candidate priorities can be calculated to provide better
+      fairness between IPv4 and IPv6 candidates without breaking any
+      of the ICE connectivity checks.
       </t>
 
       <t><figure>
@@ -199,8 +202,9 @@
       </t>
       
       <t>The local and remote agent can have different algorithms for
-      choosing the local preference value without impacting the
-      synchronization between the local and remote check list.</t>
+      choosing the local preference and type preference values without
+      impacting the synchronization between the local and remote check
+      lists.</t>
 
       <t>The check list is made up by candidate pairs. A candidate
       pair is two candidates paired up and given a candidate pair
@@ -230,10 +234,9 @@
       formula.</t>
 
       <t>These recommendations are backward compatible with a standard
-      ICE implementation. If the other agent have IPv4 candidates with
-      higher priorities due to intermingling, the effect is canceled
-      when the checklist is formed and the pair priority formula is
-      used to calculate the pair priority.</t>
+      ICE implementation. The resulting local and remote checklist
+      will still be synchronized. The introduced fairness might be
+      better, but not worse than what exists today</t>
 
     </section>
 
@@ -277,7 +280,7 @@
       
       <t>An IPv6 and IPv4 start priority must be given. In this
       example IPv6 starts at 60000 and IPv4 at 59000. This leaves
-      enough address space to further play with the values if pr
+      enough address space to further play with the values if different
       interface priorities needs to be added. The highest value should
       be given to the address family that should be prioritized.
       </t>
@@ -355,14 +358,6 @@ Start   Start
         the different candidate types (HOST, SRFLX, RELAY). The
         local_preference value is calculated separately for each
         candidate type.
-      </t>
-      <t>The resulting checklist will depend on the priorities of the
-      remote candidates. It is not possible to ensure an even spread
-      of IPv4 and IPv6 addresses unless both the remote and local
-      sides uses the simple recommendations in this draft. It is worth
-      noting that there is a good chance it will some effect even if
-      the remote side does not support this. It will not break
-      interoperability with other ICE implementations.
       </t>
     </section>
   </back>
