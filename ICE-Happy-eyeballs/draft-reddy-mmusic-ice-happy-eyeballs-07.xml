@@ -155,7 +155,7 @@
       <t>The list below shows a sorted local candidate list where the
       priority is calculated in such a way that the IPv4 and IPv6
       candidates are intermingled. To allow for earlier connectivity
-      checks for the IPv4 RFLX candidates, some of the IPv6 HOST
+      checks for the IPv4 RFLX candidates, some of the IPv6 host
       candidates was demoted. This is just an example of how a
       candidate priorities can be calculated to provide better
       fairness between IPv4 and IPv6 candidates without breaking any
@@ -165,28 +165,32 @@
       <t><figure>
           <artwork align="left"><![CDATA[
 
-                      Type  Addr cmp Priority
-                  ------------------------------
-                 (1)  HOST  IPv6 (1) 2129289471
-                 (2)  HOST  IPv6 (2) 2129289470
-                 (3)  HOST  IPv4 (1) 2129033471
-                 (4)  HOST  IPv4 (2) 2129033470
-                 (5)  HOST  IPv6 (1) 2128777471
-                 (6)  HOST  IPv6 (2) 2128777470
-                 (7)  HOST  IPv4 (1) 2128521471
-                 (8)  HOST  IPv4 (2) 2128521470
-                 (9)  HOST  IPv6 (1) 2127753471
-                 (10) HOST  IPv6 (2) 2127753470
-                 (11) SRFLX IPv6 (1) 1693081855
-                 (12) SRFLX IPv6 (2) 1693081854
-                 (13) SRFLX IPv4 (1) 1692825855
-                 (14) SRFLX IPv4 (2) 1692825854
-                 (15) HOST  IPv6 (1) 1692057855
-                 (16) HOST  IPv6 (2) 1692057854
-                 (17) RELAY IPv6 (1) 15360255  
-                 (18) RELAY IPv6 (2) 15360254  
-                 (19) RELAY IPv4 (1) 15104255  
-                 (20) RELAY IPv4 (2) 15104254  
+                  Candidate   Address Component
+                    Type       Type      Id     Priority
+               -------------------------------------------
+               (1)  HOST       IPv6      (1)    212928947
+               (2)  HOST       IPv6      (2)    2129289470
+               (3)  HOST       IPv4      (1)    2129033471
+               (4)  HOST       IPv4      (2)    2129033470
+               (5)  HOST       IPv6      (1)    2128777471
+               (6)  HOST       IPv6      (2)    2128777470
+               (7)  HOST       IPv4      (1)    2128521471
+               (8)  HOST       IPv4      (2)    2128521470
+               (9)  HOST       IPv6      (1)    2127753471
+               (10) HOST       IPv6      (2)    2127753470
+               (11) SRFLX      IPv6      (1)    1693081855
+               (12) SRFLX      IPv6      (2)    1693081854
+               (13) SRFLX      IPv4      (1)    1692825855
+               (14) SRFLX      IPv4      (2)    1692825854
+               (15) HOST       IPv6      (1)    1692057855
+               (16) HOST       IPv6      (2)    1692057854
+               (17) RELAY      IPv6      (1)    15360255  
+               (18) RELAY      IPv6      (2)    15360254  
+               (19) RELAY      IPv4      (1)    15104255  
+               (20) RELAY      IPv4      (2)    15104254
+
+                SRFLX = server reflexive
+  
           ]]></artwork>
       </figure></t>
       
@@ -318,8 +322,8 @@
           </t>
           
           <t hangText="Cn:"> Number of current candidates of a
-          specific IP address type and candidate type (HOST, SRFLX,
-          RELAY).
+          specific IP address type and candidate type (host, server
+          reflexive or relay).
           </t>
           
           <t hangText="Cmax:"> Number of allowed consecutive
@@ -355,8 +359,8 @@
       </figure>
       
         The result is an even spread of IPv6 and IPv4 candidates among
-        the different candidate types (HOST, SRFLX, RELAY). The
-        local_preference value is calculated separately for each
+        the different candidate types (host, server reflexive, relay). The
+        local preference value is calculated separately for each
         candidate type.
       </t>
     </section>
