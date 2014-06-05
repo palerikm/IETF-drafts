@@ -287,8 +287,8 @@
       <t>
         <figure>
           <artwork align="left"><![CDATA[
- IPv6    IPv4 
-Start   Start 
+       IPv6    IPv4 
+       Start   Start 
 65535  60k     59k    58k    57k    56k    55k                    0
 +--------+------+------+------+------+------+---------------------+
 |        | IPv6 | IPv4 | IPv6 | IPv4 | IPv6 |                     |
