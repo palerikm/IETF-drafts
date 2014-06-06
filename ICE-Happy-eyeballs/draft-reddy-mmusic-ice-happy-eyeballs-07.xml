@@ -196,10 +196,13 @@
       
       <t>Note that the list does not alter the component id part of
       the formula. This keeps the different components (RTP and RTCP)
-      close in the list. When the checklist pair states are computed
-      all pairs with the same foundation, and the the pair with the
-      lowest component ID is set to Waiting.(<xref target="RFC5245"/>
-      section 5.7.4. Computing States)</t>
+      close in the list.  What matters is the ordering of the
+      candidates with component id 1. Once the checklist is formed the
+      candidate pairs with other component ids will only will be
+      tested before other candidate pairs with component id 1 if a
+      candidate pair with component id 1 yields a successful
+      connectivity check and have the same foundation (<xref
+      target="RFC5245"/> section 5.7.4. Computing States).</t>
                   
       <t>The local and remote agent can have different algorithms for
       choosing the local preference and type preference values without
