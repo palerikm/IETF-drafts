@@ -196,15 +196,11 @@
       
       <t>Note that the list does not alter the component id part of
       the formula. This keeps the different components (RTP and RTCP)
-      close in the list.
-      </t>
-      
-      <t>
-        <cref anchor="Q1" source ="palmarti">Need to take a closer
-        look at how the unfreezing happens and how this affects the
-        component id is the sorting above.</cref>
-      </t>
-      
+      close in the list. When the checklist pair states are computed
+      all pairs with the same foundation, and the the pair with the
+      lowest component ID is set to Waiting.(<xref target="RFC5245"/>
+      section 5.7.4. Computing States)</t>
+                  
       <t>The local and remote agent can have different algorithms for
       choosing the local preference and type preference values without
       impacting the synchronization between the local and remote check
