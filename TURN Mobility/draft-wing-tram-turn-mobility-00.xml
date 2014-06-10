@@ -40,7 +40,7 @@
 
       <address>
         <postal>
-          <street/>
+          <street></street>
 
           <city>Bangalore</city>
 
@@ -93,7 +93,7 @@
       </address>
     </author>
 
-    <date/>
+    <date />
 
     <workgroup>TRAM</workgroup>
 
@@ -106,47 +106,48 @@
 
   <middle>
     <section title="Introduction">
-      <t>When moving between networks, an endpoint has to change its IP
-      address. This change breaks upper layer protocols such as TCP and RTP.
-      Various techniques exist to prevent this breakage, all tied to making
-      the endpoint's IP address static (e.g., Mobile IP, Proxy Mobile IP,
-      LISP). Other techniques exist, which make the change in IP address
-      agnostic to the upper layer protocol (e.g., SCTP). The mechanism
-      described in this document are in that last category.</t>
+      <t>When moving between networks, the endpoint's IP address can change or
+      (due to NAT) the endpoint's public IP address can change. Such a change
+      of IP address breaks upper layer protocols such as TCP and RTP. Various
+      techniques exist to prevent this breakage, all tied to making the
+      endpoint's IP address static (e.g., Mobile IP, Proxy Mobile IP, LISP).
+      Other techniques exist, which make the change in IP address agnostic to
+      the upper layer protocol (e.g., SCTP). The mechanism described in this
+      document are in that last category.</t>
 
-      <t>A TURN <xref target="RFC5766"/> server relays media packets and is
-      used for a variety of purposes, including overcoming NAT and firewall
+      <t>A TURN <xref target="RFC5766"></xref> server relays media packets and
+      is used for a variety of purposes, including overcoming NAT and firewall
       traversal issues. The existing TURN specification does not permit a TURN
       client to reuse an allocation across client IP address changes. Due to
       this, when the IP address of the client changes, the TURN client has to
       request for a new allocation, create permissions for the remote peer,
-      re-create channels etc. in addition to notifying the remote peer of the
+      create channels etc. In addition to notifying the remote peer of the
       address change, and punching new pinholes through any NAT/FW that might
       be on the path.</t>
 
       <t>This specification describes a mechanism to seamlessly reuse
-      allocations across client IP address changes wihtout any of the hassles
-      described above. A critical benefit of this technique is that that the
-      remote peer does not have to support support mobility, or deal with any
-      of the address changes. The client, that is subject to IP address
-      changes, does all the work. The mobility technique works across and
-      between network types (e.g., between 3G and wired Internet access), so
-      long as the client can still access the TURN server. The technique
-      should also work seamlessly when (D)TLS is used as a transport protocol
-      for STUN. When there is a change in IP address, the client uses TLS
-      Session Resumption without Server-Side State as described in <xref
-      target="RFC5077"/> to resume secure communication with the TURN server,
-      using the changed client IP address.</t>
+      allocations across client IP address changes without any of the hassles
+      described above. A critical benefit of this technique is that the remote
+      peer does not have to support mobility, or deal with any of the address
+      changes. The client, that is subject to IP address changes, does all the
+      work. The mobility technique works across and between network types
+      (e.g., between 3G and wired Internet access), so long as the client can
+      still access the TURN server. The technique should also work seamlessly
+      when (D)TLS is used as a transport protocol for STUN. When there is a
+      change in IP address, the client uses (D)TLS Session Resumption without
+      Server-Side State as described in <xref target="RFC5077"></xref> to
+      resume secure communication with the TURN server, using the changed
+      client IP address.</t>
     </section>
 
     <section anchor="notation" title="Notational Conventions">
       <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
       "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
       document are to be interpreted as described in <xref
-      target="RFC2119"/>.</t>
+      target="RFC2119"></xref>.</t>
 
-      <t>This note uses terminology defined in <xref target="RFC5245"/>, and
-      the following additional terminology:</t>
+      <t>This note uses terminology defined in <xref target="RFC5245"></xref>,
+      and the following additional terminology:</t>
     </section>
 
     <section anchor="MTURN" title="Mobility using TURN">
@@ -162,16 +163,16 @@
       response to the client. The ticket will be used by the client when it
       wants to refresh the allocation but with a new client IP address and
       port. This ensures that an allocation can only be refreshed by the same
-      client that allocated the the RELAY address. When a client's IP address
-      changes due to mobility, it presents the previously obtained ticket in a
-      Refresh Request to the TURN server. If the ticket is found to be valid,
-      the TURN server will retain the same relayed address/port for the new IP
-      address/port allowing the client to continue using previous channel
-      bindings -- thus, the TURN client does not need to obtain new channel
-      bindings. Any data from external peer will be delivered by the TURN
-      server to this new IP address/port of the client. The TURN client will
-      continue to send application data to its peers using the previously
-      allocated channelBind Requests.</t>
+      client that allocated relayed transport address. When a client's IP
+      address changes due to mobility, it presents the previously obtained
+      ticket in a Refresh Request to the TURN server. If the ticket is found
+      to be valid, the TURN server will retain the same relayed address/port
+      for the new IP address/port allowing the client to continue using
+      previous channel bindings -- thus, the TURN client does not need to
+      obtain new channel bindings. Any data from external peer will be
+      delivered by the TURN server to this new IP address/port of the client.
+      The TURN client will continue to send application data to its peers
+      using the previously allocated channelBind Requests.</t>
 
       <figure>
         <artwork><![CDATA[
@@ -203,14 +204,14 @@
       <section title="Creating an Allocation">
         <section title="Sending an Allocate Request">
           <t>In addition to the process described in Section 6.1 of <xref
-          target="RFC5766"/>, the client includes the MOBILITY-TICKET
+          target="RFC5766"></xref>, the client includes the MOBILITY-TICKET
           attribute with length 0. This indicates the client is a mobile node
           and wants a ticket.</t>
         </section>
 
         <section title="Receiving an Allocate Request">
           <t>In addition to the process described in Section 6.2 of <xref
-          target="RFC5766"/>, the server does the following:</t>
+          target="RFC5766"></xref>, the server does the following:</t>
 
           <t>If the MOBILITY-TICKET attribute is included, and has length
           zero, and the TURN session mobility is forbidden by local policy,
@@ -218,8 +219,8 @@
           error code. If the MOBILITY-TICKET attribute is included and has
           non-zero length then the server MUST generate an error response with
           an error code of 400 (Bad Request). Following the rules specified in
-          <xref target="RFC5389"/>, if the server does not understand the
-          MOBILITY-TICKET attribute, it ignores the attribute.</t>
+          <xref target="RFC5389"></xref>, if the server does not understand
+          the MOBILITY-TICKET attribute, it ignores the attribute.</t>
 
           <t>If the server can successfully process the request create an
           allocation, the server replies with a success response that includes
@@ -237,7 +238,7 @@
 
         <section title="Receiving an Allocate Success Response">
           <t>In addition to the process described in Section 6.3 of <xref
-          target="RFC5766"/>, the client will store the MOBILITY-TICKET
+          target="RFC5766"></xref>, the client will store the MOBILITY-TICKET
           attribute, if present, from the response. This attribute will be
           presented by the client to the server during a subsequent Refresh
           request to aid mobility.</t>
@@ -255,7 +256,7 @@
           problem has been fixed.</t>
 
           <t>All other error responses must be handled as described in <xref
-          target="RFC5766"/>.</t>
+          target="RFC5766"></xref>.</t>
         </section>
       </section>
 
@@ -264,7 +265,7 @@
           <t>If a client wants to refresh an existing allocation and update
           its time-to-expiry or delete an existing allocation, it will send a
           Refresh Request as described in Section 7.1 of <xref
-          target="RFC5766"/>. If the client wants to retain the existing
+          target="RFC5766"></xref>. If the client wants to retain the existing
           allocation in case of IP change, it will include the MOBILITY-TICKET
           attribute received in the Allocate Success response. If a Refresh
           transaction was previously made, the MOBILITY-TICKET attribute
@@ -274,7 +275,7 @@
 
         <section title="Receiving a Refresh Request">
           <t>In addition to the process described in Section 7.2 of <xref
-          target="RFC5766"/>, the client does the following:</t>
+          target="RFC5766"></xref>, the client does the following:</t>
 
           <t>If the STUN MOBILITY-TICKET attribute is included in the Refresh
           Request then the server will not retrieve the 5-tuple from the
@@ -303,7 +304,7 @@
 
         <section title="Receiving a Refresh Response">
           <t>In addition to the process described in Section 7.3 of <xref
-          target="RFC5766"/>, the client will store the MOBILITY-TICKET
+          target="RFC5766"></xref>, the client will store the MOBILITY-TICKET
           attribute, if present, from the response. This attribute will be
           presented by the client to the server during a subsequent Refresh
           Request to aid mobility.</t>
@@ -330,33 +331,33 @@
       target="iana-stun">STUN attribute registry</xref>, <list style="symbols">
           <t>MOBILITY-TICKET (0x802E, in the comprehension-optional range)</t>
         </list> and to add a new STUN error code "Mobility Forbidden" with the
-      value 501 to the <xref target="iana-stun">STUN Error Codes
+      value 405 to the <xref target="iana-stun">STUN Error Codes
       registry</xref>.</t>
     </section>
 
     <section title="Implementation Status">
       <t>[Note to RFC Editor: Please remove this section and reference to
-      <xref target="RFC6982"/> prior to publication.]</t>
+      <xref target="RFC6982"></xref> prior to publication.]</t>
 
       <t>This section records the status of known implementations of the
       protocol defined by this specification at the time of posting of this
       Internet-Draft, and is based on a proposal described in <xref
-      target="RFC6982"/>. The description of implementations in this section
-      is intended to assist the IETF in its decision processes in progressing
-      drafts to RFCs. Please note that the listing of any individual
-      implementation here does not imply endorsement by the IETF. Furthermore,
-      no effort has been spent to verify the information presented here that
-      was supplied by IETF contributors. This is not intended as, and must not
-      be construed to be, a catalog of available implementations or their
-      features. Readers are advised to note that other implementations may
-      exist.</t>
+      target="RFC6982"></xref>. The description of implementations in this
+      section is intended to assist the IETF in its decision processes in
+      progressing drafts to RFCs. Please note that the listing of any
+      individual implementation here does not imply endorsement by the IETF.
+      Furthermore, no effort has been spent to verify the information
+      presented here that was supplied by IETF contributors. This is not
+      intended as, and must not be construed to be, a catalog of available
+      implementations or their features. Readers are advised to note that
+      other implementations may exist.</t>
 
-      <t>According to <xref target="RFC6982"/>, "this will allow reviewers and
-      working groups to assign due consideration to documents that have the
-      benefit of running code, which may serve as evidence of valuable
-      experimentation and feedback that have made the implemented protocols
-      more mature. It is up to the individual working groups to use this
-      information as they see fit".</t>
+      <t>According to <xref target="RFC6982"></xref>, "this will allow
+      reviewers and working groups to assign due consideration to documents
+      that have the benefit of running code, which may serve as evidence of
+      valuable experimentation and feedback that have made the implemented
+      protocols more mature. It is up to the individual working groups to use
+      this information as they see fit".</t>
 
       <section title="open-sys">
         <t><list style="hanging">
@@ -397,12 +398,13 @@
       the ticket to prevent an attacker from using a brute force mechanism to
       obtain the ticket's contents or refreshing allocations.</t>
 
-      <t>Security considerations described in <xref target="RFC5766"/> are
-      also applicable to this mechanism.</t>
+      <t>Security considerations described in <xref target="RFC5766"></xref>
+      are also applicable to this mechanism.</t>
     </section>
 
     <section title="Acknowledgements">
-      <t>Thanks to Oleg Moskalenko for review and comments.</t>
+      <t>Thanks to Alfred Heggestad, Lishitao, Sujing Zhou, Martin Thomson,
+      Emil Ivov and Oleg Moskalenko for review and comments.</t>
     </section>
   </middle>
 
@@ -422,12 +424,6 @@
     </references>
 
     <references title="Informative References">
-      <?rfc include='reference.RFC.6263' ?>
-
-      <?rfc include='reference.RFC.5780' ?>
-
-      <?rfc include='reference.RFC.5763' ?>
-
       <?rfc include='reference.RFC.6982' ?>
 
       <reference anchor="iana-stun"
@@ -436,10 +432,10 @@
           <title>IANA: STUN Attributes</title>
 
           <author fullname="IANA" surname="IANA">
-            <organization/>
+            <organization></organization>
           </author>
 
-          <date month="April" year="2011"/>
+          <date month="April" year="2011" />
         </front>
       </reference>
     </references>
