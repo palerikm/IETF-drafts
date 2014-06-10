@@ -166,7 +166,7 @@
           <artwork align="left"><![CDATA[
 
                   Candidate   Address Component
-                    Type       Type      Id     Priority
+                    Type       Type      ID     Priority
                -------------------------------------------
                (1)  HOST       IPv6      (1)    212928947
                (2)  HOST       IPv6      (2)    2129289470
@@ -194,14 +194,13 @@
           ]]></artwork>
       </figure></t>
       
-      <t>Note that the list does not alter the component id part of
+      <t>Note that the list does not alter the component ID part of
       the formula. This keeps the different components (RTP and RTCP)
       close in the list.  What matters is the ordering of the
-      candidates with component id 1. Once the checklist is formed the
-      candidate pairs with other component ids will only will be
-      tested before other candidate pairs with component id 1 if a
-      candidate pair with component id 1 yields a successful
-      connectivity check and have the same foundation (<xref
+      candidates with component ID 1. Once the checklist is formed the
+      for a media stream candidate pair with component ID 1 will be
+      tested first. If ICE connectivity check is successful then other
+      candidate pairs with the same foundation will be unfrozen (<xref
       target="RFC5245"/> section 5.7.4. Computing States).</t>
                   
       <t>The local and remote agent can have different algorithms for
