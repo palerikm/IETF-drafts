@@ -78,7 +78,7 @@
       prioritization of IPv6 over IPv4 for the same candidate
       type. Due to this, connectivity checks for candidates of the
       same type (host, reflexive or relay) are sent such that an IP
-      address family is completely depleted before checks on the other
+      address family is completely depleted before checks from the other
       address family are started. This results in user noticeable
       setup delays if the path for the prioritized address family is
       broken.</t>
@@ -86,7 +86,7 @@
       <t>To avoid such user noticeable delays when either IPv6 or IPv4
       path is broken or excessive slow, this specification encourages
       intermingling the different address families when connectivity
-      checks are conducted. Introducing IP address family fairness
+      checks are performed. Introducing IP address family fairness
       into ICE connectivity checks will lead to more sustained
       dual-stack IPv4/IPv6 deployment as users will no longer have an
       incentive to disable IPv6. The cost is a small penalty to the
@@ -197,8 +197,8 @@
       <t>Note that the list does not alter the component ID part of
       the formula. This keeps the different components (RTP and RTCP)
       close in the list.  What matters is the ordering of the
-      candidates with component ID 1. Once the checklist is formed the
-      for a media stream candidate pair with component ID 1 will be
+      candidates with component ID 1. Once the checklist is formed
+      for a media stream the candidate pair with component ID 1 will be
       tested first. If ICE connectivity check is successful then other
       candidate pairs with the same foundation will be unfrozen (<xref
       target="RFC5245"/> section 5.7.4. Computing States).</t>
@@ -239,6 +239,12 @@
       ICE implementation. The resulting local and remote checklist
       will still be synchronized. The introduced fairness might be
       better, but not worse than what exists today</t>
+
+      <!--
+          Add a section discussing what happens if remote side
+          supports this, does not support this and so on. Makes it
+          easier to spot and read the draft. 
+      -->
 
     </section>
 
