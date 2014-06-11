@@ -105,19 +105,21 @@
         <email>gsalguei@cisco.com</email>
       </address>
     </author>
-    <author fullname="Victor Pascual" initials="V."
-            surname="Pascual">
-      <organization abbrev="Quobis"> Quobis</organization>
+
+    <author fullname="Victor Pascual" initials="V." surname="Pascual">
+      <organization abbrev="Quobis">Quobis</organization>
 
       <address>
         <postal>
-<!-- Street is mandatory under postal XML tag. So, change the taga from country to street -->
-             <street>Spain</street> 
+          <!-- Street is mandatory under postal XML tag. So, change the taga from country to street -->
+
+          <street>Spain</street>
         </postal>
 
         <email>victor.pascual@quobis.com</email>
       </address>
     </author>
+
     <date year="2014"/>
 
     <area>Real-time Applications and Infrastructre (RAI)</area>
@@ -164,10 +166,9 @@
       packet, including the payload (e.g., a transcoder). In all these
       cases a DTLS association would break unless the B2BUA
       participates in the DTLS setup and ensures the contexts are
-      setup properly. B2BUA
-  that are in media path MUST support DTLS stack and SRTP extensions needed for DTLS as described in <xref target="RFC5763"/> so that it can function as DTLS proxy.
-
-</t>
+      setup properly. B2BUA that are in media path MUST support DTLS
+      stack and SRTP extensions needed for DTLS as described in <xref
+      target="RFC5763"/> so that it can function as DTLS proxy.</t>
 
       <t><xref target="RFC7092"/> describes three different categories
       of such B2BUAs, according to the level of activities performed
@@ -214,10 +215,11 @@
       <t>All of the pertinent B2BUA terminology and taxonomy used in
       this document is based on <xref target="RFC7092"/>.</t>
 
-      <t>It is assumed the reader is familiar with the fundamental concepts of the RTP 
-      protocol <xref target="RFC3550"/> and its taxonomy <xref target="I-D.ietf-avtext-rtp-grouping-taxonomy"/>. 
-      Readers are also expected to be familiar with SRTP <xref target="RFC3711"/>, and 
-      DTLS <xref target="RFC4347"/>.</t>
+      <t>It is assumed the reader is familiar with the fundamental
+      concepts of the RTP protocol <xref target="RFC3550"/> and its
+      taxonomy <xref target="I-D.ietf-avtext-rtp-grouping-taxonomy"/>.
+      Readers are also expected to be familiar with SRTP <xref
+      target="RFC3711"/>, and DTLS <xref target="RFC4347"/>.</t>
     </section>
 
     <section title="Media Plane B2BUAs">
@@ -232,11 +234,12 @@
         <t>A media relay B2BUA MUST forward the certificate
         fingerprint and setup attribute it receives in the SDP from
         the originating endpoint as-is to the remote side and
-        vice-versa. The below example shows a "INVITE with SDP" SIP call flow with both SIP user agents doing DTLS-SRTP with a media
-        relay B2BUA that changes the UDP/IP address/port.</t>
+        vice-versa. The below example shows a "INVITE with SDP" SIP
+        call flow with both SIP user agents doing DTLS-SRTP with a
+        media relay B2BUA that changes the UDP/IP address/port.</t>
 
         <t><figure anchor="Figure1"
-            title="INVITE with SDP callflow for Media Relay B2BUA">
+            title="INVITE with SDP Callflow for Media Relay B2BUA">
             <artwork align="center"><![CDATA[
  +-------+            +------------------+              +-----+         
  | Alice |            | MediaRelay B2BUA |              | Bob |
@@ -290,23 +293,26 @@
         differentiate between a DTLS, RTP or any packet sent it just
         changes the UDP/IP addresses and forwards the packet on either
         leg.</t>
-<t> [[TODO: ICE handling w.r.t media relay B2BUA will be discussed in STUN passthrough STRAW WG item and the reference will be added in this section]] </t>
+
+        <t>[[TODO: ICE handling w.r.t media relay B2BUA will be
+        discussed in STUN passthrough STRAW WG item and the reference
+        will be added in this section]]</t>
       </section>
 
       <section title="Media Aware or Media Termination">
-        <t>    A media-aware relay, unlike the the media relay discussed in the
-   previous section, is actually aware of the media traffic it is
-   handling. A media-aware relay inspects SRTP and SRTCP packets
-   flowing through it, and may even be able to modify the headers in any
-   of them before forwarding them.  A B2BUA performing such a media-
-   aware role de-crypts the payload and re-encrypt it, but it does not modify the
-   contents of the payload itself.
-        Note that when such a media-aware B2BUA modifies SRTP headers
-        it MUST act as a DTLS intermediary and terminate the DTLS
-        connection so it can re-encrypt in order to properly
-        update the compound SRTCP packet to make them consistent. This
-        DTLS proxy functionality of media-aware B2BUAs is discussed in
-        greater detail in Section X of <xref
+        <t>A media-aware relay, unlike the the media relay discussed
+        in the previous section, is actually aware of the media
+        traffic it is handling. A media-aware relay inspects SRTP and
+        SRTCP packets flowing through it, and may even be able to
+        modify the headers in any of them before forwarding them. A
+        B2BUA performing such a media- aware role de-crypts the
+        payload and re-encrypt it, but it does not modify the contents
+        of the payload itself. Note that when such a media-aware B2BUA
+        modifies SRTP headers it MUST act as a DTLS intermediary and
+        terminate the DTLS connection so it can re-encrypt in order to
+        properly update the compound SRTCP packet to make them
+        consistent. This DTLS proxy functionality of media-aware
+        B2BUAs is discussed in greater detail in Section X of <xref
         target="I-D.ietf-straw-b2bua-rtcp"/>.</t>
 
         <t>[[TODO: Update reference to STRAW RTCP document once this
@@ -326,7 +332,7 @@
         these B2BUA</t>
 
         <t><figure anchor="Figure2"
-            title="INVITE with SDP callflow with Media-aware B2BUA">
+            title="INVITE with SDP Callflow with Media-aware B2BUA">
             <artwork align="center"><![CDATA[
  +-------+           +------------------+               +-----+         
  | Alice |           | MediaAware B2BUA |               | Bob |
@@ -374,52 +380,72 @@
         <t>NOTE: For the sake of brevity the entire fingerprint
         attribute is not shown.</t>
 
-        <t>NOTE: The same call flow would be applicable to "INVITE without SDP" Offer calls.</t>
+        <t>NOTE: The same call flow would be applicable to "INVITE
+        without SDP" Offer calls.</t>
 
         <t>NOTE: Steps 5,6 may be parallel and so the B2BUA MAY
         receive ClientHello before it sees a 200OK. Steps 7,8 can
         happen in any order. Also steps 9,10, 11 may be parallel.
         B2BUA should be prepared to handle these responses on each leg
-        independently.  When the DTLS client tries to setup DTLS session in parallel before
-        OFFER/ANSWER is complete, it is highly likely that it will not receive a response because of NAT between the DTLS client and server. 
-        If HelloVerifyRequest is not received then the retransmission timer for ClientHello is doubled 
-        as defined in section 4.2.4.1 of  <xref target="RFC6347"/>. If the client has not received HelloVerifyRequest from the server even after 
-        offer/answer is complete, it will have to immediately reset the timer because the chances of receiving response to ClientHello
-         will increase after the ANSWER is acknowledged. Alternatively a DTLS client MAY send 
-         a ClientHello only after OFFER/ANSWER is complete.</t>
+        independently. When the DTLS client tries to setup the DTLS
+        session in parallel before OFFER/ANSWER is complete, it is
+        highly likely that it will not receive a response because of
+        NAT between the DTLS client and server. If HelloVerifyRequest
+        is not received then the retransmission timer for ClientHello
+        is doubled as defined in section 4.2.4.1 of <xref
+        target="RFC6347"/>. If the client has not received
+        HelloVerifyRequest from the server even after OFFER/ANSWER is
+        complete, it will have to immediately reset the timer because
+        the chances of receiving response to ClientHello will increase
+        after the ANSWER is acknowledged. Alternatively, a DTLS client
+        MAY send a ClientHello only after OFFER/ANSWER is
+        complete.</t>
 
         <t>A media termination B2BUA MUST change the certificate
         fingerprint from both the endpoints so that it can signal its
         own certificate fingerprint in the SDP. This allows the B2BUA
         to act as a DTLS-SRTP proxy and modify the payload.</t>
       </section>
+
       <section title="Media Plane B2BUA with NAT handling">
-      <t> For the cases where there is a NAT between UAC and B2BUA and/or UAS and B2BUA and the B2BUA is doing HNT as described in <xref
-        target="I-D.ietf-mmusic-latching"/>, the DTLS handshake if initiated before offer/Answer is completed will fail. 
-        For example, if a NAT exists between a UAC and B2BUA and the B2BUA is acting as DTLS client, 
-       the NAT is likely to block the ClientHello packets from B2BUA until it sees some packets from UAC on the same 5-tuple.
-        In such case one of the approaches mentioned below can be used:</t>
-       <t><list style="hanging">
-       <t>The UAC MUST send some packet(could be RTP,STUN) to allow the incoming ClientHello packets. After this,
-       the DTLS client (in this case B2BUA) can successfully setup the DTLS session. </t>
-       <t>The UAC which is behind the NAT MUST always be the DTLS client by setting a=setup:active. However
-       this would not work for incoming OFFERS as it requires co-ordination with remote DTLS peer.</t>
-       </list></t>
-       <t> Below call flow shows an example where there is a NAT between UAC(Alice) and B2BUA and how
-       the above approach can be used to solve it.</t>
-       
+        <t>For the cases where there is a NAT between UAC and B2BUA
+        and/or UAS and B2BUA and the B2BUA is doing Hosted NAT
+        Traversal (HNT) as described in <xref
+        target="I-D.ietf-mmusic-latching"/>, the DTLS handshake if
+        initiated before OFFER/ANSWER is completed will fail. For
+        example, if a NAT exists between a UAC and B2BUA and the B2BUA
+        is acting as DTLS client, the NAT is likely to block the
+        ClientHello packets from B2BUA until it sees some packets from
+        UAC on the same 5-tuple. In such case one of the approaches
+        mentioned below can be used:</t>
+
+        <t><list style="hanging">
+            <t>The UAC MUST send some packet (could be RTP, STUN) to
+            allow the incoming ClientHello packets. After this, the
+            DTLS client (in this case B2BUA) can successfully setup
+            the DTLS session.</t>
+
+            <t>The UAC which is behind the NAT MUST always be the DTLS
+            client by setting a=setup:active. However this would not
+            work for incoming OFFERs as it requires coordination with
+            remote DTLS peer.</t>
+          </list></t>
+
+        <t>The below call flow shows an example where there is a NAT
+        between UAC (Alice) and B2BUA and how the above approach can
+        be used to solve it.</t>
+
         <t><figure anchor="Figure3"
-            title="INVITE with SDP callflow with Media-aware B2BUA and with NAT between
-            UAC and B2BUA">
+            title="Media-aware B2BUA with NAT between UAC and B2BUA">
             <artwork align="center"><![CDATA[
- +-------+     +----+         +------------------+             +------+         
- | Alice |     | NAT|         | MediaAware B2BUA |             | Bob  |
- |  (UAC)|     |    |         |                  |             | (UAS)|
- +-------+     +----+         +------------------+             +------+
+ +-------+     +-----+      +------------------+             +------+         
+ | Alice |     | NAT |      | MediaAware B2BUA |             | Bob  |
+ | (UAC) |     |     |      |                  |             |(UAS) |
+ +-------+     +-----+      +------------------+             +------+
      |(1) INVITE  |                  |  (3)INVITE                |
      |   a=setup:actpass             |   a=setup:actpass         |
      |   a=fingerprint1              |   a= fingerprint2         | 
-     |   (alice's IP/port)           |   (B2BUA's IP, port)      |                        
+     |   (alice's IP, port)          |   (B2BUA's IP, port)      |                        
      |----------->|----------------->|-------------------------->|
      |            |                  |                           |
      |    (2)  100| trying           |                           |
@@ -427,43 +453,37 @@
      |            |                  | (4) 100 trying            |
      |            |                  |<--------------------------|
      |            |                  |                           |
-     |            |                  |  (5)200 OK                |
+     |            |                  |  (5) 200 OK               |
      |            |                  |   a=setup:active          |
      |            |                  |    a=fingerprint3         |
      |            |                  |  (Bob's IP, port)         |
      |            |                  |<--------------------------|
-     |            |                  |(6)ClientHello + use_srtp  |
+     |            |                  |(6) ClientHello + use_srtp |
      |            |                  |<--------------------------|
      |    (7) 200 OK                 |                           |
      |    a=setup:active             | ServerHello + use_srtp (8)|
      |    a=fingerprint4             |-------------------------->|
-     |    B2BUA's address,port       |             (9,10)        |
+     |    B2BUA's IP, port           |             (9,10)        |
      |            |X<----------------|   [Cert Exchange between] |
-     |            |(11)ClientHello+  |      Bob and B2BUA over   |
-     |            | use_srtp         |              DTLS         |
+     |            |(11) ClientHello+ |   Bob and B2BUA over DTLS |
+     |            | use_srtp         |                           |
      | -----Packet|----------------->|                           |
      |        (STUN/RTP)             |                           |
      |            |                  |                           |
      |            |  retransmit of   |                           |
-     |            |(12)ClientHello+  |                           |
+     |            |(12) ClientHello+ |                           |
      |            | use_srtp         |                           | 
      |<-----------|------------------|                           |
      |            |                  |                           |
-     |            |                  |                           |
-     |  (13)ServerHello+             |                           |
-     |   use_srtp |                  |                           |
+     |  (13) ServerHello + use_srtp  |                           |
      |------------|----------------->|                           |
-     |            |          (14,15  |                           |
-     |  [Cert exchange between       |                           |
-     |   Alice and B2BUA             |                           |
-     |   DTLS ]   |                  |                           |
+     |(14,15) [Cert exchange between |                           |
+     |          Alice and B2BUA DTLS]|                           |
      |            |                  |                           |
-     |        (16)|                  |          (17)             |
-     |<---------SRTP/SRTCP---------->|<----SRTP/SRTCP----------->|
+     |<------ (16) SRTP/SRTCP ------>|<---- (17) SRTP/SRTCP ---->|
      |   [B2BUA modifies SRTP/SRTCP header and/or payload] |   
-          ]]></artwork>
+]]></artwork>
           </figure></t>
-       
       </section>
     </section>
 
@@ -492,11 +512,15 @@
     </section>
 
     <section title="Acknowledgments">
-      <t>Special thanks to Lorenzo Miniero, Ranjit Avarsala, Mohammed Elias, Hadriel Kaplan for his constructive comments, suggestions, and early reviews that were critical to the formulation and refinement of this document.</t>
+      <t>Special thanks to Lorenzo Miniero, Ranjit Avarsala, Mohammed
+      Elias, Hadriel Kaplan, Paul Kyzivat and Peter Dawes for their
+      constructive comments, suggestions, and early reviews that were
+      critical to the formulation and refinement of this document.</t>
     </section>
+
     <section title="Contributors">
-      <t>Muthu Arul Mozhi, Rajeev Seth provided substantial contributions to this document. 
-</t>
+      <t>Muthu Arul Mozhi, Rajeev Seth provided substantial
+      contributions to this document.</t>
     </section>
   </middle>
 
@@ -513,21 +537,22 @@
       <?rfc include="reference.RFC.5763"?>
 
       <?rfc include="reference.RFC.5764"?>
+
       <?rfc include="reference.RFC.6347"?>
     </references>
+
     <references title="Informative References">
-        
-        <?rfc include="reference.RFC.3261"?>
-        
-        <?rfc include="reference.RFC.4566"?>
-        
-        <?rfc include="reference.RFC.7092"?>
-        
-        <?rfc include="reference.I-D.ietf-avtext-rtp-grouping-taxonomy"?>
-        
-        <?rfc include="reference.I-D.ietf-straw-b2bua-rtcp"?>
-        
-        <?rfc include="reference.I-D.ietf-mmusic-latching"?>
+      <?rfc include="reference.RFC.3261"?>
+
+      <?rfc include="reference.RFC.4566"?>
+
+      <?rfc include="reference.RFC.7092"?>
+
+      <?rfc include="reference.I-D.ietf-avtext-rtp-grouping-taxonomy"?>
+
+      <?rfc include="reference.I-D.ietf-straw-b2bua-rtcp"?>
+
+      <?rfc include="reference.I-D.ietf-mmusic-latching"?>
     </references>
   </back>
 </rfc>
