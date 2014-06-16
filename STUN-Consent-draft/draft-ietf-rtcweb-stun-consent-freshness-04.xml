@@ -162,9 +162,9 @@
       actions (e.g., alert the user, try switching to a different
       interface).</t>
 
-      <t>This document describes a new STUN usage with a request and response
-      messages which verifies the remote peer's consent to receive traffic,
-      and can also detect loss of liveness.</t>
+      <t>This document describes a new STUN usage with exchange of request and 
+      response messages to verify the remote peer's consent to receive traffic, 
+      and the absence of which for a period of time indicates a loss of liveness.</t>
       
     </section>
 
@@ -224,7 +224,7 @@ the following sections.</t>
       this document. The consent expires after a fixed amount of
       time.</t>
 
-      <t>Explicit consent to send is indicated by sending an ICE
+      <t>Explicit consent to send is obtained by sending an ICE
       binding request to the remote peer's Transport Address and
       receiving a matching, authenticated, non-error ICE binding
       response from the inverted remote peer's Transport
@@ -273,14 +273,14 @@ longer than the consent timer (30 seconds).</t>
 
 
 
-<t>An endpoint that is only receiving application traffic (recvonly)
-does not need to obtain consent which can slightly conserve its
-resources.  However, the endpoint needs to ensure its NAT or firewall
-mappings persist which can be done using keepalive or other techniques
+<t>An endpoint that is not sending any application traffic does not 
+need to obtain consent which can slightly conserve its resources.  
+However, the endpoint needs to ensure its NAT or firewall mappings 
+persist which can be done using keepalive or other techniques
 (see Section 10 of <xref target="RFC5245"></xref> and
 see <xref target="RFC6263"></xref>).  If the endpoint wants send
-application traffic, it needs to first obtain consent if its consent
-expired.</t>
+application traffic, it needs to first obtain consent if its consent 
+has expired.</t>
 
 
 </section>
@@ -373,20 +373,19 @@ PASSWORD, or any other packet.</t>
 
       <t>Sending consent checks (heartbeats) at a high rate could allow a
       malicious application to generate congestion, so applications MUST NOT
-      be able to send heartbeats faster than 1 per second.</t>
+      be able to send heartbeats at an average rate of more than 1 per second.</t>
     </section>
 
     <section anchor="DSCP-consent"
              title="DiffServ Treatment for Consent packets">
-      <t>It is RECOMMENDED that STUN consent checks use the same Diffserv
-      Codepoint markings as the media packets sent on that transport address.
-      This follows the recommendation of ICE connectivity check described in
-      section 7.1.2.4 of <xref target="RFC5245"></xref>.</t>
+      <t>It is RECOMMENDED that STUN consent checks use the same Diffserv 
+      Codepoint markings as the ICE connectivity checks described in section 
+      7.1.2.4 of <xref target="RFC5245"></xref> for a given 5-tuple.</t>
 
       <t>Note: It is possible that different Diffserv Codepoints are used by
       different media over the same transport address <xref
-      target="I-D.ietf-tsvwg-rtcweb-qos"></xref>. In that case, what should
-      this document recommend as the Codepoint for STUN consent packets ?</t>
+      target="I-D.ietf-tsvwg-rtcweb-qos"></xref>. Such a case is outside the 
+      scope of this document.</t>
     </section>
 
     <section title="W3C API Implications">
