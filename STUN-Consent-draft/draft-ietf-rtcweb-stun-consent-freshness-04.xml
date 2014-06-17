@@ -278,7 +278,7 @@ need to obtain consent which can slightly conserve its resources.
 However, the endpoint needs to ensure its NAT or firewall mappings
 persist which can be done using keepalive or other techniques
 (see Section 10 of <xref target="RFC5245"></xref> and
-see <xref target="RFC6263"></xref>). If the endpoint wants send
+see <xref target="RFC6263"></xref>). If the endpoint wants to send
 application traffic, it needs to first obtain consent if its consent
 has expired.</t>
 
@@ -391,9 +391,9 @@ PASSWORD, or any other packet.</t>
     <section title="W3C API Implications">
       <t>For the consent freshness and liveness test the W3C specification
       should provide APIs as described below: <list style="numbers">
-          <t>Ability for the browser to notify the JavaScript that a consent
-          freshness transaction has failed for a media stream and the browser
-          has stopped transmitting for that stream.</t>
+          <t>Ability for the browser to notify the JavaScript that consent freshness
+    has failed for a 5-tuple and the browser has stopped transmitting on that
+    5-tuple.</t>
 
           <t>Ability for the JavaScript to start and stop liveness test and
           set the liveness test interval.</t>
@@ -420,7 +420,7 @@ PASSWORD, or any other packet.</t>
       Descriptions</xref>, and <xref
       target="I-D.ietf-avtcore-srtp-ekt">EKT</xref>. Thus, in such shared
       keying distributions, receipt of an authenticated SRTP packet is not
-      sufficient.</t>
+      sufficient to verify consent.</t>
     </section>
 
     <section anchor="sec.iana-considerations" title="IANA Considerations">
