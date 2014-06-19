@@ -162,9 +162,9 @@
       actions (e.g., alert the user, try switching to a different
       interface).</t>
 
-      <t>This document describes a new STUN usage with a request and response
-      messages which verifies the remote peer's consent to receive traffic,
-      and can also detect loss of liveness.</t>
+      <t>This document describes a new STUN usage with exchange of request and
+      response messages to verify the remote peer's consent to receive traffic,
+      and the absence of which for a period of time indicates a loss of liveness.</t>
       
     </section>
 
@@ -208,8 +208,8 @@
     </section>
 
     <section title="Solution">
-      <t>There are two ways consent to send traffic is revoked:  expiration
-of consent and immediate revocation of consent, which are discussed in 
+      <t>There are two ways consent to send traffic is revoked: expiration
+of consent and immediate revocation of consent, which are discussed in
 the following sections.</t>
 
     <section title="Expiration of Consent">
@@ -224,37 +224,37 @@ the following sections.</t>
       this document. The consent expires after a fixed amount of
       time.</t>
 
-      <t>Explicit consent to send is indicated by sending an ICE
+      <t>Explicit consent to send is obtained by sending an ICE
       binding request to the remote peer's Transport Address and
       receiving a matching, authenticated, non-error ICE binding
       response from the inverted remote peer's Transport
       Address. These ICE binding requests and responses are
       authenticated using the same short-term credentials as the
-      initial ICE exchange.  Implementations MUST cease sending data
-      if their consent expires.  To prevent expiry of consent, a STUN
+      initial ICE exchange. Implementations MUST cease sending data
+      if their consent expires. To prevent expiry of consent, a STUN
       binding request is sent every N milliseconds, where N SHOULD be
       5000 milliseconds and MUST be randomized at least 20% above and
       20% below that value (to prevent prevent network
-      synchronization).  Using the value 5000 milliseconds and that
+      synchronization). Using the value 5000 milliseconds and that
       20% randomization range, N would be a value between 4000 and
-      6000.  These STUN binding requests for consent are not
-      re-transmitted.  Each STUN binding request for consent
+      6000. These STUN binding requests for consent are not
+      re-transmitted. Each STUN binding request for consent
       re-calculates a new random value N and a
       new <xref target="RFC4086">cryptographically-random</xref> STUN
       transaction ID.</t>
 
 
-      <t>The initial Consent to send traffic is obtained by ICE. Consent 
+      <t>The initial Consent to send traffic is obtained by ICE. Consent
       expires after 30 seconds. That is, if a valid STUN
       binding response corresponding to one of the STUN requests sent
       in the last 30 seconds has not been received from the inverted
       5-tuple, the endpoint MUST cease transmission on that
       5-tuple.</t>
 <!--
-      <t>Although receiving authenticated ICE packets is sufficient for consent,
-      it is still RECOMMENDED to send messages to keep NAT or firewall
-      bindings alive (see Section 10 of <xref target="RFC5245"></xref> and
-      <xref target="RFC6263"></xref>).</t>
+<t>Although receiving authenticated ICE packets is sufficient for consent,
+it is still RECOMMENDED to send messages to keep NAT or firewall
+bindings alive (see Section 10 of <xref target="RFC5245"></xref> and
+<xref target="RFC6263"></xref>).</t>
 -->
 
       <t>To meet the security needs of consent, an untrusted
@@ -265,29 +265,29 @@ falsifying consent.</t>
 <t>While TCP affords some protection from off-path attackers
 (<xref target="RFC5961"></xref>, <xref target="RFC4953"></xref>),
 there is still a risk an attacker could cause a TCP sender to send
-packets forever by spoofing ACKs.  To prevent such an attack, consent
+packets forever by spoofing ACKs. To prevent such an attack, consent
 checks MUST be performed over all WebRTC-initiated transport
-connections, including TCP.  In this way, an off-path attacker
+connections, including TCP. In this way, an off-path attacker
 spoofing TCP segments can not cause a TCP sender to send packets
 longer than the consent timer (30 seconds).</t>
 
 
 
-<t>An endpoint that is only receiving application traffic (recvonly)
-does not need to obtain consent which can slightly conserve its
-resources.  However, the endpoint needs to ensure its NAT or firewall
-mappings persist which can be done using keepalive or other techniques
+<t>An endpoint that is not sending any application traffic does not
+need to obtain consent which can slightly conserve its resources.
+However, the endpoint needs to ensure its NAT or firewall mappings
+persist which can be done using keepalive or other techniques
 (see Section 10 of <xref target="RFC5245"></xref> and
-see <xref target="RFC6263"></xref>).  If the endpoint wants send
+see <xref target="RFC6263"></xref>). If the endpoint wants to send
 application traffic, it needs to first obtain consent if its consent
-expired.</t>
+has expired.</t>
 
 
 </section>
       <section title="Immediate Revocation of Consent">
-	<t>The previous section explained how consent expires due to a
-timeout.  In some cases it is useful to signal a connection is
-terminated, rather than relying on a timeout.  This is done by
+<t>The previous section explained how consent expires due to a
+timeout. In some cases it is useful to signal a connection is
+terminated, rather than relying on a timeout. This is done by
 immediately revoking consent.</t>
 
         <t>Consent for sending traffic on the media or data channel is
@@ -305,7 +305,7 @@ immediately revoking consent.</t>
         expires or it receives an authenticated message revoking
         consent.</t>
 
-	<t>Note that an authenticated SRTCP BYE does not terminate
+<t>Note that an authenticated SRTCP BYE does not terminate
         consent; it only indicates the associated SRTP source
         has quit.</t>
       </section>
@@ -373,28 +373,27 @@ PASSWORD, or any other packet.</t>
 
       <t>Sending consent checks (heartbeats) at a high rate could allow a
       malicious application to generate congestion, so applications MUST NOT
-      be able to send heartbeats faster than 1 per second.</t>
+      be able to send heartbeats at an average rate of more than 1 per second.</t>
     </section>
 
     <section anchor="DSCP-consent"
              title="DiffServ Treatment for Consent packets">
       <t>It is RECOMMENDED that STUN consent checks use the same Diffserv
-      Codepoint markings as the media packets sent on that transport address.
-      This follows the recommendation of ICE connectivity check described in
-      section 7.1.2.4 of <xref target="RFC5245"></xref>.</t>
+      Codepoint markings as the ICE connectivity checks described in section
+      7.1.2.4 of <xref target="RFC5245"></xref> for a given 5-tuple.</t>
 
       <t>Note: It is possible that different Diffserv Codepoints are used by
       different media over the same transport address <xref
-      target="I-D.ietf-tsvwg-rtcweb-qos"></xref>. In that case, what should
-      this document recommend as the Codepoint for STUN consent packets ?</t>
+      target="I-D.ietf-tsvwg-rtcweb-qos"></xref>. Such a case is outside the
+      scope of this document.</t>
     </section>
 
     <section title="W3C API Implications">
       <t>For the consent freshness and liveness test the W3C specification
       should provide APIs as described below: <list style="numbers">
-          <t>Ability for the browser to notify the JavaScript that a consent
-          freshness transaction has failed for a media stream and the browser
-          has stopped transmitting for that stream.</t>
+          <t>Ability for the browser to notify the JavaScript that consent freshness
+    has failed for a 5-tuple and the browser has stopped transmitting on that
+    5-tuple.</t>
 
           <t>Ability for the JavaScript to start and stop liveness test and
           set the liveness test interval.</t>
@@ -421,7 +420,7 @@ PASSWORD, or any other packet.</t>
       Descriptions</xref>, and <xref
       target="I-D.ietf-avtcore-srtp-ekt">EKT</xref>. Thus, in such shared
       keying distributions, receipt of an authenticated SRTP packet is not
-      sufficient.</t>
+      sufficient to verify consent.</t>
     </section>
 
     <section anchor="sec.iana-considerations" title="IANA Considerations">
@@ -430,7 +429,7 @@ PASSWORD, or any other packet.</t>
 
     <section title="Acknowledgement">
       <t>Thanks to Eric Rescorla, Harald Alvestrand, Bernard Aboba, Magnus
-      Westerland, Cullen Jennings and Simon Perreault for their valuable
+      Westerland, Cullen Jennings, Christer Holmberg and Simon Perreault for their valuable
       inputs and comments.</t>
     </section>
   </middle>
@@ -460,52 +459,5 @@ PASSWORD, or any other packet.</t>
       <?rfc include="reference.RFC.4953"?>
 
     </references>
-
-    <section title="Example Implementation">
-      <t>This section describes one possible implementation algorithm
-      of consent. This section is non-normative and provided for
-      reference only.</t>
-
-  <t>The solution uses three values:</t>
-
-      <t><list style="numbers">
-          <t>A consent timer, Tc, whose value is set to 30 seconds.</t>
-
-          <t>A packet receipt timer, Tr, whose value is determined by the
-          application. Tr can be greater than 1 but less than 30 seconds and
-          has a default value of 5 seconds.</t>
-
-          <t>A consent timeout, Tf, which is how many seconds elapse without a
-          consent response before the browser ceases transmission of media.
-          Its value is be 30 seconds or less.</t>
-
-          <t>A retransmission Timer, Tret, whose value is determined by the
-          RTT of a given path. The duration of this timer is set to 1.5 times of ( 500 ms or 
-          the smoothened round-trip time (from previous consent freshness checks 
-          or RTP round-trip time)), whichever is less.</t>
-        </list></t>
-
-      <t>A WebRTC browser performs a combined consent freshness and session
-      liveness test using STUN request/response as described below:</t>
-
-      <t>Every Tc seconds, the WebRTC browser sends a STUN Binding Request to
-      the peer. The difference from ICE connectivity check is that there is no
-      exponential back off for retransmissions.</t>
-
-      <t>If a valid STUN Binding Response is received, the consent timer is
-      reset to the time of receiving the response and fires again Tc seconds
-      later.</t>
-
-      <t>If a valid STUN Binding Response is not received after Tret
-      milliseconds, the STUN Binding Request is retransmitted (with a new
-      Transaction ID). As long as a valid STUN Binding
-      Response is not received, this retransmission is repeated every Tret
-      milliseconds until Tf seconds have elapsed or a valid response is
-      received. If no valid response is received after Tf seconds, the WebRTC
-      browser quits transmitting traffic to this remote peer. The streams that
-      are being sent on a flow(5-tuple) for which a consent has failed will be
-      stopped. If the default value of Tf is 30 seconds then media
-      transmission will stop Consent (Tf) expires.</t>
-    </section>
   </back>
 </rfc>
