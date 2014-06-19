@@ -60,37 +60,58 @@
     <workgroup>MMUSIC</workgroup>
 
     <abstract>
-      <t>This document provides guidelines on how to make Interactive
-      Connectivity Establishment (ICE) conclude faster in IPv4/IPv6
-      dual-stack scenarios where broken paths exist.</t>
+      <t>
+        This document provides guidelines on how to make Interactive
+        Connectivity Establishment (ICE) conclude faster in IPv4/IPv6
+        dual-stack scenarios where broken paths exist. The provided
+        guidelines are backwards compatible with the original ICE
+        specification.
+      </t>
     </abstract>
   </front>
 
   <middle>
     <section anchor="introduction" title="Introduction">
-      <t>There is a need to introduce more fairness in the handling of
-      connectivity checks for different IP address families in
-      dual-stack IPv4/IPv6 ICE scenarios. Section 4.1.2.1 of ICE <xref
-      target="RFC5245"/> points to <xref target="RFC3484"/> for
-      prioritizing among the different IP families. <xref
-      target="RFC3484"/> is obsoleted by <xref target="RFC6724"/> but
-      following the recommendations from the updated RFC will lead to
-      prioritization of IPv6 over IPv4 for the same candidate
-      type. Due to this, connectivity checks for candidates of the
-      same type (host, reflexive or relay) are sent such that an IP
-      address family is completely depleted before checks from the other
-      address family are started. This results in user noticeable
-      setup delays if the path for the prioritized address family is
-      broken.</t>
+      <t>
+        There is a need to introduce more fairness in the handling of
+        connectivity checks for different IP address families in
+        dual-stack IPv4/IPv6 ICE scenarios. Section 4.1.2.1 of ICE
+        <xref target="RFC5245"/> points to <xref target="RFC3484"/>
+        for prioritizing among the different IP families. <xref
+        target="RFC3484"/> is obsoleted by <xref target="RFC6724"/>
+        but following the recommendations from the updated RFC will
+        lead to prioritization of IPv6 over IPv4 for the same
+        candidate type. Due to this, connectivity checks for
+        candidates of the same type (host, reflexive or relay) are
+        sent such that an IP address family is completely depleted
+        before checks from the other address family are started. This
+        results in user noticeable setup delays if the path for the
+        prioritized address family is broken.
+      </t>
 
-      <t>To avoid such user noticeable delays when either IPv6 or IPv4
-      path is broken or excessive slow, this specification encourages
-      intermingling the different address families when connectivity
-      checks are performed. Introducing IP address family fairness
-      into ICE connectivity checks will lead to more sustained
-      dual-stack IPv4/IPv6 deployment as users will no longer have an
-      incentive to disable IPv6. The cost is a small penalty to the
-      address type that otherwise would have been prioritized.</t>
+      <t>
+        To avoid such user noticeable delays when either IPv6 or IPv4
+        path is broken or excessive slow, this specification
+        encourages intermingling the different address families when
+        connectivity checks are performed. Introducing IP address
+        family fairness into ICE connectivity checks will lead to more
+        sustained dual-stack IPv4/IPv6 deployment as users will no
+        longer have an incentive to disable IPv6. The cost is a small
+        penalty to the address type that otherwise would have been
+        prioritized.
+      </t>
+      
+      <t>
+        The guidelines outlined in this specification are backward
+        compatible with a standard ICE implementation. This
+        specification only alters the values used to create the
+        resulting checklists in such a way that the existing formulas
+        from ICE <xref target="RFC5245" /> still are in effect.  The
+        introduced fairness might be better, but not worse than what
+        exists today.
+      </t>
+      
+
     </section>
 
     <section anchor="notation" title="Notational Conventions">
