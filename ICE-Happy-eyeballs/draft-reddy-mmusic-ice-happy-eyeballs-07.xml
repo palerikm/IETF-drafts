@@ -105,8 +105,8 @@
         The guidelines outlined in this specification are backward
         compatible with a standard ICE implementation. This
         specification only alters the values used to create the
-        resulting checklists in such a way that the existing formulas
-        from ICE <xref target="RFC5245" /> still are in effect.  The
+        resulting checklists in such a way that the core mechanisms
+        from ICE <xref target="RFC5245" /> are still in effect.  The
         introduced fairness might be better, but not worse than what
         exists today.
       </t>
