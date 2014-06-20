@@ -164,7 +164,7 @@
 
       <t><figure>
         <artwork align="left"><![CDATA[
-      priority = (2^24)*(type preference) + 
+     priority = (2^24)*(type preference) + 
                 (2^8)*(local preference) + 
                 (2^0)*(256 - component ID)
           ]]></artwork>
