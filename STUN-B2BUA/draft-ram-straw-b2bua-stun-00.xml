@@ -14,7 +14,7 @@
 <rfc category="std" docName="draft-ram-straw-b2bua-stun-00"
      ipr="trust200902">
   <front>
-    <title abbrev="STUN handling in SIP B2BUA">STUN messages Handling
+    <title abbrev="STUN handling in SIP B2BUA">STUN message handling
     in Session Initiation Protocol (SIP) Back-to-Back User Agents
     (B2BUAs)</title>
 
@@ -91,51 +91,41 @@
     <workgroup>STRAW</workgroup>
 
     <abstract>
-      <t>SIP Back-to-Back User Agents (B2BUAs) are often envisaged to also be on the media path, rather than just intercepting signalling.  This means that B2BUAs often act as media path leading to separate media legs that the B2BUA correlates and bridges together. When acting on the media path, the B2BUAs are likely to receive packets like STUN apart from the media packets. It is critical that the B2BUAs handle these STUN messages properly.</t>
-<t>This document defines the proper behaviour B2BUAs should follow when
-   STUN is sent on the media path.</t>
+      <t>SIP Back-to-Back User Agents (B2BUAs) are often envisaged to be on the media path, rather than just intercepting signaling.  This means that B2BUAs often act on the media path leading to separate media legs that the B2BUA correlates and bridges together. When acting on the media path, the B2BUAs are likely to receive packets like STUN for ICE apart from the media packets. It is critical that the B2BUAs handle these STUN messages properly.</t>
+<t>This document defines the proper behavior B2BUAs should follow when
+   STUN messages are sent on the media path.</t>
     </abstract>
   </front>
 
   <middle>
     <section title="Introduction">
     <t>Protocols using offer/answer like the Session Initiation Protocol (SIP)
-   <xref target="RFC3261"/>are difficult to operate through Network
-   Address Translators (NAT).  Because their purpose is to establish a
-   flow of media packets, they tend to carry IP addresses within their
-   messages, which is known to be problematic through NAT.  To
-   remedy this, an extension to SDP <xref target="RFC4566"/>, called Interactive Connectivity Establishment (ICE) has been defined <xref target="RFC5245"/>.  ICE defines procedures by which agents gather a multiplicity of addresses,
-   include all of them in an SDP offer or answer, and then use peer-to-
-   peer Session Traversal Utilities for NAT (STUN) <xref target="RFC5389"/>
-   connectivity checks to determine a valid address.</t>
+   <xref target="RFC3261"/> are difficult to operate through Network
+   Address Translators (NAT) because they carry IP addresses within their 
+   messages.  To remedy this, an extension to SDP <xref target="RFC4566"/>, 
+   called Interactive Connectivity Establishment (ICE) has been defined <xref
+    target="RFC5245"/>.  ICE defines procedures by which agents gather a 
+    multiplicity of addresses, include all of them in an SDP offer or answer, 
+    and then use peer-to-peer connectivity checks using Session Traversal Utilities for NAT (STUN) <xref target="RFC5389"/>  to determine a valid candidate pair for each media stream.</t>
 
       <t>In many SIP deployments, SIP entities exist in the SIP
       signaling path between the originating and final terminating
       endpoints. These SIP entities, as described in <xref
-      target="RFC7092"/>, modify SIP and SDP bodies and also are
+      target="RFC7092"/>, modify SIP headers, SDP bodies and also are
       likely to be on the media path. Such entities, when present in
-      the signaling/media path, are likely to do several things. For
+      the media path, are likely to do several things. For
       example, some B2BUAs modify parts of the SDP body (like IP
-      address, port) and subsequently modify the UDP headers as well.
-      There are other types of B2BUAs that completely modify the UDP payload.  (e.g., a transcoder).</t>
-      <t> Section 18.6 ICE <xref target="RFC5245"/> talks about two behaviours when B2BUAs are present.  Some B2BUAs are likely to remove all the SDP ICE attributes before sending the SDP across to the other side.  Consequently, the call will appear to both endpoints as if the other side doesn't support ICE.  However disabling ICE is not always desirable especially when one of the endpoints is behind a NAT. There are other types of B2BUAs that just change m and/or c-lines in SDP before passing across the SDP to the other side. In such a case the endpoints would generate a ICE mismatch and this MAY result in a call failure. </t>
-      <t>When one or both the endpoints are behind NAT, and there is a B2BUA
-       between the endpoints, it is desirable to have the B2BUA support ICE or
-        at the minium support ICE LITE functionality as described in <xref 
-        target="RFC5245"/>. Such B2BUAs MUST implement ICE and STUN stack and 
-        handle STUN messages sent by the endpoints on the media path. B2BUAs 
-        MUST use the mechanism described in section 5.1.2 of <xref 
-        target="RFC5764"/> to demultiplex STUN packets that arrive on the 
-        RTP/RTCP port.</t>
-
+      address, port) and subsequently modify the transport headers as well.
+      There are other types of B2BUAs that completely modify the transport payload.  (e.g., a media transcoder).</t>
+      <t> Section 18.6 of ICE <xref target="RFC5245"/> explains about two different behaviors when B2BUAs are present.  Some B2BUAs are likely to remove all the SDP ICE attributes before sending the SDP across to the other side.  Consequently, the call will appear to both endpoints as if the other side doesn't support ICE.  There are other types of B2BUAs that passes the ICE attributes without modification, yet modifies the default destination for media (contained in the m and c lines and rtcp attribute), this will be detected as an ICE mismatch, and ICE processing is aborted for the call. This behavior of disabling ICE is not always desirable especially when one of the endpoints is behind a NAT.</t>
       <t><xref target="RFC7092"/> describes three different categories
       of such B2BUAs, according to the level of activities performed
       on the media plane:</t>
 
       <t><list style="hanging">
-          <t>A B2BUA that act as a simple media relay effectively
+          <t>A B2BUA that acts as a simple media relay effectively
           unaware of anything that is transported and only modifies
-          the UDP/IP header of the packets.</t>
+          the transport header (could be UDP/IP) of the media packets.</t>
 
           <t>A B2BUA that performs a media-aware role. It inspects and
           potentially modifies RTP or RTP Control Protocol (RTCP)
@@ -146,9 +136,8 @@
           payload (e.g., a transcoder).</t>
         </list></t>
 
-      <t>When such a B2BUA operating on a media plane is in a call between two
-       endpoints that does ICE, it SHOULD follow the behaviour mentioned in the 
-       below sections.</t>
+      <t>When such a B2BUA operating on a media plane is involved a call between 
+      two endpoints that performs ICE, then it SHOULD follow the behavior mentioned in this specification.</t>
     </section>
 
     <section anchor="sec-term" title="Terminology">
@@ -172,24 +161,29 @@
 
       <t>All of the pertinent B2BUA terminology and taxonomy used in
       this document is based on <xref target="RFC7092"/>.</t>
-
-      <t>It is assumed the reader is familiar with concepts of the STUN
-      protocol <xref target="RFC5389"/>, ICE <xref target="RFC5245"/> and the
-      problems with NAT when applications use ephemeral ports.</t>
     </section>
 
     <section title="Media Plane B2BUAs">
       <section title="Media Relay or Media aware or Media Termination">
-        <t>A B2BUA operating on a media plane and is either a media relay or 
-        media aware or media termination B2BUA MUST follow the below steps when 
+        
+        <t>When one or both the endpoints are behind NAT, and there is a B2BUA
+       between the endpoints, it is desirable to have the B2BUA support ICE or
+        at the minimum support ICE LITE functionality as described in <xref 
+        target="RFC5245"/>. Such B2BUAs MUST implement ICE and STUN and 
+        handle STUN messages sent by the endpoints on the media path. B2BUAs 
+        MUST use the mechanism described in section 5.1.2 of <xref 
+        target="RFC5764"/> to demultiplex STUN packets that arrive on the 
+        RTP/RTCP port.</t>
+        
+        <t>A B2BUA operating on a media plane MUST follow the below steps when 
         it receives a SDP with ICE semantics. </t>
 
          <t><list style="hanging">
-          <t>When a B2BUA receives a SDP OFFER with ICE semantics it MUST respond with a SDP ANSWER having ICE candidates. A B2BUA MAY be in ICE lite mode as described in section 2.7 of <xref target="RFC5245"/> in which case it MUST send a=ice-lite and MUST include host candidates for each media stream.</t>
-          <t>If the B2BUA supports complete ICE, then it MAY include more than one candidate for each component of each media stream in the SDP answer.</t>
-          <t> A B2BUA when it sends out a SDP with OFFER, it MUST advertise support for ICE and MAY include one or more candidates for each media stream. </t>
-          <t>The B2BUA MUST generate a new ufrag/password when it sends out the SDP and MUST NOT pass across the ufrag/password it received in the incoming SDP. </t>
-          <t>The B2BUA MUST implement ICE or ICE lite and be able to generate and/or respond to ICE connectivity checks with either of the endpoints after offer/answer is completed as per ICE procedures mentioned in <xref target="RFC5245"/>.</t>
+          <t>When a B2BUA receives a SDP OFFER with ICE semantics it MUST respond with a SDP ANSWER having ICE candidates. A B2BUA MAY be in ICE lite mode as described in section 2.7 of <xref target="RFC5245"/> in which case it MUST send a=ice-lite and MUST include host candidates for each component of each media stream.</t>
+          <t>If the B2BUA supports full ICE, then it MAY include candidates of different types for each component of each media stream in the SDP offer/answer.</t>
+          <t> A B2BUA when it sends out  SDP with OFFER, it MUST advertise support for ICE and MAY include candidates of different types for each component of each media stream.</t>
+          <t>The B2BUA MUST generate new username, password values for ice- ufrag and ice-pwd attributes when it sends out the SDP and MUST NOT propagate the ufrag/password values it received in the incoming SDP. This ensures that the short-term credentials used for both the legs are different. B2BUA terminates the STUN message on each leg, generates new STUN message using new cryptographically-random <xref target="RFC4086"/> STUN transaction ID and computes the message integrity for STUN messages using the new credentials.</t>
+          <t>The B2BUA MUST generate and/or respond to ICE connectivity checks after offer/answer is completed.</t>
           </list></t>
           
         <t><figure anchor="Figure1"
@@ -231,51 +225,44 @@
      |<----ICE Connectivity 1->|                           |
      |      checks+conclusion  |<-----ICE Connectivity 2-->|
      |         (9)             |        checks +conclusion |
-     |<--indicate nominated    |             (10)          |
-     |    pair             --> |                           |
-     |          (11,12         |<--indicate nominated      |                                 
-     |                         |        pair  (13,14    -->|
-     |                         |                           |
+     |                         |         (10)              |
      |<-------Media packets -->|<----Media packets-------->|
-     |   [B2BUA just changes UDP/IP header]   (15          |  
+     |      (13)               |         (14)              |  
      |                         |                           |
      |<---ICE keepalives 1---->|                           |
-     |        (step 16)        |<----ICE keep alives 2---->|            
-                                      (step 17)
+     |        (15)             |<----ICE keep alives 2---->|            
+                                      (16)
           ]]></artwork>
           </figure></t>
 
-        <t>Above figure shows a sample call flow with two endpoints Alice and Bob doing ICE and a B2BUA handing STUN messages from both the endpoints. For the sake of brevity the entire ICE SDP attributes are not shown. Also the STUN messages exchanged as part of ICE connectivity checks are not shown. Some key things to note from the call flow are:</t>
+        <t>Above figure shows a sample call flow with two endpoints Alice and Bob doing ICE and a B2BUA handing STUN messages from both the endpoints. For the sake of brevity the entire ICE SDP attributes are not shown. Also the STUN messages exchanged as part of ICE connectivity checks are not shown. Key steps to note from the call flow are:</t>
        <t><list style="numbers">
-       <t>Alice sends a INVITE with SDP offer having ICE candidates.</t>
-       <t> B2BUA removes the Alices candidates, gathers its own candidates, adds a new ufrag/password and forwards the INVITE (3) to Bob. Note depending on whether the B2BUA is ICE lite or ICE it will gather candidates.</t>
-       <t> Bobs responds(5) to the INVITE with his candidate list. </t>
-       <t> B2BUA responds to the INVITE from Alice with SDP having B2BUA's candidate list. B2BUA would add a new ufrag/password (6) in the response. </t>
-       <t>Connectivity checks happen between Alice and B2BUA in step 9. Note depending on whether the B2BUA supports ICE or ICE lite it will follow the appropriate procedures mentioned in <xref target="RFC5245"/>. The B2BUA MUST consume the STUN messages sent by Alice and respond to the same with out forwarding to the other side (Bob).</t>
-       <t>Connectivity checks also happen between Bob and B2BUA in step 10. Step 9, 10 happens in parallel and STUN messages on each side MUST NOT be forwarded to the other side by the B2BUA. </t>
-       <t> Once ICE is completed on each side, there MAY be a updated SIP offer/answer (steps 11 to 14). </t>
-       <t>After this media flows between Alice and Bob via B2BUA (Step 15). The B2BUA may be media relay or media aware or media termination device here. </t>
-       <t>ICE keep alives would be done between Alice and B2BUA (step 16) and between Bob and B2BUA (step 17). The B2BUA MUST NOT forward the ICE keep-alive STUN binding indications from Alice to Bob or Vice-versa.</t>
+       <t>Alice sends an INVITE with SDP offer having ICE candidates.</t>
+       <t> B2BUA modifies the received SDP from Alice by removing the received candidates, gathers its own candidates, updates ice-ufrag, ice-password attributes with new username, password values and forwards the INVITE (3) to Bob.</t>
+       <t> Bobs responds(5) to the INVITE with his own list of candidates. </t>
+       <t> B2BUA responds to the INVITE from Alice with SDP having B2BUA's candidate list. B2BUA would also convey ice-ufrag, ice-password attributes with  new username, password values in the 200 OK response(6). </t>
+       <t>ICE Connectivity checks happen between Alice and B2BUA in step 9. 
+       Depending on whether the B2BUA supports ICE or ICE lite it will follow 
+       the appropriate procedures mentioned in <xref target="RFC5245"/>. The 
+       B2BUA MUST process the STUN request sent by Alice and respond to the same 
+       without forwarding it to the other side (Bob).</t>
+       <t>ICE Connectivity checks also happen between Bob and B2BUA in step 10. Step 9, 10 happens in parallel and STUN messages on each side MUST NOT be forwarded to the other side by the B2BUA. </t>
+       <t> Once ICE is completed on each side, there MAY be a updated SIP
+       offer/answer (steps 11 to 14).</t>
+       <t>Media flows between Alice and Bob via B2BUA (Step 13, 14). </t>
+       <t>STUN keepalives would be used between Alice and B2BUA (step 15) and between Bob and B2BUA (step 16) to keep NAT, Firewall bindings alive. </t>
        </list></t>
       </section>
          
       <section title="STUN interaction with DTLS-SRTP in B2BUA">
-        <t> (TODO: Add reference to DTLS-STRAW draft) describes the behaviour of B2BUAs when DTLS-SRTP <xref target ="RFC5764"/> is used by Session Initiation Protocol (SIP) <xref target="RFC3261"/> endpoints to establish a Secure Real-time Transport Protocol (SRTP) <xref target="RFC3711"/> session. When ICE is used by such endpoints, it needs to take care of the following things:</t>
+        <t> (TODO: Add reference to DTLS-STRAW draft) describes the behavior of B2BUAs when DTLS-SRTP <xref target ="RFC5764"/> is used by Session Initiation Protocol (SIP) <xref target="RFC3261"/> endpoints to establish a Secure Real-time Transport Protocol (SRTP) <xref target="RFC3711"/> session. When ICE is used by such endpoints, it needs to take care of the following things:</t>
       
       <t><list style="hanging">
-          <t>ICE MUST be completed for each media stream before DTLS session is 
-          setup. Once ICE is completed, DTLS session is setup.</t>
 
           <t>If Aggressive nomination is used in ICE, DTLS session is setup as 
-          soon as connectivity check for a media stream is complete. If a 
-          different candidate is selected after ICE conclusion, then the 
-          previously setup DTLS session is disconnected and a new session is 
-          setup. Note that DTLS session setup uses same fingerprint for all 
-          media streams in a SDP.</t>
-
-          <t>If ICE restart happens and new candidate gets nominated after ICE 
-          connectivity checks, the previously setup DTLS session is disconnected 
-          and a new DTLS session is setup for nominated candidate pair.</t>
+          soon as connectivity check for a media stream is complete. If a
+       different candidate pair is selected after ICE conclusion, then the
+       previously setup DTLS session could be re-used using session resumption as mentioned in Appendix B of <xref target="RFC5764"/>.</t>
         </list></t>
 
         <t><figure anchor="Figure2"
@@ -318,31 +305,28 @@
      |<----ICE Connectivity--->|                           |
      |      checks+conclusion  |<-----ICE Connectivity---->|
      |         (7)             |        checks +conclusion |
-     |<--indicate nominated    |             (8)           |
-     |    pair             --> |                           |
-     |          (9,            |<--indicate nominated      |                                 
-     |                         |        pair  (11,      -->|
+     |                         |          (8)              |
      |                         |                           |
-     |    (13,14)ClientHello + use_srtp on nominated pair  |
+     |    (9)    ClientHello + use_srtp on nominated pair  |
      |<------------------------|---------------------------|
-     |                  [B2BUA changes the UDP/IP addr]    |
      |                         |                           |
-     |           (9,10)ServerHello + use_srtp              |
+     |           (10)    ServerHello + use_srtp            |
      | ------------------------|-------------------------->|
      |                 (11)    |                           |
      |  [Certificate exchange between Alice and Bob over   | 
      |   DTLS or DTLS-SRTP channel as described in RFC5764]|  
      |                         |                           |
-     |         (12)            |                           |
+     |                         |                           |
      |<---------SRTP/SRTCP---->|<----SRTP/SRTCP----------->|
-     |   [B2BUA just changes UDP/IP header]                |   
+     |                 (12)    |      (13)                 |   
       
        ]]></artwork>
           </figure></t>
      
-    <t>Below call flows shows a example of how a B2BUA works with both DTLS and ICE are used. In this example, the B2BUA is in media relay mode for DTLS session and passes across the fingerprint or password from Alice to Bob.</t>
+    <t>Below call flows shows a example of how a B2BUA works when both DTLS and ICE are used. In this example, the B2BUA is in media relay mode for DTLS session and passes across the fingerprint attribute in SDP from Alice to Bob without any modification.</t>
     
-    <t> The example above shows how ICE and DTLS can be sent together in  session. The example here shows a early offer call, however the same is applicable for delay media scenarios as well. For the sake of brevity the entire candidate list is not shown. Each endpoint MAY send one or more candidates for each component of each  media line as per RFC 5245. A B2BUA MAY also send one or more candidates. If the B2BUA is in ICE lite mode, then it sends only one candidate (Host Candidate) Once offer/answer is completed, ICE connectivity would happen between Alice and B2BUA and B2BUA and Bob. If the B2BUA is ICE LITE mode, it will only respond to ICE connectivity checks. After ICE concludes, DTLS session would be setup on the nominated ICE candidate. with Agressive nomination there MAY be multiple DTLS session setups possible, however once ICE is completed and a candidate pair is finally selected, DTLS session is setup for that pair.</t>
+    <t> The above example shows a call flow where endpoints use ICE and DTLS..  The example here shows an early offer call, however the same is applicable for delay media scenarios as well.  For the sake of brevity the entire candidate list is not shown.  After ICE concludes, DTLS session is setup. DTLS session can be re-used across multiple media streams using session resumption.
+DTLS-SRTP RFC also allows peers to establish multiple DTLS sessions, refer to Appendix of <xref target="RFC5764"/> for alternative approach.</t>
 
     </section>
 
@@ -350,8 +334,7 @@
       <t>B2BUA's may receive multiple answers for an outbound INVITE
       due to a downstream proxy forking the INVITE to multiple
       targets. It is possible that each of these responses have
-      ICE negotiated in the SDP. In such cases, the B2BUA SHOULD take care
-      of doing ICE connectivity checks for each of the forked target.</t>
+      ICE parameters signaled in the SDP. In such cases, the B2BUA SHOULD take care of doing ICE connectivity checks for each of the forked target.</t>
     </section>
 </section>
 
@@ -383,6 +366,8 @@
       <?rfc include="reference.RFC.5389"?>
       
       <?rfc include="reference.RFC.5245"?>
+      
+            <?rfc include="reference.RFC.4086"?>
     </references>
     <references title="Informative References">
         
