@@ -11,33 +11,12 @@
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
 <!--rfc category="info" ipr="full3978"-->
-<rfc category="std" docName="draft-partha-straw-b2bua-dtls-srtp-00"
+<rfc category="std" docName="draft-ram-straw-b2bua-dtls-srtp-00"
      ipr="trust200902">
   <front>
     <title abbrev="DTLS-SRTP handling in SIP B2BUA">DTLS-SRTP Handling
     in Session Initiation Protocol (SIP) Back-to-Back User Agents
     (B2BUAs)</title>
-
-    <author fullname="Parthasarathi Ravindran" initials="P."
-            surname="Ravindran">
-      <organization>NSN</organization>
-
-      <address>
-        <postal>
-          <street>Manyata Embassy Business park</street>
-
-          <city>Bangalore</city>
-
-          <code>560045</code>
-
-          <region>Karnataka</region>
-
-          <country>India</country>
-        </postal>
-
-        <email>partha@parthasarathi.co.in</email>
-      </address>
-    </author>
 
     <author fullname="Ram Mohan Ravindranath" initials="R."
             surname="Ravindranath">
@@ -203,23 +182,24 @@
       target="RFC3261"/>, Section 6.</t>
 
       <t><list style="hanging">
-          <t>B2BUA: A SIP Back-to-Back User Agent, which is the
+          <t>B2BUA: a SIP Back-to-Back User Agent, which is the
           logical combination of a User Agent Server (UAS) and User
           Agent Client (UAC).</t>
 
-          <t>UAS: A SIP User Agent Server.</t>
+          <t>UAS: a SIP User Agent Server.</t>
 
-          <t>UAC: A SIP User Agent Client.</t>
+          <t>UAC: a SIP User Agent Client.</t>
         </list></t>
 
       <t>All of the pertinent B2BUA terminology and taxonomy used in
       this document is based on <xref target="RFC7092"/>.</t>
 
-      <t>It is assumed the reader is familiar with the fundamental
-      concepts of the RTP protocol <xref target="RFC3550"/> and its
-      taxonomy <xref target="I-D.ietf-avtext-rtp-grouping-taxonomy"/>.
-      Readers are also expected to be familiar with SRTP <xref
-      target="RFC3711"/>, and DTLS <xref target="RFC4347"/>.</t>
+      <t>It is assumed the reader is already familiar with the
+      fundamental concepts of the RTP protocol <xref
+      target="RFC3550"/> and its taxonomy <xref
+      target="I-D.ietf-avtext-rtp-grouping-taxonomy"/>, as well as
+      those of SRTP <xref target="RFC3711"/>, and DTLS <xref
+      target="RFC4347"/>.</t>
     </section>
 
     <section title="Media Plane B2BUAs">
@@ -239,7 +219,7 @@
         media relay B2BUA that changes the UDP/IP address/port.</t>
 
         <t><figure anchor="Figure1"
-            title="INVITE with SDP Callflow for Media Relay B2BUA">
+            title="INVITE with SDP callflow for Media Relay B2BUA">
             <artwork align="center"><![CDATA[
  +-------+            +------------------+              +-----+         
  | Alice |            | MediaRelay B2BUA |              | Bob |
@@ -309,9 +289,9 @@
         payload and re-encrypt it, but it does not modify the contents
         of the payload itself. Note that when such a media-aware B2BUA
         modifies SRTP headers it MUST act as a DTLS intermediary and
-        terminate the DTLS connection so it can re-encrypt in order to
-        properly update the compound SRTCP packet to make them
-        consistent. This DTLS proxy functionality of media-aware
+        terminate the DTLS connection so it can decrypt/re-encrypt in
+        order to properly update the compound SRTCP packet to make
+        them consistent. This DTLS proxy functionality of media-aware
         B2BUAs is discussed in greater detail in Section X of <xref
         target="I-D.ietf-straw-b2bua-rtcp"/>.</t>
 
@@ -332,7 +312,7 @@
         these B2BUA</t>
 
         <t><figure anchor="Figure2"
-            title="INVITE with SDP Callflow with Media-aware B2BUA">
+            title="INVITE with SDP callflow with Media-aware B2BUA">
             <artwork align="center"><![CDATA[
  +-------+           +------------------+               +-----+         
  | Alice |           | MediaAware B2BUA |               | Bob |
@@ -387,19 +367,7 @@
         receive ClientHello before it sees a 200OK. Steps 7,8 can
         happen in any order. Also steps 9,10, 11 may be parallel.
         B2BUA should be prepared to handle these responses on each leg
-        independently. When the DTLS client tries to setup the DTLS
-        session in parallel before OFFER/ANSWER is complete, it is
-        highly likely that it will not receive a response because of
-        NAT between the DTLS client and server. If HelloVerifyRequest
-        is not received then the retransmission timer for ClientHello
-        is doubled as defined in section 4.2.4.1 of <xref
-        target="RFC6347"/>. If the client has not received
-        HelloVerifyRequest from the server even after OFFER/ANSWER is
-        complete, it will have to immediately reset the timer because
-        the chances of receiving response to ClientHello will increase
-        after the ANSWER is acknowledged. Alternatively, a DTLS client
-        MAY send a ClientHello only after OFFER/ANSWER is
-        complete.</t>
+        independently.</t>
 
         <t>A media termination B2BUA MUST change the certificate
         fingerprint from both the endpoints so that it can signal its
@@ -408,82 +376,14 @@
       </section>
 
       <section title="Media Plane B2BUA with NAT handling">
-        <t>For the cases where there is a NAT between UAC and B2BUA
-        and/or UAS and B2BUA and the B2BUA is doing Hosted NAT
-        Traversal (HNT) as described in <xref
-        target="I-D.ietf-mmusic-latching"/>, the DTLS handshake if
-        initiated before OFFER/ANSWER is completed will fail. For
-        example, if a NAT exists between a UAC and B2BUA and the B2BUA
-        is acting as DTLS client, the NAT is likely to block the
-        ClientHello packets from B2BUA until it sees some packets from
-        UAC on the same 5-tuple. In such case one of the approaches
-        mentioned below can be used:</t>
-
-        <t><list style="hanging">
-            <t>The UAC MUST send some packet (could be RTP, STUN) to
-            allow the incoming ClientHello packets. After this, the
-            DTLS client (in this case B2BUA) can successfully setup
-            the DTLS session.</t>
-
-            <t>The UAC which is behind the NAT MUST always be the DTLS
-            client by setting a=setup:active. However this would not
-            work for incoming OFFERs as it requires coordination with
-            remote DTLS peer.</t>
-          </list></t>
-
-        <t>The below call flow shows an example where there is a NAT
-        between UAC (Alice) and B2BUA and how the above approach can
-        be used to solve it.</t>
-
-        <t><figure anchor="Figure3"
-            title="Media-aware B2BUA with NAT between UAC and B2BUA">
-            <artwork align="center"><![CDATA[
- +-------+     +-----+      +------------------+             +------+         
- | Alice |     | NAT |      | MediaAware B2BUA |             | Bob  |
- | (UAC) |     |     |      |                  |             |(UAS) |
- +-------+     +-----+      +------------------+             +------+
-     |(1) INVITE  |                  |  (3)INVITE                |
-     |   a=setup:actpass             |   a=setup:actpass         |
-     |   a=fingerprint1              |   a= fingerprint2         | 
-     |   (alice's IP, port)          |   (B2BUA's IP, port)      |                        
-     |----------->|----------------->|-------------------------->|
-     |            |                  |                           |
-     |    (2)  100| trying           |                           |
-     |<-----------|<-----------------|                           |
-     |            |                  | (4) 100 trying            |
-     |            |                  |<--------------------------|
-     |            |                  |                           |
-     |            |                  |  (5) 200 OK               |
-     |            |                  |   a=setup:active          |
-     |            |                  |    a=fingerprint3         |
-     |            |                  |  (Bob's IP, port)         |
-     |            |                  |<--------------------------|
-     |            |                  |(6) ClientHello + use_srtp |
-     |            |                  |<--------------------------|
-     |    (7) 200 OK                 |                           |
-     |    a=setup:active             | ServerHello + use_srtp (8)|
-     |    a=fingerprint4             |-------------------------->|
-     |    B2BUA's IP, port           |             (9,10)        |
-     |            |X<----------------|   [Cert Exchange between] |
-     |            |(11) ClientHello+ |   Bob and B2BUA over DTLS |
-     |            | use_srtp         |                           |
-     | -----Packet|----------------->|                           |
-     |        (STUN/RTP)             |                           |
-     |            |                  |                           |
-     |            |  retransmit of   |                           |
-     |            |(12) ClientHello+ |                           |
-     |            | use_srtp         |                           | 
-     |<-----------|------------------|                           |
-     |            |                  |                           |
-     |  (13) ServerHello + use_srtp  |                           |
-     |------------|----------------->|                           |
-     |(14,15) [Cert exchange between |                           |
-     |          Alice and B2BUA DTLS]|                           |
-     |            |                  |                           |
-     |<------ (16) SRTP/SRTCP ------>|<---- (17) SRTP/SRTCP ---->|
-     |   [B2BUA modifies SRTP/SRTCP header and/or payload] |   
-]]></artwork>
-          </figure></t>
+        <t>It is possible that DTLS exchange and offer/answer exchange
+        happens in parallel. In case of NAT exists between B2BUA and
+        UA, ClientHello message in DTLS will be lost in case the
+        answer is not received in UA. To overcome this issue,
+        retransmission of ClientHello of DTLS as mentioned in Sec
+        4.2.4.1 of <xref target="RFC6347"/> SHALL be followed or
+        ClientHello MAY be started only after offer/answer exchange is
+        complete.</t>
       </section>
     </section>
 
@@ -512,15 +412,16 @@
     </section>
 
     <section title="Acknowledgments">
-      <t>Special thanks to Lorenzo Miniero, Ranjit Avarsala, Mohammed
-      Elias, Hadriel Kaplan, Paul Kyzivat and Peter Dawes for their
-      constructive comments, suggestions, and early reviews that were
-      critical to the formulation and refinement of this document.</t>
+      <t>Special thanks to Lorenzo Miniero, Ranjit Avarsala, Hadriel
+      Kaplan, Muthu Arul Mozhi, Paul Kyzivat, Peter Dawes and Brett
+      Tate for their constructive comments, suggestions, and early
+      reviews that were critical to the formulation and refinement of
+      this document.</t>
     </section>
 
     <section title="Contributors">
-      <t>Muthu Arul Mozhi, Rajeev Seth provided substantial
-      contributions to this document.</t>
+      <t>Rajeev Seth provided substantial contributions to this
+      document.</t>
     </section>
   </middle>
 
@@ -551,8 +452,6 @@
       <?rfc include="reference.I-D.ietf-avtext-rtp-grouping-taxonomy"?>
 
       <?rfc include="reference.I-D.ietf-straw-b2bua-rtcp"?>
-
-      <?rfc include="reference.I-D.ietf-mmusic-latching"?>
     </references>
   </back>
 </rfc>
