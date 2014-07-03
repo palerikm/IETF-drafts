@@ -74,24 +74,6 @@
       </address>
     </author>
 
-    <author fullname="Hui Deng" initials="H." surname="Deng">
-      <organization>China Mobile</organization>
-
-      <address>
-        <postal>
-          <street>32 Xuanwumen West Street, Xicheng District</street>
-
-          <city>Beijing</city>
-
-          <code>100053</code>
-
-          <country>P.R. China</country>
-        </postal>
-
-        <email>denghui@chinamobile.com</email>
-      </address>
-    </author>
-
     <author fullname="Mohamed Boucadair" initials="M." surname="Boucadair">
       <organization>France Telecom</organization>
 
@@ -331,6 +313,10 @@
 
           <t hangText="Req-15:">MUST provide considerations for protection
           against denial of service attacks against network nodes.</t>
+
+          <t hangText="Req-16:">MUST provide mechanism(s) that can be
+          implemented as part of a user process or library that does NOT
+          require any special privileges.</t>
         </list></t>
 
       <t>In designing a solution that meets these requirements, considerations
