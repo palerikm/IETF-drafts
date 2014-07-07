@@ -11,33 +11,24 @@
 <?rfc inline ="yes"?>
 <?rfc subcompact="no"?>
 <?rfc tocompact="yes"?>
-<rfc category="std" docName="draft-ietf-rtcweb-stun-consent-freshness-04"
+<rfc category="std" docName="draft-ietf-rtcweb-stun-consent-freshness-05"
      ipr="trust200902">
   <front>
     <title abbrev="STUN Usage for Consent Freshness">STUN Usage for Consent
     Freshness</title>
 
-    <author fullname="Muthu Arul Mozhi Perumal" initials="M."
-            surname="Perumal">
-      <organization>Cisco Systems</organization>
-
-      <address>
-        <postal>
-          <street>Cessna Business Park</street>
-
-          <street>Sarjapur-Marathahalli Outer Ring Road</street>
-
-          <city>Bangalore</city>
-
-          <region>Karnataka</region>
-
-          <code>560103</code>
-
-          <country>India</country>
-        </postal>
-
-        <email>mperumal@cisco.com</email>
-      </address>
+    <author fullname="Muthu Arul Mozhi Perumal" initials="M." surname="Perumal">
+     <organization>Ericsson</organization>
+     <address>
+      <postal>
+        <street>Mahadevapura</street>
+         <city>Bangalore</city>
+       <region>Karnataka</region>
+        <code>560048</code>
+      <country>India</country>
+     </postal>
+    <email>muthu.arul@gmail.com</email>
+    </address>
     </author>
 
     <author fullname="Dan Wing" initials="D" surname="Wing">
@@ -166,7 +157,7 @@
       response messages to verify the remote peer's consent to receive traffic,
       and the absence of which for a period of time indicates a loss of liveness.</t>
       
-      <t>WebRTC endpoints are required to support full ICE as specified in section 3.4 of <xref target="I-D.ietf-rtcweb-transports"/>. However, when WebRTC endpoints interwork with other endpoints that support only ICE-lite (e.g. gateways) those endpoints will not generate consent checks but just respond to consent checks they receive.</t>
+      <t>WebRTC endpoints are required to support full ICE as specified in section 3.4 of <xref target="I-D.ietf-rtcweb-transports"/>. However, when WebRTC endpoints interwork with other endpoints that support only ICE-lite (e.g. gateways) those endpoints will not generate consent checks, but just respond to consent checks they receive.</t>
       
     </section>
 
