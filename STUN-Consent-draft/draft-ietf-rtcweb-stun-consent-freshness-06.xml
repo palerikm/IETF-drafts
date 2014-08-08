@@ -11,7 +11,7 @@
 <?rfc inline ="yes"?>
 <?rfc subcompact="no"?>
 <?rfc tocompact="yes"?>
-<rfc category="std" docName="draft-ietf-rtcweb-stun-consent-freshness-05"
+<rfc category="std" docName="draft-ietf-rtcweb-stun-consent-freshness-06"
      ipr="trust200902">
   <front>
     <title abbrev="STUN Usage for Consent Freshness">STUN Usage for Consent
