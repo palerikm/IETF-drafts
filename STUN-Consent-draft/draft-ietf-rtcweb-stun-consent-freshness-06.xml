@@ -157,7 +157,13 @@
       response messages to verify the remote peer's consent to receive traffic,
       and the absence of which for a period of time indicates a loss of liveness.</t>
       
-      <t>WebRTC endpoints are required to support full ICE as specified in section 3.4 of <xref target="I-D.ietf-rtcweb-transports"/>. However, when WebRTC endpoints interwork with other endpoints that support only ICE-lite (e.g. gateways) those endpoints will not generate consent checks, but just respond to consent checks they receive.</t>
+      <t>WebRTC endpoints are required to support full ICE as
+      specified in section 3.4 of
+      <xref target="I-D.ietf-rtcweb-transports"/>. However, when
+      WebRTC endpoints interwork with other endpoints that support
+      only ICE-lite (e.g., gateways) those endpoints will not generate
+      consent checks, but just respond to consent checks they
+      receive.</t>
       
     </section>
 
@@ -211,12 +217,18 @@ the following sections.</t>
       liveness test using STUN request/response as described below:</t>
 
       <t>An endpoint MUST NOT send application data (e.g., RTP, RTCP,
-      SCTP, DTLS) on an ICE-initiated connection unless the receiving
-      endpoint consents to receive the data. After a successful ICE
-      connectivity check on a particular transport address, subsequent
-      consent MUST be obtained following the procedure described in
-      this document. The consent expires after a fixed amount of
-      time. During ICE restart consent checks will continue to be sent on previously validated pair. </t>
+      SCTP, DTLS), over any transport protocol (e.g., UDP, TCP) on an
+      ICE-initiated connection unless the receiving endpoint consents
+      to receive the data.  After a successful ICE connectivity check
+      on a particular transport address, subsequent consent MUST be
+      obtained following the procedure described in this document. The
+      consent expires after a fixed amount of time. During ICE restart
+      consent checks will continue to be sent on previously validated
+      pair.  
+      <list style="empty"><t>Note: Although TCP has its own consent
+      mechanism (TCP acknowledgements), consent is necessary over a
+      TCP connection because it could be translated to a UDP
+      connection (e.g., <xref target="RFC6062"></xref>).</t></list></t>
 
       <t>Explicit consent to send is obtained by sending an ICE
       binding request to the remote peer's Transport Address and
@@ -422,9 +434,9 @@ PASSWORD, or any other packet.</t>
     </section>
 
     <section title="Acknowledgement">
-      <t>Thanks to Eric Rescorla, Harald Alvestrand, Bernard Aboba, Magnus
-      Westerland, Cullen Jennings, Christer Holmberg and Simon Perreault for their valuable
-      inputs and comments.</t>
+      <t>Thanks to Eric Rescorla, Harald Alvestrand, Bernard Aboba,
+      Magnus Westerland, Cullen Jennings, Christer Holmberg, Simon
+      Perreault, and Paul Kyzivat for their valuable inputs and comments.</t>
     </section>
   </middle>
 
@@ -443,6 +455,7 @@ PASSWORD, or any other packet.</t>
       <?rfc include="reference.RFC.3830"?>
 
       <?rfc include="reference.RFC.4568"?>
+      <?rfc include="reference.RFC.6062"?>
 
       <?rfc include="reference.I-D.ietf-tsvwg-rtcweb-qos"?>
 
