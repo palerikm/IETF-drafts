@@ -242,7 +242,7 @@ the following sections.</t>
       consent expires.  To prevent expiry of consent, a STUN binding
       request MUST be sent every N milliseconds, where N is chosen randomly
       with each consent check in the interval [.8N, 1.2N] (to prevent
-      prevent network synchronization), where N SHOULD be 5000.  Using
+      network synchronization), where N SHOULD be 5000.  Using
       the value 5000 milliseconds and that 20% randomization range, N
       would be a value between 4000 and 6000.  These STUN binding
       requests for consent are not re-transmitted. Each STUN binding
