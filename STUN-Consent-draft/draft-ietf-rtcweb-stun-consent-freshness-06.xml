@@ -223,8 +223,10 @@ the following sections.</t>
       on a particular transport address, subsequent consent MUST be
       obtained following the procedure described in this document. The
       consent expires after a fixed amount of time. During ICE restart
-      consent checks will continue to be sent on previously validated
-      pair.  
+      consent checks MUST continue to be sent on previously validated
+      pair, and MUST be responded to on the previously validated pair,
+      until ICE restart completes.
+
       <list style="empty"><t>Note: Although TCP has its own consent
       mechanism (TCP acknowledgements), consent is necessary over a
       TCP connection because it could be translated to a UDP
@@ -238,7 +240,7 @@ the following sections.</t>
       short-term credentials as the initial ICE
       exchange. Implementations MUST cease sending data if their
       consent expires.  To prevent expiry of consent, a STUN binding
-      request MUST be every N milliseconds, where N is chosen randomly
+      request MUST be sent every N milliseconds, where N is chosen randomly
       with each consent check in the interval [.8N, 1.2N] (to prevent
       prevent network synchronization), where N SHOULD be 5000.  Using
       the value 5000 milliseconds and that 20% randomization range, N
@@ -298,9 +300,9 @@ immediately revoking consent.</t>
         that closes the connection (e.g., a TLS fatal alert) or
         receipt of a valid and authenticated STUN response with error
         code Forbidden (403).  Those consent revocation messages can
-        be lost on the network, so implementations MAY want respond to
-        subsequent consent checks which requires remembering
-        credentials.</t>
+        be lost on the network, so an implementation wanting to
+        immediately revoke consent needs to remember those credentials
+        until consent expiry (30 seconds).</t>
 
         <t>Receipt of an unauthenticated message that closes a
         connection (e.g., TCP FIN) does not indicate revocation of
@@ -436,7 +438,8 @@ PASSWORD, or any other packet.</t>
     <section title="Acknowledgement">
       <t>Thanks to Eric Rescorla, Harald Alvestrand, Bernard Aboba,
       Magnus Westerland, Cullen Jennings, Christer Holmberg, Simon
-      Perreault, and Paul Kyzivat for their valuable inputs and comments.</t>
+      Perreault, Paul Kyzivat, Emil Ivov, and Jonathan Lennox for
+      their valuable inputs and comments.</t>
     </section>
   </middle>
 
