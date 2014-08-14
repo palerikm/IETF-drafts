@@ -55,18 +55,18 @@
     <date/>
 
     <workgroup>TRAM</workgroup>
-
+    
     <abstract>
-        <t>
-            This draft describes a mechanism for information exchange
-            between an application and the network.  The information
-            provided from the application to the network MAY be used
-            by a network element in the path to modify its behavior to
-            improve application quality of experience (QoE).
-            Likewise, the information provided by the network to the
-            application MAY be used by the application to modify its
-            behavior to optimize for QoE.
-        </t>
+      <t>
+        This draft describes a mechanism for information exchange
+        between an application and the network.  The information
+        provided from the application to the network MAY be used by a
+        network element in the path to modify its behavior to improve
+        application quality of experience (QoE).  Likewise, the
+        information provided by the network to the application MAY be
+        used by the application to modify its behavior to optimize for
+        QoE.
+      </t>
     </abstract>
     
     <note title="Requirements Language">
@@ -97,8 +97,14 @@
         prioritize packet flows. 
       </t>
       <t>
+        The lack of congestion control in UDP may lead to problems as
+        described in <xref target="I-D.eggert-tsvwg-rfc5405bis"/>. The
+        mechanism described in this document can be used to introduce
+        fairness and congestion control for UDP streams.
+      </t>
+      <t>
         There is a need for a solution that is easy for the
-        application developer to use. That means consistent behaviour
+        application developer to use. That means consistent behavior
         on all supported platforms and preferably without need of
         administrative privileges to set and read values. The solution
         also needs to be able to cross administrative domains without
@@ -109,6 +115,12 @@
           regarding the incentive to lie is needed.   
         </cref>
       </t>
+      <!--
+      <t>
+        Todo: Say why we want to have a simpler solution than <xref
+        target="RFC6679"/>.
+      </t>
+      -->
       <t>
         This draft describes how these problems can be solved by
         defining a few strictly defined STUN <xref target="RFC5389"/>
@@ -130,15 +142,7 @@
         network status attribute to influence rate stating points or
         rate adaption mechanisms.
       </t>
-      <t>
-        The functionality described here is referred to as
-        DISCUSS. Due to the security implications described in
-        <xref target="I-D.thomson-mmusic-ice-webrtc"></xref> where
-        large STUN packet are used amplify an attack, keeping the
-        added STUN attributes is an important design consideration. To
-        avoid unwanted information leakage the new defined STUN
-        attributes are strictly defined in this draft.
-      </t>
+      
     </section>
 
     <section title="General Usage">
@@ -427,7 +431,7 @@
       <t>
         The other attributes BANDWIDTH-USAGE, STREAM-PRIORITY and
         NETWORK-STATUS SHOULD only be added once as they describe the
-        behaviour of the 5-tuple and not individual streams.
+        behavior of the 5-tuple and not individual streams.
       </t>
     </section>
         
@@ -492,7 +496,7 @@
         </t>
         <t>
           If a 5-tuple is used to send both a audio and video stream,
-          the stream type can be set to 0x0006.  This can be useful if
+          the stream type can be set to 0x0006. This can be useful if
           the application wants to hint that the 5-tuple contains
           several streams, This is useful if the attribute is added to
           STUN binding requests during ICE connectivity checks. If
@@ -649,7 +653,130 @@
         </t>
       </section>
     </section>
+
+    <section title="IANA Considerations">
+      <t>
+        IANA is requested to add the following attributes to the <xref
+        target="iana-stun">STUN attribute registry</xref>, 
+        <list style="symbols">
+          <t>
+            0xXXX0: STREAM-TYPE      (0xXXX0, in the comprehension-optional range)
+          </t>
+          <t>
+            0xXXX1: BANDWIDTH-USAGE  (0xXXX1, in the comprehension-optional range)
+          </t>
+          <t>
+            0xXXX2: STREAM-PRIORITY  (0xXXX2, in the comprehension-optional range)
+          </t>
+          <t>
+            0xYYYY: NETWORK-STATUS   (0xYYYY, in the comprehension-optional range)
+          </t>
+        </list> 
+      </t>
+    </section>
+
     
+    <section title="Implementation Status">
+      <t>
+        [Note to RFC Editor: Please remove this section and reference to
+        <xref target="RFC6982"></xref> prior to publication.]
+      </t>
+
+      <t>
+        This section records the status of known implementations of the
+        protocol defined by this specification at the time of posting of this
+        Internet-Draft, and is based on a proposal described in <xref
+        target="RFC6982"></xref>. The description of implementations in this
+        section is intended to assist the IETF in its decision processes in
+        progressing drafts to RFCs. Please note that the listing of any
+        individual implementation here does not imply endorsement by the IETF.
+        Furthermore, no effort has been spent to verify the information
+        presented here that was supplied by IETF contributors. This is not
+        intended as, and must not be construed to be, a catalog of available
+        implementations or their features. Readers are advised to note that
+        other implementations may exist.
+      </t>
+
+      <t>
+        According to <xref target="RFC6982"></xref>, "this will allow
+        reviewers and working groups to assign due consideration to documents
+        that have the benefit of running code, which may serve as evidence of
+        valuable experimentation and feedback that have made the implemented
+        protocols more mature. It is up to the individual working groups to use
+        this information as they see fit".
+      </t>
+      
+      <section title="NATtools">
+        <t>
+          <list style="hanging">
+            <t hangText="Organization: ">Cisco 
+            </t>
+            
+            <t hangText="Description: "> 
+              Open-Source ICE, TURN and STUN implementation. 
+            </t> 
+            
+            <t hangText="Implementation: ">
+              https://github.com/cisco/NATTools
+            </t>
+            
+            <t hangText="Level of maturity: ">
+              Code is stable. Tests
+              being run to learn more on how to leverage the information
+              shared between client and network.
+            </t>
+            
+            <t hangText="Coverage: ">
+              Implements the DISCUSS attributes
+            </t>
+            
+            <t hangText="Licensing: ">
+              BSD
+            </t>
+            
+            <t hangText="Implementation experience: ">
+              Draft was implemented with internal video test
+              clients. Wireless access point implemented STUN
+              detection in the media path and acted on the information
+              in the DISCUSS attributes. After running tests in
+              different congestion scenarios it is clear that sharing
+              information between endpoint and network can help with
+              congestion and end-user experience. This approach
+              required little effort to implement on the client side.
+            </t>
+            
+            <t hangText="Contact: ">
+              Paal-Erik Martinsen
+              &lt;palmarti@cisco.com&gt;.
+            </t>
+          </list>
+        </t>
+      </section>
+    </section>
+    
+    <section title="Security Considerations">
+      <t>
+        Due to the security implications described in <xref
+        target="I-D.thomson-mmusic-ice-webrtc"></xref> where large
+        STUN packet are used to amplify an attack, keeping the added
+        STUN attributes small is a important design consideration.
+      </t>
+      <t>
+        To avoid unwanted information leakage the new defined STUN
+        attributes defined in this draft are strictly defined. No more
+        information should be leaked that an on-path device could
+        learn by observing the stream over time or do some deep packet
+        analysis. This draft would benefit from more discussions on
+        this topic.
+      </t>
+      <t>
+        It is also worth noticing that the STUN attributes defined
+        should be treated as hints, and more work is needed regarding
+        how to deal with misbehaving clients or network devices.
+      </t>
+    </section>
+
+
     <section anchor="ack" title="Acknowledgements">
       <t>
         Authors would like to thank Dan Wing, Anca Zamfir and Cullen
@@ -660,16 +787,32 @@
   
   <back>
     <references title="Normative References">
-      &rfc2119; <?rfc include="reference.RFC.2474"?>
+      &rfc2119; 
+      <?rfc include="reference.RFC.2474"?>
       <?rfc include="reference.RFC.5389"?>
       <?rfc include="reference.RFC.5245"?>
+      <!--<?rfc include="reference.RFC.6679"?>-->
+      <?rfc include="reference.RFC.6982"?>
     </references>
 
     <references title="Informational References">
       <?rfc include='reference.I-D.ietf-rtcweb-security-arch' ?>
       <?rfc include='reference.I-D.thomson-mmusic-ice-webrtc' ?>
       <?rfc include='reference.I-D.dhesikan-tsvwg-rtcweb-qos' ?>
-       <?rfc include='reference.I-D.ietf-mmusic-sdp-bundle-negotiation' ?>
+      <?rfc include='reference.I-D.ietf-mmusic-sdp-bundle-negotiation' ?>
+      <?rfc include='reference.I-D.eggert-tsvwg-rfc5405bis' ?>
+       
+      <reference anchor="iana-stun"
+                 target="http://www.iana.org/assignments/stun-parameters/stun-pa rameters.xml">
+        <front>
+          <title>IANA: STUN Attributes</title>
+          <author fullname="IANA" surname="IANA">
+            <organization></organization>
+          </author>
+          <date month="April" year="2011" />
+        </front>
+      </reference>
+      
       <!--<?rfc include='reference.I-D.muthu-behave-consent-freshness' ?>-->
     </references>
     <!--
