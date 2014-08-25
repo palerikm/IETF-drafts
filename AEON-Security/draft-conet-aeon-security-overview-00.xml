@@ -13,7 +13,7 @@
 <rfc category="info" docName="draft-conet-aeon-security-overview-00"
      ipr="trust200902">
   <front>
-    <title abbrev="AEON/CONET: Security Overview">Aplication Enabled
+    <title abbrev="AEON/CONET: Security Overview">Application Enabled
     Collaborative Networking: Security Overview</title>
 
     <author fullname="Dan Wing" initials="D." surname="Wing">
@@ -63,9 +63,9 @@
 
       <address>
         <postal>
-          <street></street>
+          <street/>
 
-          <street></street>
+          <street/>
 
           <city>Bangalore</city>
 
@@ -76,17 +76,37 @@
       </address>
     </author>
 
-    <date />
+    <author fullname="Charles Eckel" initials="C." surname="Eckel">
+      <organization abbrev="Cisco">Cisco Systems, Inc.</organization>
+
+      <address>
+        <postal>
+          <street>170 West Tasman Drive</street>
+
+          <city>San Jose</city>
+
+          <region>California</region>
+
+          <code>95134</code>
+
+          <country>USA</country>
+        </postal>
+
+        <email>eckelcu@cisco.com</email>
+      </address>
+    </author>
+
+    <date/>
 
     <abstract>
       <t>Application Enabled Collaborative Networking (AECON) discusses the
-      need for mechanisms using which applications signal the network to
-      provide differential flow treatment for application data traffic. The
-      intent is to have applications protect the content of their flows, yet
-      have the ability to opt-in information exchanges that provide a more
-      precise allocation of network resources and thus get better user
-      experience. This document discusses security implications of such a
-      solution.</t>
+      need for mechanisms through which applications exchange information
+      about their flows with the network to achieve better application
+      operation under existing network conditions. The intent is to have
+      applications protect the content of their flows, yet have the ability to
+      opt-in information exchanges that enable a more precise allocation of
+      network resources and thus achieve better user experience. This document
+      discusses security implications of such a solution.</t>
     </abstract>
   </front>
 
@@ -96,20 +116,21 @@
       many application providers and network operators. The problems faced by
       existing solutions that try to provide such visibility to enable
       appropriate treatment of application flows are described in detail in
-      <xref target="I-D.conet-aeon-problem-statement"></xref>.</t>
+      <xref target="I-D.conet-aeon-problem-statement"/>.</t>
 
       <t>As the IETF establishes default behaviors that thwart pervasive
-      surveillance (e.g. <xref target="RFC7258"></xref>), it will be important
-      to provide secure mechanism for applications that want to have the
-      network provide differential flow treatment for their data.</t>
+      surveillance (e.g. <xref target="RFC7258"/>), it will be important to
+      provide secure mechanism for applications that want to have the network
+      provide differential flow treatment for their data.</t>
 
       <t>It is essential that this model considers security and privacy
-      implications to ensure that false claims and unwarranted differentiated
-      treatment for flows are disallowed. For example, the solution should
-      ensure that network be able to trust the application/user/end-point
-      before providing differential treatment. Similarly an application or a
-      client must be able to trust the network before providing flow
-      information. </t>
+      implications to provide protection again false claims, leakage of
+      private information, and unwarranted differentiated treatment of flows.
+      For example, the network may need to validate application provided flow
+      information before using it to provide differential treatment of the
+      application's flows. Similarly, an application may need assurance of
+      confidentiality protection before providing potentially sensitive
+      information.</t>
     </section>
 
     <section anchor="notation" title="Notational Conventions">
@@ -117,11 +138,10 @@
     </section>
 
     <section anchor="AECON" title="AECON approach">
-      <t>The goal of AECON is to offer mechanisms that allow applications to
-      request network services for better user experience. AECON approach
-      towards finding solutions to the use cases described in the <xref
-      target="I-D.conet-aeon-use-cases"></xref> includes the following
-      steps:</t>
+      <t>The goal of AECON is to offer mechanisms to achieve better
+      application operation under existing network conditions. AECON's
+      approach toward finding solutions to the use cases described in <xref
+      target="I-D.conet-aeon-use-cases"/> includes the following steps:</t>
 
       <t><list style="symbols">
           <t>Identify the protocol(s) best fit to solve the problem depending
@@ -164,45 +184,48 @@
       </section>
 
       <section title="Flow Metadata Handling">
-        <t>In AECON, applications signal the flow characteristics to the
-        network. The network responds back to applications with the result of
-        processing the request. Depending on its nature and needs, the
-        application may request different flow characteristics. As the
-        application requirements change, the flow characteristics communicated
-        to the network may be revised. When network state changes or when
-        different events occur, if needed, network element sends update that
-        the flow can no longer be accommodated. For example an application may
-        send at startup certain bandwidth, delay and jitter requirements. The
+        <t>In AECON, applications signal their flow characteristics to the
+        network. The network responds back to applications with information
+        regarding its ability to transport those flows. Depending on its
+        nature and needs, the application may provide different flow
+        characteristics. As the application requirements change, the flow
+        characteristics communicated to the network may be revised. When
+        network state changes or when different events occur, a network
+        element may provide updated information about its ability to transport
+        flows. For example an application may send at startup certain
+        bandwidth, delay and jitter requirements for each of its flows. The
         network performs bandwidth accounting against the matching service
-        class and sends an acknowledgment to the application. </t>
+        class and sends an acknowledgment to the application.</t>
       </section>
     </section>
 
     <section anchor="sec_overview" title="Security overview">
-      <t>As described earlier, it is essential that the AECON solution
-      considers all security implications and the mechanism/protocol that is
-      chosen for the solution complies to the required security requirements.
-      This section lists a set of basic security requirements that any such
-      mechanism/protocol must support.</t>
+      <t>As described previously, AECON addresses a wide range of use cases
+      with varying security implications and requirements. It is essential
+      that the AECON solution considers all security implications, and that
+      the protocols and mechanisms chosen for the solution meet this
+      requirements. This section lists a set of basic security requirements
+      that any such mechanism/protocol must support.</t>
 
       <section title="Mutual authentication">
         <t>A basic security requirement is that there must be a mechanism for
         mutual authentication between the application signaling flow
         information and the network entity that uses this flow information to
-        provide differential treatment for flows. Without this, the solution
-        is open for attacks with fake applications falsely claiming to be
-        legitimate applications that require special treatment i.e. The
-        network infrastructure is at risk of being misused. Should the network
-        entity be spoofed, applications could be misled that the network has
+        provide differential treatment for flows as well as feedback to
+        applications about such treatment. Without this, the solution is open
+        for attacks with fake applications falsely claiming to be legitimate
+        applications that require special treatment i.e. The network
+        infrastructure is at risk of being misused. Should the network entity
+        be spoofed, applications could be misled that the network has
         accommodated the requested flow characteristics.</t>
 
         <section title="Integrity protection">
-          <t>Integrity protection is necessary to ensure that a man-in-middle
-          device does not alter the signaling information, thus ensuring that
-          the network receives the flow characteristics as sent by the client
-          and the client receives flow characteristics accommodated by the
-          network. Compromise in integrity could result in applications flows
-          not receiving the intented treatment.</t>
+          <t>Integrity protection is necessary to ensure that a
+          man-in-the-middle device does not alter the signaling information,
+          thus ensuring that the network receives the flow characteristics as
+          sent by the client and the client receives flow characteristics
+          accommodated by the network. Compromise in integrity could result in
+          applications flows not receiving the intended treatment.</t>
         </section>
 
         <section title="Replay Protection">
@@ -230,7 +253,12 @@
       <section title="Privacy">
         <t>An eavesdropping entity should not be able to glean any information
         that could leak privacy-related information like application name from
-        the protocol signaling flow characteristics to the network.</t>
+        the protocol signaling flow characteristics to the network. The best
+        protection against privacy related information leakage is to not
+        include any such information in the flow characteristics communicated
+        between the applications and the network. If a specific use case
+        requires communication of privacy related information, that
+        information needs confidentiality protection.</t>
       </section>
     </section>
 
