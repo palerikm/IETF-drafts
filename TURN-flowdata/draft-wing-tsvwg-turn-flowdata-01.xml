@@ -118,11 +118,11 @@
     <section title="Introduction">
       <t>Traversal Using Relay NAT (TURN) <xref target="RFC5766"></xref> is a
       protocol that is often used to improve the connectivity of P2P
-      applications. TURN ensures that a connection can be established even
-      when one or both sides is incapable of a direct P2P connection. A TURN
-      server could be provided by an enterprise network, an access network, an
-      application service provider or a third party provider. A TURN server
-      could be used to relay media streams, WebRTC data channels <xref
+      applications. TURN allows a connection to be established when one or
+      both sides is incapable of a direct P2P connection. A TURN server could
+      be provided by an enterprise network, an access network, an application
+      service provider or a third party provider. A TURN server could be used
+      to relay media streams, WebRTC data channels <xref
       target="I-D.ietf-rtcweb-overview"></xref> , gaming, file transfer etc. A
       TURN server and the network in which it is hosted could have
       insufficient bandwidth or other characteristics that could adversely
@@ -162,7 +162,7 @@
 
     <section anchor="design" title="Design considerations">
       <t><list style="numbers">
-          <t>TURN client can choose to either use Send and Data methods or
+          <t>TURN client can choose to either use Send and Data indications or
           channels to exchange data with its peer. For bandwidth intensive
           applications (like video, audio, WebRTC data channels) using Send
           indication or Data indication adds 36 bytes overhead to the
@@ -215,7 +215,7 @@
       <t>When a channel binding is initiated by the client, it may also
       indicate certain characteristics of its flow to the TURN server. The
       TURN server uses that information to prioritize the flow in its network
-      and signals back to the client that it can (fully or partially)
+      and signals back to the client that it can fully or partially
       accommodate the flow.</t>
 
       <t>This specification defines one new comprehension-optional STUN
@@ -248,19 +248,20 @@
 
         <t>The TURN server will determine if it can provide the flow resources
         requested by the client. If the TURN server determines the flow can
-        only be partially accommodated, it returns values in the FLOWDATA
-        fields that it can accommodate or returns 0 in those FLOWDATA fields
-        where it has no information. In other words if the request indicated a
-        low tolerance for delay but the TURN server determines that only high
-        delay is available, the FLOWDATA response indicates high delay is
-        available. The same sort of processing occurs on all of the FLOWDATA
-        fields of the response (upstream and downstream delay tolerance, loss
-        tolerance, jitter tolerance). If the TURN server determines the flow
-        can only be partially accommodated and the client has also signaled
-        CHECK- ALTERNATE attribute <xref
-        target="I-D.williams-peer-redirect"></xref> then the TURN server MAY
-        re-direct the client to an alternate TURN server that could
-        accommodate the flow characteristics conveyed by the client.</t>
+        only be fully or partially accommodated, it returns values in the
+        FLOWDATA fields that it can accommodate or returns 0 in those FLOWDATA
+        fields where it has no information. In other words if the request
+        indicated a low tolerance for delay but the TURN server determines
+        that only high delay is available, the FLOWDATA response indicates
+        high delay is available. The same sort of processing occurs on all of
+        the FLOWDATA fields of the response (upstream and downstream delay
+        tolerance, loss tolerance, jitter tolerance, minimum bandwidth,
+        maximum bandwidth). If the TURN server determines the flow can only be
+        partially accommodated and the client has also signaled CHECK-
+        ALTERNATE attribute <xref target="I-D.williams-peer-redirect"></xref>
+        then the TURN server MAY re-direct the client to an alternate TURN
+        server that could accommodate the flow characteristics conveyed by the
+        client.</t>
 
         <t>If the TURN server can accommodate the flow as described in the
         FLOWDATA attribute, it sends a success response and includes the
@@ -279,8 +280,8 @@
 
           <t><figure anchor="conflict"
               title="Message diagram, resolving conflict">
-              <artwork align="left">
-<![CDATA[   
+              <artwork align="left"><![CDATA[
+   
 TURN Client A             TURN server           TURN Client B
      |                         |                       |
      |-loss=med, delay=med---->|<-loss=hi, delay=hi----|
@@ -365,22 +366,22 @@ TURN Client A             TURN server           TURN Client B
 
           <t hangText="RSVD2:">Reserved (7 bits), MUST be ignored on reception
           and MUST be 0 on transmission.</t>
-          
-          <t hangText="Upstream Minimum Bandwidth:">Measures bandwidth sent by the 
-      client.  Value is in octets per second.  The value 0 means no
-      information is available.</t>
 
-   <t hangText="Downstream Minimum Bandwidth:">Measures bandwidth sent to the 
-      client.  Value is in octets per second.  The value 0 means no
-      information is available.</t>
+          <t hangText="Upstream Minimum Bandwidth:">Measures bandwidth sent by
+          the client. Value is in octets per second. The value 0 means no
+          information is available.</t>
 
-   <t hangText="Upstream Maximum Bandwidth:">Measures bandwidth sent by the 
-      client.  Value is in octets per second.  The value 0 means no
-      information is available.</t>
+          <t hangText="Downstream Minimum Bandwidth:">Measures bandwidth sent
+          to the client. Value is in octets per second. The value 0 means no
+          information is available.</t>
 
-   <t hangText="Downstream Maximum Bandwidth:">  Measures bandwidth sent to the 
-      client.  Value is in octets per second.  The value 0 means no
-      information is available.</t>
+          <t hangText="Upstream Maximum Bandwidth:">Measures bandwidth sent by
+          the client. Value is in octets per second. The value 0 means no
+          information is available.</t>
+
+          <t hangText="Downstream Maximum Bandwidth:">Measures bandwidth sent
+          to the client. Value is in octets per second. The value 0 means no
+          information is available.</t>
         </list></t>
 
       <t>Different applications have different needs for their flows. The
@@ -498,23 +499,22 @@ TURN Client A             TURN server           TURN Client B
 
           <t hangText="RSVD2:">Reserved (7 bits), MUST be ignored on reception
           and MUST be 0 on transmission.</t>
-          
-           <t hangText="Accommodated Upstream Minimum Bandwidth:">  Bandwidth the network can
-      accommodate for this flow, sent by the client.  Value in bytes
-      per second. 0 means no information is available.</t>
 
-        <t hangText="Accommodated Downstream Minimum Bandwidth:">  Bandwidth the network can
-      accommodate for this flow, sent to the client.  Value in bytes
-      per second. 0 means no information is available.</t>
+          <t hangText="Accommodated Upstream Minimum Bandwidth:">Bandwidth
+          accommodated for this flow. Value in bytes per second. 0 means no
+          information is available.</t>
 
-      <t hangText="Accommodated Upstream Maximum Bandwidth:">  Bandwidth the network can
-      accommodate for this flow, sent by the client.  Value in bytes
-      per second. 0 means no information is available.</t>
+          <t hangText="Accommodated Downstream Minimum Bandwidth:">Bandwidth
+          accommodated for this flow. Value in bytes per second. 0 means no
+          information is available.</t>
 
-      <t hangText="Accommodated Downstream Maximum Bandwidth:">  Bandwidth the network can
-      accommodate for this flow, sent to the client.  Maximum
-      Downstream bandwidth in bytes per second, 0 means no information
-      is available.</t>
+          <t hangText="Accommodated Upstream Maximum Bandwidth:">Bandwidth
+          accommodated for this flow. Value in bytes per second. 0 means no
+          information is available.</t>
+
+          <t hangText="Accommodated Downstream Maximum Bandwidth:">Bandwidth
+          accommodated for this flow Value in bytes per second, 0 means no
+          information is available.</t>
         </list></t>
     </section>
 

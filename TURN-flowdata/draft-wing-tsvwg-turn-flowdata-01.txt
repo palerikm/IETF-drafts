@@ -5,11 +5,11 @@
 TSVWG                                                            D. Wing
 Internet-Draft                                                  T. Reddy
 Intended status: Standards Track                           Cisco Systems
-Expires: February 26, 2015                                   B. Williams
+Expires: March 1, 2015                                       B. Williams
                                                             Akamai, Inc.
                                                          R. Ravindranath
                                                            Cisco Systems
-                                                         August 25, 2014
+                                                         August 28, 2014
 
 
              TURN extension to convey flow characteristics
@@ -39,7 +39,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on February 26, 2015.
+   This Internet-Draft will expire on March 1, 2015.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Wing, et al.            Expires February 26, 2015               [Page 1]
+Wing, et al.              Expires March 1, 2015                 [Page 1]
 
 Internet-Draft                TURN flowdata                  August 2014
 
@@ -87,11 +87,11 @@ Table of Contents
 
    Traversal Using Relay NAT (TURN) [RFC5766] is a protocol that is
    often used to improve the connectivity of P2P applications.  TURN
-   ensures that a connection can be established even when one or both
-   sides is incapable of a direct P2P connection.  A TURN server could
-   be provided by an enterprise network, an access network, an
-   application service provider or a third party provider.  A TURN
-   server could be used to relay media streams, WebRTC data channels
+   allows a connection to be established when one or both sides is
+   incapable of a direct P2P connection.  A TURN server could be
+   provided by an enterprise network, an access network, an application
+   service provider or a third party provider.  A TURN server could be
+   used to relay media streams, WebRTC data channels
    [I-D.ietf-rtcweb-overview] , gaming, file transfer etc.  A TURN
    server and the network in which it is hosted could have insufficient
    bandwidth or other characteristics that could adversely impact the
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Wing, et al.            Expires February 26, 2015               [Page 2]
+Wing, et al.              Expires March 1, 2015                 [Page 2]
 
 Internet-Draft                TURN flowdata                  August 2014
 
@@ -138,7 +138,7 @@ Internet-Draft                TURN flowdata                  August 2014
 
 3.  Design considerations
 
-   1.  TURN client can choose to either use Send and Data methods or
+   1.  TURN client can choose to either use Send and Data indications or
        channels to exchange data with its peer.  For bandwidth intensive
        applications (like video, audio, WebRTC data channels) using Send
        indication or Data indication adds 36 bytes overhead to the
@@ -165,7 +165,7 @@ Internet-Draft                TURN flowdata                  August 2014
 
 
 
-Wing, et al.            Expires February 26, 2015               [Page 3]
+Wing, et al.              Expires March 1, 2015                 [Page 3]
 
 Internet-Draft                TURN flowdata                  August 2014
 
@@ -196,8 +196,8 @@ Internet-Draft                TURN flowdata                  August 2014
    When a channel binding is initiated by the client, it may also
    indicate certain characteristics of its flow to the TURN server.  The
    TURN server uses that information to prioritize the flow in its
-   network and signals back to the client that it can (fully or
-   partially) accommodate the flow.
+   network and signals back to the client that it can fully or partially
+   accommodate the flow.
 
    This specification defines one new comprehension-optional STUN
    attribute: FLOWDATA.  If a TURN client wishes to signal the flow
@@ -221,7 +221,7 @@ Internet-Draft                TURN flowdata                  August 2014
 
 
 
-Wing, et al.            Expires February 26, 2015               [Page 4]
+Wing, et al.              Expires March 1, 2015                 [Page 4]
 
 Internet-Draft                TURN flowdata                  August 2014
 
@@ -237,19 +237,20 @@ Internet-Draft                TURN flowdata                  August 2014
 
    The TURN server will determine if it can provide the flow resources
    requested by the client.  If the TURN server determines the flow can
-   only be partially accommodated, it returns values in the FLOWDATA
-   fields that it can accommodate or returns 0 in those FLOWDATA fields
-   where it has no information.  In other words if the request indicated
-   a low tolerance for delay but the TURN server determines that only
-   high delay is available, the FLOWDATA response indicates high delay
-   is available.  The same sort of processing occurs on all of the
-   FLOWDATA fields of the response (upstream and downstream delay
-   tolerance, loss tolerance, jitter tolerance).  If the TURN server
-   determines the flow can only be partially accommodated and the client
-   has also signaled CHECK- ALTERNATE attribute
-   [I-D.williams-peer-redirect] then the TURN server MAY re-direct the
-   client to an alternate TURN server that could accommodate the flow
-   characteristics conveyed by the client.
+   only be fully or partially accommodated, it returns values in the
+   FLOWDATA fields that it can accommodate or returns 0 in those
+   FLOWDATA fields where it has no information.  In other words if the
+   request indicated a low tolerance for delay but the TURN server
+   determines that only high delay is available, the FLOWDATA response
+   indicates high delay is available.  The same sort of processing
+   occurs on all of the FLOWDATA fields of the response (upstream and
+   downstream delay tolerance, loss tolerance, jitter tolerance, minimum
+   bandwidthm, maximum bandwidth).  If the TURN server determines the
+   flow can only be partially accommodated and the client has also
+   signaled CHECK- ALTERNATE attribute [I-D.williams-peer-redirect] then
+   the TURN server MAY re-direct the client to an alternate TURN server
+   that could accommodate the flow characteristics conveyed by the
+   client.
 
    If the TURN server can accommodate the flow as described in the
    FLOWDATA attribute, it sends a success response and includes the
@@ -276,8 +277,7 @@ Internet-Draft                TURN flowdata                  August 2014
 
 
 
-
-Wing, et al.            Expires February 26, 2015               [Page 5]
+Wing, et al.              Expires March 1, 2015                 [Page 5]
 
 Internet-Draft                TURN flowdata                  August 2014
 
@@ -333,7 +333,7 @@ Internet-Draft                TURN flowdata                  August 2014
 
 
 
-Wing, et al.            Expires February 26, 2015               [Page 6]
+Wing, et al.              Expires March 1, 2015                 [Page 6]
 
 Internet-Draft                TURN flowdata                  August 2014
 
@@ -389,7 +389,7 @@ Internet-Draft                TURN flowdata                  August 2014
 
 
 
-Wing, et al.            Expires February 26, 2015               [Page 7]
+Wing, et al.              Expires March 1, 2015                 [Page 7]
 
 Internet-Draft                TURN flowdata                  August 2014
 
@@ -445,7 +445,7 @@ Internet-Draft                TURN flowdata                  August 2014
 
 
 
-Wing, et al.            Expires February 26, 2015               [Page 8]
+Wing, et al.              Expires March 1, 2015                 [Page 8]
 
 Internet-Draft                TURN flowdata                  August 2014
 
@@ -501,7 +501,7 @@ Internet-Draft                TURN flowdata                  August 2014
 
 
 
-Wing, et al.            Expires February 26, 2015               [Page 9]
+Wing, et al.              Expires March 1, 2015                 [Page 9]
 
 Internet-Draft                TURN flowdata                  August 2014
 
@@ -557,7 +557,7 @@ Internet-Draft                TURN flowdata                  August 2014
 
 
 
-Wing, et al.            Expires February 26, 2015              [Page 10]
+Wing, et al.              Expires March 1, 2015                [Page 10]
 
 Internet-Draft                TURN flowdata                  August 2014
 
@@ -569,21 +569,20 @@ Internet-Draft                TURN flowdata                  August 2014
    RSVD2:  Reserved (7 bits), MUST be ignored on reception and MUST be 0
       on transmission.
 
-   Accommodated Upstream Minimum Bandwidth:  Bandwidth the network can
-      accommodate for this flow, sent by the client.  Value in bytes per
-      second. 0 means no information is available.
+   Accommodated Upstream Minimum Bandwidth:  Bandwidth accommodated for
+      this flow.  Value in bytes per second. 0 means no information is
+      available.
 
-   Accommodated Downstream Minimum Bandwidth:  Bandwidth the network can
-      accommodate for this flow, sent to the client.  Value in bytes per
-      second. 0 means no information is available.
+   Accommodated Downstream Minimum Bandwidth:  Bandwidth accommodated
+      for this flow.  Value in bytes per second. 0 means no information
+      is available.
 
-   Accommodated Upstream Maximum Bandwidth:  Bandwidth the network can
-      accommodate for this flow, sent by the client.  Value in bytes per
-      second. 0 means no information is available.
+   Accommodated Upstream Maximum Bandwidth:  Bandwidth accommodated for
+      this flow.  Value in bytes per second. 0 means no information is
+      available.
 
-   Accommodated Downstream Maximum Bandwidth:  Bandwidth the network can
-      accommodate for this flow, sent to the client.  Maximum Downstream
-      bandwidth in bytes per second, 0 means no information is
+   Accommodated Downstream Maximum Bandwidth:  Bandwidth accommodated
+      for this flow Value in bytes per second, 0 means no information is
       available.
 
 6.  Security Considerations
@@ -607,21 +606,17 @@ Internet-Draft                TURN flowdata                  August 2014
 
 9.1.  Normative References
 
-
-
-
-
-
-
-Wing, et al.            Expires February 26, 2015              [Page 11]
-
-Internet-Draft                TURN flowdata                  August 2014
-
-
    [I-D.ietf-rtcweb-overview]
               Alvestrand, H., "Overview: Real Time Protocols for
               Browser-based Applications", draft-ietf-rtcweb-overview-11
               (work in progress), August 2014.
+
+
+
+Wing, et al.              Expires March 1, 2015                [Page 11]
+
+Internet-Draft                TURN flowdata                  August 2014
+
 
    [I-D.ietf-tsvwg-rtcweb-qos]
               Dhesikan, S., Jennings, C., Druta, D., Jones, P., and J.
@@ -662,18 +657,6 @@ Authors' Addresses
    Email: dwing@cisco.com
 
 
-
-
-
-
-
-
-
-Wing, et al.            Expires February 26, 2015              [Page 12]
-
-Internet-Draft                TURN flowdata                  August 2014
-
-
    Tirumaleswar Reddy
    Cisco Systems
    Cessna Business Park, Varthur Hobli
@@ -682,6 +665,13 @@ Internet-Draft                TURN flowdata                  August 2014
    India
 
    Email: tireddy@cisco.com
+
+
+
+
+Wing, et al.              Expires March 1, 2015                [Page 12]
+
+Internet-Draft                TURN flowdata                  August 2014
 
 
    Brandon Williams
@@ -725,4 +715,14 @@ Internet-Draft                TURN flowdata                  August 2014
 
 
 
-Wing, et al.            Expires February 26, 2015              [Page 13]
+
+
+
+
+
+
+
+
+
+
+Wing, et al.              Expires March 1, 2015                [Page 13]
