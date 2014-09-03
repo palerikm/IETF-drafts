@@ -142,11 +142,11 @@
       and periodically for the duration of the session using the procedures
       defined in this document.</t>
 
-      <t>When a session is first established, a WebRTC endpoint
-      implementing ICE is required to perform STUN connectivity checks
-      as part of <xref target="RFC5245">ICE</xref>. That initial
-      consent is not described further in this document and it is
-      assumed that ICE is being used for that initial consent.</t>
+      <t>When a session is first established, ICE agents obtain initial
+      consent by performing STUN connectivity checks as part
+      of <xref target="RFC5245">ICE</xref>. That initial consent is
+      not described further in this document and it is assumed that
+      ICE is being used for that initial consent.</t>
 
       <t>Related to consent is loss of connectivity ("liveness"). Many
       applications want notification of connection loss to take appropriate
@@ -156,15 +156,12 @@
       <t>This document describes a new STUN usage with exchange of request and
       response messages to verify the remote peer's consent to receive traffic,
       and the absence of which for a period of time indicates a loss of liveness.</t>
-      
-      <t>WebRTC endpoints are required to support full ICE as
-      specified in section 3.4 of
-      <xref target="I-D.ietf-rtcweb-transports"/>. However, when
-      WebRTC endpoints interwork with other endpoints that support
-      only ICE-lite (e.g., gateways) those endpoints will not generate
-      consent checks, but just respond to consent checks they
-      receive.</t>
-      
+
+<t>When a full ICE implementation interworks with an ICE-lite
+   implementation the ICE-lite implementation will not generate
+   consent checks, but will just just respond to consent checks it
+   receives.</t>
+
     </section>
 
     <section anchor="sec-term" title="Terminology">
@@ -272,10 +269,10 @@ falsifying consent.</t>
 (<xref target="RFC5961"></xref>, <xref target="RFC4953"></xref>),
 there is still a risk an attacker could cause a TCP sender to send
 packets forever by spoofing ACKs. To prevent such an attack, consent
-checks MUST be performed over all WebRTC-initiated transport
-connections, including TCP. In this way, an off-path attacker
-spoofing TCP segments can not cause a TCP sender to send packets
-longer than the consent timer (30 seconds).</t>
+checks MUST be performed over all transport connections, including
+TCP.  In this way, an off-path attacker spoofing TCP segments can not
+cause a TCP sender to send packets longer than the consent timer (30
+seconds).</t>
 
 
 
@@ -453,6 +450,13 @@ PASSWORD, or any other packet.</t>
       <?rfc include="reference.RFC.4086"?>
 
       <?rfc include="reference.RFC.6263"?>
+
+      <?rfc include="reference.I-D.ietf-rtcweb-overview"?>
+
+      <?rfc include="reference.I-D.ietf-rtcweb-security-arch"?>
+
+      <?rfc include="reference.I-D.ietf-rtcweb-security"?>
+
     </references>
 
     <references title="Informative References">
