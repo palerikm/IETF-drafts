@@ -11,7 +11,7 @@
 <?rfc inline ="yes"?>
 <?rfc subcompact="no"?>
 <?rfc tocompact="yes"?>
-<rfc category="std" docName="draft-ietf-rtcweb-stun-consent-freshness-06"
+<rfc category="std" docName="draft-ietf-rtcweb-stun-consent-freshness-07"
      ipr="trust200902">
   <front>
     <title abbrev="STUN Usage for Consent Freshness">STUN Usage for Consent
@@ -142,11 +142,11 @@
       and periodically for the duration of the session using the procedures
       defined in this document.</t>
 
-      <t>When a session is first established, WebRTC implementations are
-      required to perform STUN connectivity checks as part of <xref
-      target="RFC5245">ICE</xref>. That initial consent is not described
-      further in this document and it is assumed that ICE is being used for
-      that initial consent.</t>
+      <t>When a session is first established, a WebRTC endpoint
+      implementing ICE is required to perform STUN connectivity checks
+      as part of <xref target="RFC5245">ICE</xref>. That initial
+      consent is not described further in this document and it is
+      assumed that ICE is being used for that initial consent.</t>
 
       <t>Related to consent is loss of connectivity ("liveness"). Many
       applications want notification of connection loss to take appropriate
@@ -213,8 +213,9 @@ of consent and immediate revocation of consent, which are discussed in
 the following sections.</t>
 
     <section title="Expiration of Consent">
-      <t>A WebRTC browser performs a combined consent freshness and session
-      liveness test using STUN request/response as described below:</t>
+      <t>A WebRTC implementation, which implements ICE, MUST perform a
+      combined consent freshness and session liveness test using STUN
+      request/response as described below:</t>
 
       <t>An endpoint MUST NOT send application data (e.g., RTP, RTCP,
       SCTP, DTLS), over any transport protocol (e.g., UDP, TCP) on an
