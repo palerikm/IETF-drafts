@@ -21,14 +21,15 @@
      <organization>Ericsson</organization>
      <address>
       <postal>
-        <street>Mahadevapura</street>
-         <city>Bangalore</city>
-       <region>Karnataka</region>
-        <code>560048</code>
-      <country>India</country>
-     </postal>
-    <email>muthu.arul@gmail.com</email>
-    </address>
+        <street>Ferns Icon</street>
+        <street>Doddanekundi, Mahadevapura</street>
+        <city>Bangalore</city>
+        <region>Karnataka</region>
+        <code>560037</code>
+        <country>India</country>
+      </postal>
+      <email>muthu.arul@gmail.com</email>
+     </address>
     </author>
 
     <author fullname="Dan Wing" initials="D" surname="Wing">
