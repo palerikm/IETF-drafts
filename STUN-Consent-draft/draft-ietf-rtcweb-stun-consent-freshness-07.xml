@@ -210,7 +210,8 @@ of consent and immediate revocation of consent, which are discussed in
 the following sections.</t>
 
     <section title="Expiration of Consent">
-      <t>A WebRTC implementation, which implements ICE, MUST perform a
+      <t>A <xref target="I-D.ietf-rtcweb-overview">WebRTC
+      implementation</xref>, which implements ICE, MUST perform a
       combined consent freshness and session liveness test using STUN
       request/response as described below:</t>
 
@@ -451,15 +452,18 @@ PASSWORD, or any other packet.</t>
 
       <?rfc include="reference.RFC.6263"?>
 
-      <?rfc include="reference.I-D.ietf-rtcweb-overview"?>
 
+
+<!--
       <?rfc include="reference.I-D.ietf-rtcweb-security-arch"?>
 
       <?rfc include="reference.I-D.ietf-rtcweb-security"?>
+-->
 
     </references>
 
     <references title="Informative References">
+      <?rfc include="reference.I-D.ietf-rtcweb-overview"?>
       <?rfc include="reference.RFC.3830"?>
 
       <?rfc include="reference.RFC.4568"?>
@@ -469,7 +473,9 @@ PASSWORD, or any other packet.</t>
 
       <?rfc include="reference.I-D.ietf-avtcore-srtp-ekt"?>
 
+<!--
       <?rfc include="reference.I-D.ietf-rtcweb-transports"?>
+-->
 
       <?rfc include="reference.RFC.5961"?>
 
