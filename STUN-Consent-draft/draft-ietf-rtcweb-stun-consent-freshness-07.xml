@@ -11,6 +11,7 @@
 <?rfc inline ="yes"?>
 <?rfc subcompact="no"?>
 <?rfc tocompact="yes"?>
+<?rfc colonspace="yes"?>
 <rfc category="std" docName="draft-ietf-rtcweb-stun-consent-freshness-07"
      ipr="trust200902">
   <front>
@@ -129,25 +130,27 @@
       <t>To prevent sending excessive traffic to an endpoint, periodic consent
       needs to be obtained from that remote endpoint.</t>
 
-      <t>This document describes a consent mechanism using a new STUN usage.
-      This same mechanism can also determine connection loss ("liveness") with
-      a remote peer.</t>
+      <t>This document describes a consent mechanism using a new
+Session Traversal Utilities for NAT (STUN) usage.  This same mechanism
+can also determine connection loss ("liveness") with a remote
+peer.</t>
     </abstract>
   </front>
 
   <middle>
     <section title="Introduction">
-      <t>To prevent attacks on peers, RTP endpoints have to ensure the remote
-      peer wants to receive traffic. This is performed both when the session
-      is first established to the remote peer using ICE connectivity checks,
-      and periodically for the duration of the session using the procedures
-      defined in this document.</t>
+      <t>To prevent attacks on peers, RTP endpoints have to ensure the
+      remote peer wants to receive traffic. This is performed both
+      when the session is first established to the remote peer using
+      <xref target="RFC5245">Interactive Connectivity Establishment ICE</xref> connectivity
+      checks, and periodically for the duration of the session using
+      the procedures defined in this document.</t>
 
-      <t>When a session is first established, ICE agents obtain initial
-      consent by performing STUN connectivity checks as part
-      of <xref target="RFC5245">ICE</xref>. That initial consent is
-      not described further in this document and it is assumed that
-      ICE is being used for that initial consent.</t>
+      <t>When a session is first established, ICE agents obtain
+      initial consent by performing STUN connectivity checks as part
+      of ICE.  That initial consent is not described further in this
+      document and it is assumed that ICE is being used for that
+      initial consent.</t>
 
       <t>Related to consent is loss of connectivity ("liveness"). Many
       applications want notification of connection loss to take appropriate
