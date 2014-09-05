@@ -146,10 +146,10 @@ peer.</t>
       checks, and periodically for the duration of the session using
       the procedures defined in this document.</t>
 
-      <t>When a session is first established, ICE agents obtain
-      initial consent by performing STUN connectivity checks as part
-      of ICE.  That initial consent is not described further in this
-      document and it is assumed that ICE is being used for that
+      <t>When a session is first established, ICE implementations
+      obtain initial consent by performing STUN connectivity checks as
+      part of ICE.  That initial consent is not described further in
+      this document and it is assumed that ICE is being used for that
       initial consent.</t>
 
       <t>Related to consent is loss of connectivity ("liveness"). Many
@@ -161,7 +161,7 @@ peer.</t>
       response messages to verify the remote peer's consent to receive traffic,
       and the absence of which for a period of time indicates a loss of liveness.</t>
 
-<t>When a full ICE implementation interworks with an ICE-lite
+<t>When a (full) ICE implementation interworks with an ICE-lite
    implementation the ICE-lite implementation will not generate
    consent checks, but will just just respond to consent checks it
    receives.</t>
@@ -195,15 +195,17 @@ peer.</t>
     </section>
 
     <section title="Design Considerations">
-      <t>Although ICE requires periodic keepalive traffic to keep NAT bindings
-      alive (Section 10 of <xref target="RFC5245"></xref>, <xref
-      target="RFC6263"></xref>), those keepalives are sent as STUN Indications
-      which are send-and-forget, and do not evoke a response. A response is
-      necessary both for consent to continue sending traffic, as well as to
-      verify session liveness. Thus, we need a request/response mechanism for
-      consent freshness. ICE can be used for that mechanism because ICE
-      already requires ICE agents continue listening for ICE messages, as
-      described in section 10 of <xref target="RFC5245"></xref>.</t>
+      <t>Although ICE requires periodic keepalive traffic to keep NAT
+      bindings alive (Section 10
+      of <xref target="RFC5245"></xref>, <xref target="RFC6263"></xref>),
+      those keepalives are sent as STUN Indications which are
+      send-and-forget, and do not evoke a response. A response is
+      necessary both for consent to continue sending traffic, as well
+      as to verify session liveness. Thus, we need a request/response
+      mechanism for consent freshness.  ICE can be used for that
+      mechanism because ICE implementations are already required to
+      continue listening for ICE messages, as described in section 10
+      of <xref target="RFC5245"></xref>.</t>
 
 
     </section>
