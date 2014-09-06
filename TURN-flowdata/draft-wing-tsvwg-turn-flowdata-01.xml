@@ -247,21 +247,20 @@
         mentioned below.</t>
 
         <t>The TURN server will determine if it can provide the flow resources
-        requested by the client. If the TURN server determines the flow can
-        only be fully or partially accommodated, it returns values in the
-        FLOWDATA fields that it can accommodate or returns 0 in those FLOWDATA
-        fields where it has no information. In other words if the request
-        indicated a low tolerance for delay but the TURN server determines
-        that only high delay is available, the FLOWDATA response indicates
-        high delay is available. The same sort of processing occurs on all of
-        the FLOWDATA fields of the response (upstream and downstream delay
-        tolerance, loss tolerance, jitter tolerance, minimum bandwidth,
-        maximum bandwidth). If the TURN server determines the flow can only be
-        partially accommodated and the client has also signaled CHECK-
-        ALTERNATE attribute <xref target="I-D.williams-peer-redirect"></xref>
-        then the TURN server MAY re-direct the client to an alternate TURN
-        server that could accommodate the flow characteristics conveyed by the
-        client.</t>
+        requested by the client. The TURN server determines if the flow can be
+        fully or partially accommodated, it returns values in the FLOWDATA
+        fields that it can accommodate or returns 0 in those FLOWDATA fields
+        where it has no information. In other words if the request indicated a
+        low tolerance for delay but the TURN server determines that only high
+        delay is available, the FLOWDATA response indicates high delay is
+        available. The same sort of processing occurs on all of the FLOWDATA
+        fields of the response (upstream and downstream delay tolerance, loss
+        tolerance, jitter tolerance, minimum bandwidth, maximum bandwidth). If
+        the TURN server determines the flow can only be partially accommodated
+        and the client has also signaled CHECK- ALTERNATE attribute <xref
+        target="I-D.williams-peer-redirect"></xref> then the TURN server MAY
+        re-direct the client to an alternate TURN server that could
+        accommodate the flow characteristics conveyed by the client.</t>
 
         <t>If the TURN server can accommodate the flow as described in the
         FLOWDATA attribute, it sends a success response and includes the
