@@ -10,7 +10,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="std" docName="draft-wing-tram-turn-mobility-00"
+<rfc category="std" docName="draft-wing-tram-turn-mobility-02"
      ipr="trust200902">
   <front>
     <title abbrev="Mobility with TURN">Mobility with TURN</title>
@@ -40,7 +40,7 @@
 
       <address>
         <postal>
-          <street/>
+          <street></street>
 
           <city>Bangalore</city>
 
@@ -93,7 +93,7 @@
       </address>
     </author>
 
-    <date/>
+    <date />
 
     <workgroup>TRAM</workgroup>
 
@@ -121,8 +121,8 @@
       the upper layer protocol (e.g., SCTP). The mechanism described in this
       document are in that last category.</t>
 
-      <t>A TURN <xref target="RFC5766"/> server relays media packets and is
-      used for a variety of purposes, including overcoming NAT and firewall
+      <t>A TURN <xref target="RFC5766"></xref> server relays media packets and
+      is used for a variety of purposes, including overcoming NAT and firewall
       traversal issues. The existing TURN specification does not permit a TURN
       client to reuse an allocation across client IP address changes. Due to
       this, when the IP address of the client changes, the TURN client has to
@@ -141,19 +141,19 @@
       still access the TURN server. The technique should also work seamlessly
       when (D)TLS is used as a transport protocol for STUN. When there is a
       change in IP address, the client uses (D)TLS Session Resumption without
-      Server-Side State as described in <xref target="RFC5077"/> to resume
-      secure communication with the TURN server, using the changed client IP
-      address.</t>
+      Server-Side State as described in <xref target="RFC5077"></xref> to
+      resume secure communication with the TURN server, using the changed
+      client IP address.</t>
     </section>
 
     <section anchor="notation" title="Notational Conventions">
       <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
       "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
       document are to be interpreted as described in <xref
-      target="RFC2119"/>.</t>
+      target="RFC2119"></xref>.</t>
 
-      <t>This note uses terminology defined in <xref target="RFC5245"/>, and
-      the following additional terminology:</t>
+      <t>This note uses terminology defined in <xref target="RFC5245"></xref>,
+      and the following additional terminology:</t>
     </section>
 
     <section anchor="MTURN" title="Mobility using TURN">
@@ -210,14 +210,14 @@
       <section title="Creating an Allocation">
         <section title="Sending an Allocate Request">
           <t>In addition to the process described in Section 6.1 of <xref
-          target="RFC5766"/>, the client includes the MOBILITY-TICKET
+          target="RFC5766"></xref>, the client includes the MOBILITY-TICKET
           attribute with length 0. This indicates the client is a mobile node
           and wants a ticket.</t>
         </section>
 
         <section title="Receiving an Allocate Request">
           <t>In addition to the process described in Section 6.2 of <xref
-          target="RFC5766"/>, the server does the following:</t>
+          target="RFC5766"></xref>, the server does the following:</t>
 
           <t>If the MOBILITY-TICKET attribute is included, and has length
           zero, but TURN session mobility is forbidden by local policy, the
@@ -225,7 +225,7 @@
           code. If the MOBILITY-TICKET attribute is included and has non-zero
           length then the server MUST generate an error response with an error
           code of 400 (Bad Request). Following the rules specified in <xref
-          target="RFC5389"/>, if the server does not understand the
+          target="RFC5389"></xref>, if the server does not understand the
           MOBILITY-TICKET attribute, it ignores the attribute.</t>
 
           <t>If the server can successfully process the request create an
@@ -233,18 +233,18 @@
           a STUN MOBILITY-TICKET attribute. TURN server can store system
           internal data into the ticket that is encrypted by a key known only
           to the TURN server and sends the ticket in the STUN MOBILITY-TICKET
-          attribute as part of Allocate success response.</t>
-
-          <t>The ticket is opaque to the client, so the structure is not
-          subject to interoperability concerns, and implementations may
-          diverge from this format. TURN Allocation state information is
-          encrypted using 128-bit key for Advance Encryption Standard (AES)
-          and 256-bit key for HMAC-SHA-256 for integrity protection.</t>
+          attribute as part of Allocate success response. The ticket is opaque
+          to the client, so the structure is not subject to interoperability
+          concerns, and implementations may diverge from this format. An
+          example for ticket construction is discussed in <xref
+          target="example"></xref>. It is recommended that the ticket size not
+          exceed 272 octets. Clients MUST NOT examine the ticket under the
+          assumption that it complies with this document.</t>
         </section>
 
         <section title="Receiving an Allocate Success Response">
           <t>In addition to the process described in Section 6.3 of <xref
-          target="RFC5766"/>, the client will store the MOBILITY-TICKET
+          target="RFC5766"></xref>, the client will store the MOBILITY-TICKET
           attribute, if present, from the response. This attribute will be
           presented by the client to the server during a subsequent Refresh
           request to aid mobility.</t>
@@ -262,7 +262,7 @@
           problem has been fixed.</t>
 
           <t>All other error responses must be handled as described in <xref
-          target="RFC5766"/>.</t>
+          target="RFC5766"></xref>.</t>
         </section>
       </section>
 
@@ -271,7 +271,7 @@
           <t>If a client wants to refresh an existing allocation and update
           its time-to-expiry or delete an existing allocation, it will send a
           Refresh Request as described in Section 7.1 of <xref
-          target="RFC5766"/>. If the client wants to retain the existing
+          target="RFC5766"></xref>. If the client wants to retain the existing
           allocation in case of IP change, it will include the MOBILITY-TICKET
           attribute received in the Allocate Success response. If a Refresh
           transaction was previously made, the MOBILITY-TICKET attribute
@@ -281,7 +281,7 @@
 
         <section title="Receiving a Refresh Request">
           <t>In addition to the process described in Section 7.2 of <xref
-          target="RFC5766"/>, the client does the following:</t>
+          target="RFC5766"></xref>, the server does the following:</t>
 
           <t>If the STUN MOBILITY-TICKET attribute is included in the Refresh
           Request then the server will not retrieve the 5-tuple from the
@@ -305,18 +305,28 @@
           then updates it's 5-tuple with the new client IP address and port.
           TURN server calculates the ticket with the new 5-tuple and sends the
           new ticket in the STUN MOBILITY-TICKET attribute as part of Refresh
-          Success response. If the TURN server has not received a Refresh
-          Request with STUN MOBILITY-TICKET attribute but receives Send or
+          Success response. The old ticket can only be used for the purposes
+          of retransmission. If the client wants to refresh its allocation
+          with a new server-reflexive transport address, it MUST use the new
+          ticket. If the TURN server has not received a Refresh Request with
+          STUN MOBILITY-TICKET attribute but receives Send indications or
           ChannelData messages from a client, the TURN server may discard or
-          queue those Send or ChannelData indications (at its discretion).
-          Thus, it is RECOMMENDED that the client avoid transmitting a Send or
-          ChannelData indication until it has received an acknowledgement for
-          the Refresh Request with STUN MOBILITY-TICKET attribute.</t>
+          queue those Send indications or ChannelData messages (at its
+          discretion). Thus, it is RECOMMENDED that the client avoid
+          transmitting a Send indication or ChannelData message until it has
+          received an acknowledgement for the Refresh Request with STUN
+          MOBILITY-TICKET attribute.</t>
+
+          <t>To accommodate for loss of Refresh responses, a server must
+          retain the old STUN MOBILITY-TICKET attribute for a period of at
+          least 30 seconds to be able recognize a retransmission of Refresh
+          request with the old STUN MOBILITY-TICKET attribute from the
+          client.</t>
         </section>
 
         <section title="Receiving a Refresh Response">
           <t>In addition to the process described in Section 7.3 of <xref
-          target="RFC5766"/>, the client will store the MOBILITY-TICKET
+          target="RFC5766"></xref>, the client will store the MOBILITY-TICKET
           attribute, if present, from the response. This attribute will be
           presented by the client to the server during a subsequent Refresh
           Request to aid mobility.</t>
@@ -349,27 +359,27 @@
 
     <section title="Implementation Status">
       <t>[Note to RFC Editor: Please remove this section and reference to
-      <xref target="RFC6982"/> prior to publication.]</t>
+      <xref target="RFC6982"></xref> prior to publication.]</t>
 
       <t>This section records the status of known implementations of the
       protocol defined by this specification at the time of posting of this
       Internet-Draft, and is based on a proposal described in <xref
-      target="RFC6982"/>. The description of implementations in this section
-      is intended to assist the IETF in its decision processes in progressing
-      drafts to RFCs. Please note that the listing of any individual
-      implementation here does not imply endorsement by the IETF. Furthermore,
-      no effort has been spent to verify the information presented here that
-      was supplied by IETF contributors. This is not intended as, and must not
-      be construed to be, a catalog of available implementations or their
-      features. Readers are advised to note that other implementations may
-      exist.</t>
+      target="RFC6982"></xref>. The description of implementations in this
+      section is intended to assist the IETF in its decision processes in
+      progressing drafts to RFCs. Please note that the listing of any
+      individual implementation here does not imply endorsement by the IETF.
+      Furthermore, no effort has been spent to verify the information
+      presented here that was supplied by IETF contributors. This is not
+      intended as, and must not be construed to be, a catalog of available
+      implementations or their features. Readers are advised to note that
+      other implementations may exist.</t>
 
-      <t>According to <xref target="RFC6982"/>, "this will allow reviewers and
-      working groups to assign due consideration to documents that have the
-      benefit of running code, which may serve as evidence of valuable
-      experimentation and feedback that have made the implemented protocols
-      more mature. It is up to the individual working groups to use this
-      information as they see fit".</t>
+      <t>According to <xref target="RFC6982"></xref>, "this will allow
+      reviewers and working groups to assign due consideration to documents
+      that have the benefit of running code, which may serve as evidence of
+      valuable experimentation and feedback that have made the implemented
+      protocols more mature. It is up to the individual working groups to use
+      this information as they see fit".</t>
 
       <section title="open-sys">
         <t><list style="hanging">
@@ -408,15 +418,18 @@
     <section title="Security Considerations">
       <t>TURN server MUST use strong encryption and integrity protection for
       the ticket to prevent an attacker from using a brute force mechanism to
-      obtain the ticket's contents or refreshing allocations.</t>
+      obtain the ticket's contents or refreshing allocations. The ticket MUST
+      be constructed such that it has strong entropy to ensure nothing can be
+      gleaned by looking at the ticket alone.</t>
 
-      <t>Security considerations described in <xref target="RFC5766"/> are
-      also applicable to this mechanism.</t>
+      <t>Security considerations described in <xref target="RFC5766"></xref>
+      are also applicable to this mechanism.</t>
     </section>
 
     <section title="Acknowledgements">
       <t>Thanks to Alfred Heggestad, Lishitao, Sujing Zhou, Martin Thomson,
-      Emil Ivov and Oleg Moskalenko for review and comments.</t>
+      Emil Ivov, Oleg Moskalenko and Brandon Williams for review and
+      comments.</t>
     </section>
   </middle>
 
@@ -444,12 +457,41 @@
           <title>IANA: STUN Attributes</title>
 
           <author fullname="IANA" surname="IANA">
-            <organization/>
+            <organization></organization>
           </author>
 
-          <date month="April" year="2011"/>
+          <date month="April" year="2011" />
         </front>
       </reference>
     </references>
+
+    <section anchor="example" title="Example ticket construction">
+      <t>The TURN server uses two different keys: one 128-bit key for Advance
+      Encryption Standard (AES) in Cipher Block Chaining (CBC) mode
+      (AES_128_CBC) and 256-bit key for HMAC-SHA-256-128 for integrity
+      protection. The ticket can be structured as follows:</t>
+
+      <t><figure anchor="Ticket" title="Ticket Format">
+          <artwork align="left"><![CDATA[      struct {
+          opaque key_name[16];
+          opaque iv[16];
+          opaque state<0..2^16-1>;
+          opaque mac[16];
+      } ticket;
+]]></artwork>
+        </figure></t>
+
+      <t>Here, key_name serves to identify a particular set of keys used to
+      protect the ticket. It enables the TURN server to easily recognize
+      tickets it has issued. The key_name should be randomly generated to
+      avoid collisions between servers. One possibility is to generate new
+      random keys and key_name every time the server is started.</t>
+
+      <t>The TURN state information (self-contained or handle) in
+      encrypted_state is encrypted using 128-bit AES in CBC mode with the
+      given IV. The MAC is calculated using HMAC-SHA-256-128 over key_name (16
+      octets)and IV (16 octets), followed by the length of the encrypted_state
+      field (2 octets) and its contents (variable length). </t>
+    </section>
   </back>
 </rfc>

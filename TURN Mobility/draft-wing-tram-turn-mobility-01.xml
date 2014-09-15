@@ -10,7 +10,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="std" docName="draft-wing-tram-turn-mobility-00"
+<rfc category="std" docName="draft-wing-tram-turn-mobility-01"
      ipr="trust200902">
   <front>
     <title abbrev="Mobility with TURN">Mobility with TURN</title>
@@ -281,7 +281,7 @@
 
         <section title="Receiving a Refresh Request">
           <t>In addition to the process described in Section 7.2 of <xref
-          target="RFC5766"/>, the client does the following:</t>
+          target="RFC5766"/>, the server does the following:</t>
 
           <t>If the STUN MOBILITY-TICKET attribute is included in the Refresh
           Request then the server will not retrieve the 5-tuple from the
@@ -306,12 +306,19 @@
           TURN server calculates the ticket with the new 5-tuple and sends the
           new ticket in the STUN MOBILITY-TICKET attribute as part of Refresh
           Success response. If the TURN server has not received a Refresh
-          Request with STUN MOBILITY-TICKET attribute but receives Send or
-          ChannelData messages from a client, the TURN server may discard or
-          queue those Send or ChannelData indications (at its discretion).
-          Thus, it is RECOMMENDED that the client avoid transmitting a Send or
-          ChannelData indication until it has received an acknowledgement for
-          the Refresh Request with STUN MOBILITY-TICKET attribute.</t>
+          Request with STUN MOBILITY-TICKET attribute but receives Send
+          indications or ChannelData messages from a client, the TURN server
+          may discard or queue those Send indications or ChannelData messages
+          (at its discretion). Thus, it is RECOMMENDED that the client avoid
+          transmitting a Send indication or ChannelData message until it has
+          received an acknowledgement for the Refresh Request with STUN
+          MOBILITY-TICKET attribute.</t>
+
+          <t>To accommodate for loss of Refresh responses, a server must
+          retain the old STUN MOBILITY-TICKET attribute for a period of at
+          least 30 seconds to be able recognize a retransmission of Refresh
+          request with the old STUN MOBILITY-TICKET attribute from the
+          client.</t>
         </section>
 
         <section title="Receiving a Refresh Response">
@@ -416,7 +423,8 @@
 
     <section title="Acknowledgements">
       <t>Thanks to Alfred Heggestad, Lishitao, Sujing Zhou, Martin Thomson,
-      Emil Ivov and Oleg Moskalenko for review and comments.</t>
+      Emil Ivov, Oleg Moskalenko and Brandon Williams for review and
+      comments.</t>
     </section>
   </middle>
 
