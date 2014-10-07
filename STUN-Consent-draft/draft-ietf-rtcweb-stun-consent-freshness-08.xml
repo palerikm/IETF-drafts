@@ -120,8 +120,12 @@ interface).</t>
 response messages to verify the remote peer's consent to receive traffic,
 and the absence of which for a period of time indicates a loss of liveness.</t>
 <t>When a (full) ICE implementation interworks with an ICE-lite
-	implementation the ICE-lite implementation will not generate consent
-	checks, but will just respond to consent checks it receives. ICE-lite implementation do not require any changes to respond to consent checks.</t>
+implementation the ICE-lite implementation will not generate consent
+checks, but will just respond to consent checks it receives. ICE-lite
+implementation do not require any changes to respond to consent
+checks.  This is okay because ICE-Lite implementations are expected to
+only use RTP and expected to
+implement <xref target="I-D.ietf-avtcore-rtp-circuit-breakers"></xref>.</t>
 </section>
 <section anchor="sec-term" title="Terminology">
 <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
@@ -208,9 +212,10 @@ expires after 30 seconds. That is, if a valid STUN binding response
 corresponding to one of the previous STUN requests (not necessarily
 the most recently sent request) sent in the last 30 seconds has not
 been received from the remote peer's Transport Address, the endpoint
-MUST cease transmission on that 5-tuple.  A STUN consent response
-for a request which was sent more than 30 seconds ago is silently
-ignored.</t>
+MUST cease transmission on that 5-tuple.  If a response is received
+that is more than 30 seconds older than its request, that response
+is ignored.</t>
+
 
 <!--
 <t>Although receiving authenticated ICE packets is sufficient for consent,
@@ -381,6 +386,7 @@ their valuable inputs and comments.</t>
 </references>
 <references title="Informative References">
 <?rfc include="reference.I-D.ietf-rtcweb-overview"?>
+<?rfc include="reference.I-D.ietf-avtcore-rtp-circuit-breakers"?>
 <?rfc include="reference.RFC.3830"?>
 <?rfc include="reference.RFC.4568"?>
 <?rfc include="reference.RFC.6062"?>
