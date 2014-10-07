@@ -198,9 +198,10 @@
         <t>
           An endpoint can only send paced STUN connectivity checks toward any
           transport address unless the receiving endpoint consents to receive
-          data. After a successful ICE connectivity check on a particular
-          transport address, consent MUST be obtained following the procedure
-          described in this document.
+          data. That is, no application data (e.g., RTP or DTLS) can be sent
+          until consent is obtained.  After a successful ICE connectivity check
+          on a particular transport address, consent MUST be obtained following
+          the procedure described in this document.
         </t>
 
         <t>
