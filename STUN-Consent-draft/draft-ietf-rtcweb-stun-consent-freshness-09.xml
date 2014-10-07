@@ -264,11 +264,11 @@
         <t>
           While TCP affords some protection from off-path attackers (<xref
           target="RFC5961"></xref>, <xref target="RFC4953"></xref>), there is
-          still a risk an attacker could cause a TCP sender to send packets
-          forever by spoofing ACKs. To prevent such an attack, consent checks
-          MUST be performed over all transport connections, including TCP. In
-          this way, an off-path attacker spoofing TCP segments can not cause a
-          TCP sender to send packets longer than the consent timer (30 seconds).
+          still a risk an attacker could cause a TCP sender to send forever by
+          spoofing ACKs. To prevent such an attack, consent checks MUST be
+          performed over all transport connections, including TCP. In this way,
+          an off-path attacker spoofing TCP segments can not cause a TCP sender
+          to send once the consent timer expires (30 seconds).
         </t>
 
         <t>
@@ -342,7 +342,7 @@
       </t>
     </section>
 
-    <section anchor="DSCP-consent" title="DiffServ Treatment for Consent packets">
+    <section anchor="DSCP-consent" title="DiffServ Treatment for Consent">
       <t>
         It is RECOMMENDED that STUN consent checks use the same Diffserv
         Codepoint markings as the ICE connectivity checks described in Section
