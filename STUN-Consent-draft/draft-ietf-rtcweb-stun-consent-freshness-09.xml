@@ -150,14 +150,13 @@
         <list style="hanging">
           <t hangText="Consent:">
             The mechanism of obtaining permission to send to a remote transport
-            address.  Consent is obtained using ICE or a TCP handshake.
+            address.  Initial consent is obtained using ICE or a TCP handshake.
           </t>
           <t hangText="Consent Freshness:">
             Maintaining and renewing consent over time.
           </t>
           <t hangText="Session Liveness:">
-            Detecting loss of connectivity to a certain transport address. This
-            is performed by the procedure described in this document.
+            Detecting loss of connectivity to a certain transport address.
           </t>
           <t hangText="Transport Address:">
             The remote peer's IP address and UDP or TCP port number.
@@ -197,16 +196,20 @@
           request/response as described below:
         </t>
         <t>
-          An endpoint MUST NOT send application data (e.g., RTP, RTCP, SCTP,
-          DTLS), over any transport protocol (e.g., UDP, TCP) on an
-          ICE-initiated connection unless the receiving endpoint consents to
-          receive the data. After a successful ICE connectivity check on a
-          particular transport address, subsequent consent MUST be obtained
-          following the procedure described in this document. The consent
-          expires after a fixed amount of time. During ICE restart consent
-          checks MUST continue to be sent on previously validated pair, and MUST
-          be responded to on the previously validated pair, until ICE restart
-          completes.
+          An endpoint can only send paced STUN connectivity checks toward any
+          transport address unless the receiving endpoint consents to receive
+          data. After a successful ICE connectivity check on a particular
+          transport address, consent MUST be obtained following the procedure
+          described in this document.
+        </t>
+
+        <t>
+          Explicit consent to send is obtained by sending an ICE binding request
+          to the remote peer's transport address and receiving a matching,
+          authenticated, non-error ICE binding response from the remote peer's
+          transport address. These ICE binding requests and responses are
+          authenticated using the same short-term credentials as the initial ICE
+          exchange.
           <list style="hanging">
             <t hangText="Note:">
               Although TCP has its own consent mechanism (TCP acknowledgements),
@@ -218,49 +221,46 @@
         </t>
 
         <t>
-          Explicit consent to send is obtained by sending an ICE binding request
-          to the remote peer's Transport Address and receiving a matching,
-          authenticated, non-error ICE binding response from the remote peer's
-          Transport Address. These ICE binding requests and responses are
-          authenticated using the same short-term credentials as the initial ICE
-          exchange. Implementations MUST cease sending data if their consent
-          expires. To prevent expiry of consent, a STUN binding request MUST be
-          sent every N milliseconds, where N is chosen randomly with each
-          consent check in the interval [.8N, 1.2N] (to prevent network
-          synchronization), where N SHOULD be 5000. Using the value 5000
-          milliseconds and that 20% randomization range, N would be a value
-          between 4000 and 6000. Each STUN binding request for consent
-          re-calculates a new random value N and a new <xref
-          target="RFC4086">cryptographically-random</xref> STUN transaction ID.
-          Each STUN binding requests for consent is transmitted once, which
-          means if it goes over an unreliable transport (including over a TURN
-          server, even if the local communication is TCP) the request or its
-          corresponding response might be lost.  Hence, the sender cannot assume
-          that it will receive a response for each consent request, and a
-          response might be for a previous request (rather than for the most
-          recently sent request).  Each STUN transaction-ID is maintained until
-          consent expires or until a STUN response matching a previously-sent
-          transaction-ID is received.
-        </t>
-
-
-        <t>
-          The initial Consent to send traffic is obtained by ICE. Consent
-          expires after 30 seconds. That is, if a valid STUN binding response
-          corresponding to one of the previous STUN requests (not necessarily
-          the most recently sent request) sent in the last 30 seconds has not
-          been received from the remote peer's Transport Address, the endpoint
+          Initial consent to send traffic is obtained by ICE. Consent expires
+          after 30 seconds.  That is, if a valid STUN binding response
+          corresponding to any STUN request sent in the last 30 seconds has not
+          been received from the remote peer's transport address, the endpoint
           MUST cease transmission on that 5-tuple.  STUN consent responses
           received after consent expiry do not re-establish consent, and may be
           discarded or cause an ICMP error.
         </t>
 
         <t>
-          To meet the security needs of consent, an untrusted application (e.g.,
-          JavaScript) MUST NOT be able to obtain or control the STUN transaction
-          ID, because that enables spoofing STUN responses, falsifying consent.
+          To prevent expiry of consent, a STUN binding request can be sent
+          periodically.  To prevent synchronization of consent checks, each
+          interval MUST be randomized from between 0.8 and 1.2 times the basic
+          period.  Implementations SHOULD set a default interval of 5000
+          milliseconds, resulting in a period between checks of 4000 to 6000
+          milliseconds.
         </t>
-
+        <t>
+          Each STUN binding request for consent MUST use a new <xref
+          target="RFC4086">cryptographically-random</xref> STUN transaction
+          ID.  Each STUN binding requests for consent is transmitted once
+          only.  Hence, the sender cannot assume that it will receive a
+          response for each consent request, or that responses will be
+          ordered, since there could be unreliable or unordered transports on
+          the path.  Each STUN transaction-ID is maintained until consent
+          expires or until a STUN response matching a previously-sent
+          transaction-ID is received.
+        </t>
+        <t>
+          To meet the security needs of consent, an untrusted application (e.g.,
+          JavaScript or signaling servers) MUST NOT be able to obtain or control
+          the STUN transaction ID, because that enables spoofing of STUN
+          responses, falsifying consent.
+        </t>
+        <t>
+          During ICE restart
+          consent checks MUST continue to be sent on previously validated pair,
+          and MUST be responded to on the previously validated pair, until ICE
+          restart completes.
+        </t>
         <t>
           While TCP affords some protection from off-path attackers (<xref
           target="RFC5961"></xref>, <xref target="RFC4953"></xref>), there is
@@ -272,13 +272,13 @@
         </t>
 
         <t>
-          An endpoint that is not sending any application traffic does not need
-          to obtain consent which can slightly conserve its resources.  However,
-          the endpoint needs to ensure its NAT or firewall mappings persist
-          which can be done using keepalive or other techniques (see Section 10
-          of <xref target="RFC5245"></xref> and see <xref
-          target="RFC6263"></xref>). If the endpoint wants to send application
-          traffic, it needs to first obtain consent if its consent has expired.
+          An endpoint that is not sending any application data does not need to
+          maintain consent.  However, the endpoint needs to ensure its NAT or
+          firewall mappings persist which can be done using keepalive or other
+          techniques (see Section 10 of <xref target="RFC5245"></xref> and see
+          <xref target="RFC6263"></xref>). If the endpoint wants to send
+          application traffic, it needs to first obtain consent if its consent
+          has expired.
         </t>
 
       </section>
