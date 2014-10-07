@@ -285,19 +285,17 @@
 
       <section title="Immediate Revocation of Consent">
         <t>
-          In some cases it is useful to signal that consent is
-          terminated rather than relying on a timeout.
+          In some cases it is useful to signal that consent is terminated rather
+          than relying on a timeout.
         </t>
-
         <t>
           Consent for sending application data is immediately revoked by receipt
           of an authenticated message that closes the connection (e.g., a TLS
           fatal alert) or receipt of a valid and authenticated STUN response
           with error code Forbidden (403).  Note however that consent revocation
           messages can be lost on the network, so an endpoint could resend
-          revocations messages, or wait for consent to expire..
+          these messages, or wait for consent to expire.
         </t>
-
         <t>
           Receipt of an unauthenticated message that closes a connection (e.g.,
           TCP FIN) does not indicate revocation of consent. Thus, an endpoint
@@ -323,8 +321,8 @@
       </t>
       <t>
         To support this use case, an application MAY be provided a means to
-        request a notification when there are no messages received for a certain
-        period.
+        request a notification when there are no authenticated messages received
+        for a certain period.
       </t>
       <t>
         An application MAY also be provided a means to alter the basic consent
