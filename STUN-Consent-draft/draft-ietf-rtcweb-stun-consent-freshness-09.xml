@@ -234,9 +234,8 @@
           To prevent expiry of consent, a STUN binding request can be sent
           periodically.  To prevent synchronization of consent checks, each
           interval MUST be randomized from between 0.8 and 1.2 times the basic
-          period.  Implementations SHOULD set a default interval of 5000
-          milliseconds, resulting in a period between checks of 4000 to 6000
-          milliseconds.
+          period.  Implementations SHOULD set a default interval of 5 seconds,
+          resulting in a period between checks of 4 to 6 seconds.
         </t>
         <t>
           Each STUN binding request for consent MUST use a new <xref
@@ -316,56 +315,62 @@
 
     <section anchor="liveness" title="Connection Liveness">
       <t>
-        A connection is considered "live" if packets are received from a remote
-        endpoint within an application-dependent period. An application can
-        request a notification when there are no packets received for a certain
-        period (configurable).
+        Regular consent checks have the side effect of indicating liveness for
+        the selected 5-tuple.  This allows for the timely detection of network
+        faults.  A connection is considered "live" if authenticated messages are
+        received from a remote endpoint within a given period.
       </t>
       <t>
-        Similarly, if packets haven't been received within a certain period, an
-        application can request a consent check (heartbeat) be generated.  These
-        two time intervals might be controlled by the same configuration item.
+        To support this use case, an application MAY be provided a means to
+        request a notification when there are no messages received for a certain
+        period.
+      </t>
+      <t>
+        An application MAY also be provided a means to alter the basic consent
+        check period from the default value (the suggested value being 5s) to
+        any value up to 24 seconds.  This ensures that connectivity checks are
+        not generated at an excessive rate and that at least one consent check
+        is sent every 30 seconds, allowing for the maximal 1.2 times variation.
+        Note that increasing the consent check period increases the risk of
+        packet loss causing consent expiration.
       </t>
       <t>
         Sending consent checks (heartbeats) at a high rate could allow a
         malicious application to generate congestion, so applications MUST NOT
-        be able to send heartbeats at an average rate of more than 1 per second.
+        send consent checks at an average rate of more than 1 per second.
       </t>
     </section>
 
     <section anchor="DSCP-consent" title="DiffServ Treatment for Consent packets">
       <t>
         It is RECOMMENDED that STUN consent checks use the same Diffserv
-        Codepoint markings as the ICE connectivity checks described in section
+        Codepoint markings as the ICE connectivity checks described in Section
         7.1.2.4 of <xref target="RFC5245"></xref> for a given 5-tuple.
-      </t>
-      <t>
-        Note: It is possible that different Diffserv Codepoints are used by
-        different media over the same transport address <xref
-        target="I-D.ietf-tsvwg-rtcweb-qos"></xref>. Such a case is outside the
-        scope of this document.
+        <list style="hanging">
+          <t hangText="Note:">
+            It is possible that different Diffserv Codepoints are used by
+            different media over the same transport address <xref
+            target="I-D.ietf-tsvwg-rtcweb-qos"></xref>. Such a case is outside
+            the scope of this document.
+          </t>
+        </list>
       </t>
     </section>
 
-    <section title="W3C API Implications">
+    <section title="API Recommendations">
       <t>
-        For the consent freshness and liveness test the W3C specification should
-        provide APIs as described below:
+        The W3C specification MAY provide the following API points to provide
+        feedback and control over consent:
         <list style="numbers">
           <t>
-            Ability for the browser to notify the JavaScript that consent
-            freshness has failed for a 5-tuple and the browser has stopped
-            transmitting on that 5-tuple.
+            Generate an event when consent has expired for a given 5-tuple,
+            meaning that transmission of data has ceased.  This could indicate
+            what application data is affected, such as media or data channels.
           </t>
-
           <t>
-            Ability for the JavaScript to start and stop liveness test and set
-            the liveness test interval.
-          </t>
-
-          <t>
-            Ability for the browser to notify the JavaScript that a liveness
-            test has failed for a media stream.
+            Ability to set the consent check interval from its default
+            (recommended: 5 seconds) to any value between 1 second and 24
+            seconds.
           </t>
         </list>
       </t>
