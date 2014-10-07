@@ -277,7 +277,7 @@
           firewall mappings persist which can be done using keepalive or other
           techniques (see Section 10 of <xref target="RFC5245"></xref> and see
           <xref target="RFC6263"></xref>). If the endpoint wants to send
-          application traffic, it needs to first obtain consent if its consent
+          application data, it needs to first obtain consent if its consent
           has expired.
         </t>
 
@@ -285,20 +285,17 @@
 
       <section title="Immediate Revocation of Consent">
         <t>
-          The previous section explained how consent expires due to a
-          timeout. In some cases it is useful to signal a connection is
-          terminated, rather than relying on a timeout. This is done by
-          immediately revoking consent.
+          In some cases it is useful to signal that consent is
+          terminated rather than relying on a timeout.
         </t>
 
         <t>
-          Consent for sending traffic on the media or data channel is
-          immediately revoked by receipt of an authenticated message that closes
-          the connection (e.g., a TLS fatal alert) or receipt of a valid and
-          authenticated STUN response with error code Forbidden (403). Those
-          consent revocation messages can be lost on the network, so an
-          implementation wanting to immediately revoke consent needs to remember
-          those credentials until consent expiry (30 seconds).
+          Consent for sending application data is immediately revoked by receipt
+          of an authenticated message that closes the connection (e.g., a TLS
+          fatal alert) or receipt of a valid and authenticated STUN response
+          with error code Forbidden (403).  Note however that consent revocation
+          messages can be lost on the network, so an endpoint could resend
+          revocations messages, or wait for consent to expire..
         </t>
 
         <t>
