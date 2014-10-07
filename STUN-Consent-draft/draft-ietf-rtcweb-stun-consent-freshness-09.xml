@@ -116,34 +116,25 @@
     <section title="Introduction">
       <t>
         To prevent attacks on peers, RTP endpoints have to ensure the remote
-        peer wants to receive traffic. This is performed both when the session
-        is first established to the remote peer using <xref
+        peer is willing to receive traffic. This is performed both when the
+        session is first established to the remote peer using <xref
         target="RFC5245">Interactive Connectivity Establishment ICE</xref>
         connectivity checks, and periodically for the duration of the session
         using the procedures defined in this document.
       </t>
       <t>
-        When a session is first established, ICE implementations obtain initial
-        consent by performing STUN connectivity checks as part of ICE. That
-        initial consent is not described further in this document and it is
-        assumed that ICE is being used for that initial consent.
+        When a session is first established, ICE implementations obtain an
+        initial consent to send by performing STUN connectivity checks.  This
+        document describes a new STUN usage with exchange of request and
+        response messages that verifies the remote peer's ongoing consent to
+        receive traffic.  This consent expires after a period of time and needs
+        to be continually renewed, which ensures that consent can be terminated.
       </t>
       <t>
-        Related to consent is loss of connectivity ("liveness"). Many
-        applications want notification of connection loss to take appropriate
-        actions (e.g., alert the user, try switching to a different interface).
-      </t>
-      <t>
-        This document describes a new STUN usage with exchange of request and
-        response messages to verify the remote peer's consent to receive
-        traffic, and the absence of which for a period of time indicates a loss
-        of liveness.
-      </t>
-      <t>
-        When a (full) ICE implementation interworks with an ICE-lite
-        implementation the ICE-lite implementation will not generate consent
-        checks, but will just respond to consent checks it receives. ICE-lite
-        implementation do not require any changes to respond to consent checks.
+        This applies to full ICE implementations.  An ICE-lite implementation
+        will not generate consent checks, but will just respond to consent
+        checks it receives. ICE-lite implementation do not require any changes
+        to respond to consent checks.
       </t>
     </section>
 
@@ -158,22 +149,18 @@
       <t>
         <list style="hanging">
           <t hangText="Consent:">
-            It is the mechanism of obtaining permission to send traffic to a
-            certain transport address.  This is the initial consent to send
-            traffic, which is obtained by ICE or a TCP handshake.
+            The mechanism of obtaining permission to send to a remote transport
+            address.  Consent is obtained using ICE or a TCP handshake.
           </t>
           <t hangText="Consent Freshness:">
-            Permission to continue sending traffic to a certain transport
-            address. This is performed by the procedure described in this
-            document.
+            Maintaining and renewing consent over time.
           </t>
           <t hangText="Session Liveness:">
             Detecting loss of connectivity to a certain transport address. This
             is performed by the procedure described in this document.
           </t>
-
           <t hangText="Transport Address:">
-            The remote peer's IP address and (UDP or TCP) port number.
+            The remote peer's IP address and UDP or TCP port number.
           </t>
         </list>
       </t>
