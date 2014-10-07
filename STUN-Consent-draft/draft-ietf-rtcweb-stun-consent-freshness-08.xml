@@ -205,11 +205,11 @@ sender cannot assume that it will receive a response for each consent
 request, and a response might be for a previous request (rather than
 for the most recently sent request).  Consent expiration causes 
 immediate termination of all outstanding STUN consent transactions.
-Each STUN transaction is
+Each STUN consent transaction is
 maintained until one of the following criteria is fulfilled:<list 
 style="symbols">
-<t>A STUN response associated with the transaction is received; or</t>
-<t>A STUN response associated to a newer transaction is received.</t>
+<t>An authenticated STUN response associated with the transaction is received; or</t>
+<t>An authenticated STUN response associated to a newer transaction is received.</t>
 </list></t>
 
 
