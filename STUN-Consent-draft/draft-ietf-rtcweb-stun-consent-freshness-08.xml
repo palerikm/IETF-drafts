@@ -203,9 +203,15 @@ over a TURN server, even if the local communication is TCP) the
 request or its corresponding response might be lost.  Hence, the
 sender cannot assume that it will receive a response for each consent
 request, and a response might be for a previous request (rather than
-for the most recently sent request).  Each STUN transaction-ID is
-maintained until consent expires or until a STUN response matching a
-previously-sent transaction-ID is received.</t>
+for the most recently sent request).  Consent expiration causes 
+immediate termination of all outstanding STUN consent transactions.
+Each STUN transaction is
+maintained until one of the following criteria is fulfilled:<list 
+style="symbols">
+<t>A STUN response associated with the transaction is received; or</t>
+<t>A STUN response associated to a newer transaction is received.</t>
+</list></t>
+
 
 <t>The initial Consent to send traffic is obtained by ICE. Consent
 expires after 30 seconds. That is, if a valid STUN binding response
