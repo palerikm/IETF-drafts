@@ -123,7 +123,7 @@ and the absence of which for a period of time indicates a loss of liveness.</t>
 implementation the ICE-lite implementation will not generate consent
 checks, but will just respond to consent checks it receives. ICE-lite
 implementation do not require any changes to respond to consent
-checks.  This is okay because ICE-Lite implementations are expected to
+checks.  This is acceptable because ICE-Lite implementations are expected to
 only use RTP and expected to
 implement <xref target="I-D.ietf-avtcore-rtp-circuit-breakers"></xref>.</t>
 </section>
