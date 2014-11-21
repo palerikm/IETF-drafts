@@ -279,7 +279,8 @@
         <t>
           An endpoint that is not sending any application data does not need to
           maintain consent.  However, failure to send could cause any NAT or
-          firewall mappings for the flow to expire.
+          firewall mappings for the flow to expire.  Furthermore, having one
+          peer unable to send is detrimental to many protocols.
         </t>
         <t>
           After consent is lost for any reason, the same ICE credentials MUST
