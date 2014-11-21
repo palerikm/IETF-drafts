@@ -282,6 +282,11 @@
           maintain consent.  However, failure to send could cause any NAT or
           firewall mappings for the flow to expire.
         </t>
+        <t>
+          After consent is lost for any reason, the same ICE credentials MUST
+          NOT be used on the affected 5-tuple again.  That means that a new
+          session, or an ICE restart, is needed to obtain consent to send.
+        </t>
       </section>
 
       <section title="Immediate Revocation of Consent">
