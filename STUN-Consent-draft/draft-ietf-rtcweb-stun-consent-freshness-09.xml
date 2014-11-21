@@ -212,12 +212,12 @@
         </t>
 
         <t>
-          Explicit consent to send is obtained by sending an ICE binding request
-          to the remote peer's transport address and receiving a matching,
-          authenticated, non-error ICE binding response from the remote peer's
-          transport address. These ICE binding requests and responses are
-          authenticated using the same short-term credentials as the initial ICE
-          exchange.
+          Explicit consent to send is obtained and maintained by sending an ICE
+          binding request to the remote peer's transport address and receiving a
+          matching, authenticated, non-error ICE binding response from the
+          remote peer's transport address.  These ICE binding requests and
+          responses are authenticated using the same short-term credentials as
+          the initial ICE exchange.
           <list style="hanging">
             <t hangText="Note:">
               Although TCP has its own consent mechanism (TCP acknowledgements),
@@ -229,7 +229,7 @@
         </t>
 
         <t>
-          Initial consent to send traffic is obtained by ICE. Consent expires
+          Initial consent to send traffic is obtained using ICE. Consent expires
           after 30 seconds.  That is, if a valid STUN binding response
           corresponding to any STUN request sent in the last 30 seconds has not
           been received from the remote peer's transport address, the endpoint
