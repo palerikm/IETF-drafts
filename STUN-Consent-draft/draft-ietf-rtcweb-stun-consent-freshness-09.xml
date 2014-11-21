@@ -246,15 +246,14 @@
           resulting in a period between checks of 4 to 6 seconds.
         </t>
         <t>
-          Each STUN binding request for consent MUST use a new <xref
-          target="RFC4086">cryptographically-random</xref> STUN transaction
-          ID.  Each STUN binding requests for consent is transmitted once
-          only.  Hence, the sender cannot assume that it will receive a
-          response for each consent request, or that responses will be
-          ordered, since there could be unreliable or unordered transports on
-          the path.  Each STUN transaction-ID is maintained until consent
-          expires or until a STUN response matching a previously-sent
-          transaction-ID is received.
+          Each STUN binding request for consent MUST use a new and <xref
+          target="RFC4086">cryptographically strong</xref> STUN transaction ID.
+          Each STUN binding requests for consent is transmitted once only.
+          Hence, the sender cannot assume that it will receive a response for
+          each consent request, or that responses will be ordered, since there
+          could be unreliable or unordered transports on the path.  Each STUN
+          transaction ID is maintained until consent expires or a response is
+          received for either this transaction or a more recent transaction.
         </t>
         <t>
           To meet the security needs of consent, an untrusted application (e.g.,
