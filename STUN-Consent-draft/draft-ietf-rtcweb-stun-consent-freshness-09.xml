@@ -277,17 +277,11 @@
           an off-path attacker spoofing TCP segments can not cause a TCP sender
           to send once the consent timer expires (30 seconds).
         </t>
-
         <t>
           An endpoint that is not sending any application data does not need to
-          maintain consent.  However, the endpoint needs to ensure its NAT or
-          firewall mappings persist which can be done using keepalive or other
-          techniques (see Section 10 of <xref target="RFC5245"></xref> and see
-          <xref target="RFC6263"></xref>). If the endpoint wants to send
-          application data, it needs to first obtain consent if its consent
-          has expired.
+          maintain consent.  However, failure to send could cause any NAT or
+          firewall mappings for the flow to expire.
         </t>
-
       </section>
 
       <section title="Immediate Revocation of Consent">
@@ -429,7 +423,6 @@
       <?rfc include="reference.RFC.2119"?>
       <?rfc include="reference.RFC.5245"?>
       <?rfc include="reference.RFC.4086"?>
-      <?rfc include="reference.RFC.6263"?>
     </references>
 
     <references title="Informative References">
