@@ -131,6 +131,12 @@
         to be continually renewed, which ensures that consent can be terminated.
       </t>
       <t>
+        This document defines what it takes to obtain, maintain, and lose
+        consent to send.  Consent to send applies to a single 5-tuple.  How
+        applications react to changes in consent is not described in this
+        document.
+      </t>
+      <t>
         This applies to full ICE implementations.  An ICE-lite implementation
         will not generate consent checks, but will just respond to consent
         checks it receives. ICE-lite implementation do not require any changes
