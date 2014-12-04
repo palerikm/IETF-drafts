@@ -131,6 +131,12 @@
         to be continually renewed, which ensures that consent can be terminated.
       </t>
       <t>
+        This document defines what it takes to obtain, maintain, and lose
+        consent to send.  Consent to send applies to a single 5-tuple.  How
+        applications react to changes in consent is not described in this
+        document.
+      </t>
+      <t>
         This applies to full ICE implementations.  An ICE-lite implementation
         will not generate consent checks, but will just respond to consent
         checks it receives. ICE-lite implementation do not require any changes
@@ -196,21 +202,22 @@
           request/response as described below:
         </t>
         <t>
-          An endpoint can only send paced STUN connectivity checks toward any
-          transport address unless the receiving endpoint consents to receive
-          data. That is, no application data (e.g., RTP or DTLS) can be sent
-          until consent is obtained.  After a successful ICE connectivity check
-          on a particular transport address, consent MUST be obtained following
-          the procedure described in this document.
+          An endpoint can only send paced STUN connectivity checks or
+          connectivity check responses toward any transport address unless the
+          receiving endpoint consents to receive data. That is, no application
+          data (e.g., RTP or DTLS) can be sent until consent is obtained.  After
+          a successful ICE connectivity check on a particular transport address,
+          consent MUST be maintained following the procedure described in this
+          document.
         </t>
 
         <t>
-          Explicit consent to send is obtained by sending an ICE binding request
-          to the remote peer's transport address and receiving a matching,
-          authenticated, non-error ICE binding response from the remote peer's
-          transport address. These ICE binding requests and responses are
-          authenticated using the same short-term credentials as the initial ICE
-          exchange.
+          Explicit consent to send is obtained and maintained by sending an ICE
+          binding request to the remote peer's transport address and receiving a
+          matching, authenticated, non-error ICE binding response from the
+          remote peer's transport address.  These ICE binding requests and
+          responses are authenticated using the same short-term credentials as
+          the initial ICE exchange.
           <list style="hanging">
             <t hangText="Note:">
               Although TCP has its own consent mechanism (TCP acknowledgements),
@@ -222,7 +229,7 @@
         </t>
 
         <t>
-          Initial consent to send traffic is obtained by ICE. Consent expires
+          Initial consent to send traffic is obtained using ICE. Consent expires
           after 30 seconds.  That is, if a valid STUN binding response
           corresponding to any STUN request sent in the last 30 seconds has not
           been received from the remote peer's transport address, the endpoint
@@ -239,15 +246,14 @@
           resulting in a period between checks of 4 to 6 seconds.
         </t>
         <t>
-          Each STUN binding request for consent MUST use a new <xref
-          target="RFC4086">cryptographically-random</xref> STUN transaction
-          ID.  Each STUN binding requests for consent is transmitted once
-          only.  Hence, the sender cannot assume that it will receive a
-          response for each consent request, or that responses will be
-          ordered, since there could be unreliable or unordered transports on
-          the path.  Each STUN transaction-ID is maintained until consent
-          expires or until a STUN response matching a previously-sent
-          transaction-ID is received.
+          Each STUN binding request for consent MUST use a new and <xref
+          target="RFC4086">cryptographically strong</xref> STUN transaction ID.
+          Each STUN binding requests for consent is transmitted once only.
+          Hence, the sender cannot assume that it will receive a response for
+          each consent request, or that responses will be ordered, since there
+          could be unreliable or unordered transports on the path.  Each STUN
+          transaction ID is maintained until consent expires or a response is
+          received for either this transaction or a more recent transaction.
         </t>
         <t>
           To meet the security needs of consent, an untrusted application (e.g.,
@@ -270,17 +276,17 @@
           an off-path attacker spoofing TCP segments can not cause a TCP sender
           to send once the consent timer expires (30 seconds).
         </t>
-
         <t>
           An endpoint that is not sending any application data does not need to
-          maintain consent.  However, the endpoint needs to ensure its NAT or
-          firewall mappings persist which can be done using keepalive or other
-          techniques (see Section 10 of <xref target="RFC5245"></xref> and see
-          <xref target="RFC6263"></xref>). If the endpoint wants to send
-          application data, it needs to first obtain consent if its consent
-          has expired.
+          maintain consent.  However, failure to send could cause any NAT or
+          firewall mappings for the flow to expire.  Furthermore, having one
+          peer unable to send is detrimental to many protocols.
         </t>
-
+        <t>
+          After consent is lost for any reason, the same ICE credentials MUST
+          NOT be used on the affected 5-tuple again.  That means that a new
+          session, or an ICE restart, is needed to obtain consent to send.
+        </t>
       </section>
 
       <section title="Immediate Revocation of Consent">
@@ -422,7 +428,6 @@
       <?rfc include="reference.RFC.2119"?>
       <?rfc include="reference.RFC.5245"?>
       <?rfc include="reference.RFC.4086"?>
-      <?rfc include="reference.RFC.6263"?>
     </references>
 
     <references title="Informative References">
