@@ -143,7 +143,7 @@ target="RFC2119"></xref>.
 <list style="hanging">
 <t hangText="Consent:">
 The mechanism of obtaining permission to send to a remote transport
-address. Initial consent is obtained using ICE or a TCP handshake.
+address. Initial consent is obtained using ICE.
 </t>
 <t hangText="Consent Freshness:">
 Maintaining and renewing consent over time.
@@ -164,7 +164,8 @@ necessary for consent to continue sending traffic. Thus, we need a
 request/response mechanism for consent freshness. ICE can be used for 
 that mechanism because ICE implementations are already required to continue
  listening for ICE messages, as described in section 10 of
-  <xref target="RFC5245"></xref>.
+  <xref target="RFC5245"></xref>. If consent is performed then there is 
+  no need to send keepalive messages.
 </t>
 </section>
 <section title="Solution">
