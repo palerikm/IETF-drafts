@@ -270,38 +270,40 @@
             <t hangText="RespTransCnt:">Number of responses sent to the client
             for the same transaction ID.</t>
           </list></t>
-
-        <t>The operation is described in <xref target="Figure3" />.
-        In the first case, all the requests and responses are received
-        correectly. In the upstream loss case, the first request is lost,
-        but the second one is received correctly, the client on receiving
-        the response notes that while 2 requests were sent, only one was 
-        received, also the Server realises that the RespTransCnt does not
-        match the ReqTransCnt, therefore some requests were lost. This
-        may also occur at startup in the presence of slow to open firewalls 
-        or NATs that drop the initial STUN requests. In the downstream loss 
-        case, the responses get lost, but the client expecting the response
-        notes that while the Server responded to 3 requests only 1 was 
-        received. In the both loss case, requests and responses get lost in 
-        tandem, the server notes one request packet was not received, while 
-        the client expecting 3 responses again recived only one, it also notes
-        that one request packet was lost.
-        </t>
+        
+        <section title="Example Operation">
+          <t>The operation is described in <xref target="Figure3" />.
+          In the first case, all the requests and responses are received
+          correectly. In the upstream loss case, the first request is lost,
+          but the second one is received correctly, the client on receiving
+          the response notes that while 2 requests were sent, only one was 
+          received, also the Server realises that the RespTransCnt does not
+          match the ReqTransCnt, therefore some requests were lost. This
+          may also occur at startup in the presence of slow to open firewalls 
+          or NATs that drop the initial STUN requests. In the downstream loss 
+          case, the responses get lost, but the client expecting the response
+          notes that while the Server responded to 3 requests only 1 was 
+          received. In the both loss case, requests and responses get lost in 
+          tandem, the server notes one request packet was not received, while 
+          the client expecting 3 responses again recived only one, it also notes
+          that one request packet was lost.
+          </t>
 
           <t><figure anchor="Figure3"
             title="Retransmit Operation between client and Server">
             <artwork align="left"><![CDATA[
-      Normal     |  Upstream loss  |  Downstream loss|      Both loss  |
-  Client  Server |  Client  Server |  Client  Server |  Client  Server |
-  -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-|
-  1         1,1  |  1         x    |  1         1,1  |  1         x    |
-    1,1          |                 |    x            |                 |
-  2         2,2  |  2         2,1  |  2         2,2  |  2         2,1  |
-    2,2          |    2,1          |    x            |    x            |
-  3         3,3  |  3         3,2  |  3         3,3  |  3         3,2  |
-    3,3          |    3,2          |    3,3          |    3,2          |
+    Normal     |  Upstream loss  |  Downstream loss|      Both loss  |
+Client  Server |  Client  Server |  Client  Server |  Client  Server |
+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-|
+1         1,1  |  1         x    |  1         1,1  |  1         x    |
+  1,1          |                 |    x            |                 |
+2         2,2  |  2         2,1  |  2         2,2  |  2         2,1  |
+  2,2          |    2,1          |    x            |    x            |
+3         3,3  |  3         3,2  |  3         3,3  |  3         3,2  |
+  3,3          |    3,2          |    3,3          |    3,2          |
           ]]></artwork>
           </figure></t>
+        </section>
       </section>
     </section>
 
@@ -312,8 +314,8 @@
       <t><list style="symbols">
           <t>When an endpoint has multiple interfaces (for example 3G, 4G,
           WiFi, VPN, etc.), an ICE agent can choose the interfaces for media
-          streams according to the path characteristics. After STUN responses
-          to STUN checks are received, the ICE agent using regular nomination
+          streams according to the path characteristics. After the STUN responses
+          to the STUN checks are received, the ICE agent using regular nomination
           can sort the ICE candidate pairs according to the path
           characteristics discovered using STUN. The controlling agent can
           assign highest priority to candidate pair which best fulfills the
@@ -328,7 +330,9 @@
           <xref target="I-D.ietf-avtcore-mprtp">MPRTP</xref>
           application can choose the interface for the primary subflow and
           interfaces for subsequent subflows according to the path
-          characteristics discovered using STUN.</t>
+          characteristics discovered using STUN. For example, the scheduling
+          algorithm described in <xref target="ACM-MPRTP" /> uses both path
+          loss and latency for choosing performant paths.</t>
 
           <t>The STUN extension proposed in this specification can also be
           used to choose a TURN server that provides the best user experience
@@ -383,6 +387,16 @@
     <references title="Informative References">
       <?rfc include='reference.I-D.patil-tram-turn-serv-selection'?>
       <?rfc include='reference.I-D.ietf-avtcore-mprtp'?>
+      
+      <reference anchor="ACM-MPRTP">
+        <front><title>MPRTP: multipath considerations for real-time media</title>
+        <author fullname="Varun Singh" initials="V." surname="Singh" />
+        <author fullname="Saba Ahsan" initials="S." surname="Ahsan" />
+        <author fullname="Joerg Ott" initials="J." surname="Ott" />
+        <date year="2013" /></front>
+        <seriesInfo name="in Proc. of ACM Multimedia Systems," value="MMSys" />
+      </reference>
+    
     </references>
   </back>
 </rfc>
