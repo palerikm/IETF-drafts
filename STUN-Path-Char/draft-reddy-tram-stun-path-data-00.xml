@@ -78,6 +78,24 @@
       </address>
     </author>
 
+    <author fullname="Varun Singh" initials="V." surname="Singh">
+      <organization abbrev="callstats.io">Nemu Dialogue System Oy</organization>
+
+      <address>
+        <postal>
+          <street></street>
+
+          <city>Espoo</city>
+
+          <code>02235</code>
+
+          <country>Finland</country>
+        </postal>
+
+        <email>varun@callstats.io</email>
+      </address>
+    </author>
+
     <date />
 
     <workgroup>TRAM</workgroup>
@@ -88,59 +106,65 @@
       configuration and does not consider the path characteristics, which may
       affect the user experience.</t>
 
-      <t>This document describes a mechanism for an endpoint to find the path
-      characteristics using Session Traversal Utilities for NAT (STUN). This
-      information can be used to influence endpoint's Interactive Connectivity
-      Establishment (ICE) candidate pair selection algorithm.</t>
+      <t>This document describes a mechanism for an endpoint to discover the path
+      characteristics using Session Traversal Utilities for NAT (STUN) messagess. 
+      The measurement information can then be used to influence the  endpoint's 
+      Interactive Connectivity Establishment (ICE) candidate pair selection algorithm.</t>
+
     </abstract>
   </front>
 
   <middle>
     <section anchor="introduction" title="Introduction">
-      <t>ICE <xref target="RFC5245"></xref> uses a prioritization formula to
-      perform connectivity checks, in which the most preferred address pairs
-      are tested first and when a sufficiently good pair is discovered, that
-      pair is used for communications and ICE connectivity tests are stopped.
-      This approach works well for an endpoint with a single interface, but is
-      too simplistic for endpoints with multiple interfaces. ICE connectivity
-      checks can be used measure the path characteristics but the problem is
-      that STUN responses from re-transmitted requests are
-      indistinguishable.</t>
+      <t>The ICE <xref target="RFC5245" /> mechanism uses a prioritization 
+      formula to order the candidate pairs and perform connectivity checks, 
+      in which the most preferred address pairs are tested first and when a 
+      sufficiently good pair is discovered, that pair is used for communications 
+      and further connectivity tests are stopped.
 
-      <t>This draft extends STUN <xref target="RFC5389"></xref> to distinguish
-      STUN responses from re-transmitted requests and helps client determine
-      path characteristics like round-trip time (RTT) and packet loss in each
-      direction, which can be used by the controlling agent to influence the
-      ICE candidate pair priority and relayed candidates priority .</t>
+      This approach works well for an endpoint with a single interface, but is
+      too simplistic for endpoints with multiple interfaces, wherein a candidate 
+      pair with a lower priority might infact have better path characteristics 
+      (e.g., Round-trip Time, Loss, etc.). The ICE connectivity checks can be used 
+      to measure the path characteristics but the issue is that STUN responses to 
+      re-transmitted requests are indistinguishable from each other.</t>
+
+      <t>This draft extends STUN <xref target="RFC5389" /> to distinguish
+      STUN responses from re-transmitted requests and assists the client in determining
+      the path characteristics like round-trip time (RTT) and packet loss between 
+      endpoints. These metrics can be used by the controlling agent to influence the
+      ICE candidate pair priorities.</t>
     </section>
 
     <section anchor="notation" title="Notational Conventions">
       <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
       "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
       document are to be interpreted as described in <xref
-      target="RFC2119"></xref>.</t>
+      target="RFC2119" />.</t>
 
       <t>This note uses terminology defined in <xref
-      target="RFC5245">ICE</xref> and STUN <xref target="RFC5389"></xref>
-      .</t>
+      target="RFC5245">ICE</xref> and STUN <xref target="RFC5389" />.</t>
     </section>
 
     <section anchor="alg_over"
              title="Path characteristics determination mechanism">
-      <t>When multiple paths are available for communication, the first
-      approach is to send an ICE connectivity check across each path and
-      choose the path with the best round trip time. Choosing the path with
-      the best round trip time is a reasonable approach, but re-transmits can
-      cause an otherwise-good path to appear flawed. However, STUN's
-      retransmission algorithm <xref target="RFC5389"></xref> cannot determine
-      the round-trip time if a STUN packet is re-transmitted, because each
-      packet retransmission is identical. To resolve that, this document
+
+      <t>When multiple paths are available for communication, the endpoint
+      sends an ICE connectivity check across each path and perhaps chooses 
+      the path with the lowest round trip time and/or no packet loss. 
+      However, STUN's retransmission algorithm <xref target="RFC5389" /> 
+      cannot determine the round-trip time if a STUN request packet is 
+      re-transmitted, because each packet request and retransmission is 
+      identical, further, several STUN requests may be sent before the 
+      connectivity between pairs is ascertained (see Section 15 of 
+      <xref target="RFC5245" />). To resolve the issue of identical request
+      and response packets in a STUN transaction, this document
       changes that retransmission behavior for idempotent packets. In addition
       to determining RTT, it is also desirable to detect which path direction
       caused packet loss, described as "bi-directional path characteristics,"
-      below. This is achieved by defining a new STUN attribute and requiring
+      below. This is achieved by defining a new STUN attribute and requires
       compliant STUN (TURN, ICE) servers to count retransmitted request
-      packets. </t>
+      packets.</t>
 
       <t>This specification defines a new comprehension-optional STUN
       attribute PATH-CHARACTERISTIC. PATH-CHARACTERISTIC will have a STUN Type
@@ -148,20 +172,21 @@
       that STUN agents can safely ignore the attribute if they do not
       understand it.</t>
 
-      <t>If a client wishes to determine the path characteristics then it
-      inserts PATH-CHARACTERISTIC attribute in STUN request. In
+      <t>If a client wishes to determine the path characteristics, it
+      inserts the PATH-CHARACTERISTIC attribute in STUN request. In the
       PATH-CHARACTERISTIC attribute client sends the number of times the STUN
       request is retransmitted with the same Transaction ID. The server would
       echo back the retransmission count in the response so that client can
-      distinguish STUN responses from re-transmitted requests. Client can thus
-      use STUN requests and responses to calculate the round-trip time (RTT).
-      The server MAY also convey number of times it received the request with
-      the same Transaction ID and number of responses it has sent for the STUN
-      request to the client. This information can be used by the client to
-      determine packet loss in each direction.</t>
+      distinguish STUN responses from the re-transmitted requests. Hence, the 
+      endpoint can use the STUN requests and responses to determine the 
+      round-trip time (RTT). The server may also convey the number of times it 
+      received the request with the same Transaction ID and the number of 
+      responses it has sent for the STUN request to the client. Further, 
+      this information enables the client to determine packet loss in each 
+      direction.</t>
 
       <section title="The PATH-CHARACTERISTIC attribute in request">
-        <t>The PATH-CHARACTERISTIC attribute in the request takes a 1-byte
+        <t>The PATH-CHARACTERISTIC attribute in a STUN request takes a 1-byte
         Value, which means that the Length is 1 and 3 bytes of padding are
         required after the value. When sending a STUN request, the
         PATH-CHARACTERISTIC attribute allows a client to indicate to the
@@ -170,12 +195,12 @@
         PATH-CHARACTERISTIC is listed in the UNKNOWN-ATTRIBUTE attribute of
         the message, the client SHOULD retransmit the original request without
         the PATH-CHARACTERISTIC attribute. However this case is not expected
-        due to the use of a comprehension-optional attribute type.</t>
+        to occur, due to the use of the comprehension-optional attribute type.</t>
 
         <t>This specification changes one the STUN message structuring rules
-        explained in section 6 of <xref target="RFC5389"></xref> that resends
-        of the same request as usual reuse the same transaction ID, ReTransCnt
-        in PATH-CHARACTERISTIC attribute will be incremented by 1 for every
+        explained in Section 6 of <xref target="RFC5389" /> that resends
+        the same request each time for a particular transaction ID. The ReTransCnt
+        in the PATH-CHARACTERISTIC attribute will be incremented by 1 for every
         re-transmission and the re-transmitted STUN request MUST be bit-wise
         identical to the previous request except for the ReTransCnt value.</t>
 
@@ -203,14 +228,14 @@
       <section title="The PATH-CHARACTERISTIC attribute in response">
         <t>When a server receives a STUN request that includes a
         PATH-CHARACTERISTIC attribute, it processes the request as per the
-        STUN specification <xref target="RFC5389"></xref> plus the specific
+        STUN specification <xref target="RFC5389" /> plus the specific
         rules mentioned here. The server checks the following:</t>
 
         <t><list style="symbols">
             <t>If the PATH-CHARACTERISTIC attribute is not recognized, ignore
             the attribute because its type indicates that it is comprehension-
             optional. This should be the existing behavior as explained in
-            section 3.1 of <xref target="RFC5389"></xref>.</t>
+            section 3.1 of <xref target="RFC5389" />.</t>
 
             <t>The server that supports PATH-CHARACTERISTIC attribute MUST
             echo back ReTransCnt in the response.</t>
@@ -226,13 +251,13 @@
 
         <t><figure anchor="Figure2"
             title=" PATH-CHARACTERISTIC attribute in response">
-            <artwork align="left"><![CDATA[       0                   1                   2                   3
-       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-      |0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0|        TransCnt               |
-      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-      |   ReqTransCnt                 |        RespTransCnt           |
-      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+            <artwork align="left"><![CDATA[     0                   1                   2                   3
+     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0|        TransCnt               |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |   ReqTransCnt                 |        RespTransCnt           |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
           ]]></artwork>
           </figure></t>
 
@@ -245,6 +270,38 @@
             <t hangText="RespTransCnt:">Number of responses sent to the client
             for the same transaction ID.</t>
           </list></t>
+
+        <t>The operation is described in <xref target="Figure3" />.
+        In the first case, all the requests and responses are received
+        correectly. In the upstream loss case, the first request is lost,
+        but the second one is received correctly, the client on receiving
+        the response notes that while 2 requests were sent, only one was 
+        received, also the Server realises that the RespTransCnt does not
+        match the ReqTransCnt, therefore some requests were lost. This
+        may also occur at startup in the presence of slow to open firewalls 
+        or NATs that drop the initial STUN requests. In the downstream loss 
+        case, the responses get lost, but the client expecting the response
+        notes that while the Server responded to 3 requests only 1 was 
+        received. In the both loss case, requests and responses get lost in 
+        tandem, the server notes one request packet was not received, while 
+        the client expecting 3 responses again recived only one, it also notes
+        that one request packet was lost.
+        </t>
+
+          <t><figure anchor="Figure3"
+            title="Retransmit Operation between client and Server">
+            <artwork align="left"><![CDATA[
+      Normal     |  Upstream loss  |  Downstream loss|      Both loss  |
+  Client  Server |  Client  Server |  Client  Server |  Client  Server |
+  -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-|
+  1         1,1  |  1         x    |  1         1,1  |  1         x    |
+    1,1          |                 |    x            |                 |
+  2         2,2  |  2         2,1  |  2         2,2  |  2         2,1  |
+    2,2          |    2,1          |    x            |    x            |
+  3         3,3  |  3         3,2  |  3         3,3  |  3         3,2  |
+    3,3          |    3,2          |    3,3          |    3,2          |
+          ]]></artwork>
+          </figure></t>
       </section>
     </section>
 
@@ -267,7 +324,8 @@
           that explains simplifying and improving the procedures for candidate
           nomination in ICE to make dynamic decisions.]</t>
 
-          <t>When a host has multiple interfaces available an MPRTP
+          <t>When a host has multiple interfaces available an 
+          <xref target="I-D.ietf-avtcore-mprtp">MPRTP</xref>
           application can choose the interface for the primary subflow and
           interfaces for subsequent subflows according to the path
           characteristics discovered using STUN.</t>
@@ -275,7 +333,7 @@
           <t>The STUN extension proposed in this specification can also be
           used to choose a TURN server that provides the best user experience
           (section 3.1 of <xref
-          target="I-D.patil-tram-turn-serv-selection"></xref>).</t>
+          target="I-D.patil-tram-turn-serv-selection" />).</t>
         </list></t>
     </section>
 
@@ -289,12 +347,12 @@
       document]</t>
 
       <t>This document defines the PATH-CHARACTERISTIC STUN attribute,
-      described in <xref target="alg_over"></xref>. IANA has allocated the
+      described in <xref target="alg_over" />. IANA has allocated the
       comprehension-optional codepoint TBD-CA for this attribute.</t>
     </section>
 
     <section anchor="security" title="Security Considerations">
-      <t>Security considerations discussed in <xref target="RFC5389"></xref>
+      <t>Security considerations discussed in <xref target="RFC5389" />
       are to be taken into account. STUN requires the 96 bits transaction ID
       to be uniformly and randomly chosen from the interval 0 .. 2**96-1, and
       be cryptographically strong. This is good enough security against an
@@ -324,6 +382,7 @@
 
     <references title="Informative References">
       <?rfc include='reference.I-D.patil-tram-turn-serv-selection'?>
+      <?rfc include='reference.I-D.ietf-avtcore-mprtp'?>
     </references>
   </back>
 </rfc>
