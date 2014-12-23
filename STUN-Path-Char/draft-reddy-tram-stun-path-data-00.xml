@@ -131,7 +131,7 @@
       indistinguishable from each other.</t>
 
       <t>This draft extends STUN <xref target="RFC5389"></xref> to distinguish
-      STUN responses from re-transmitted requests and assists the client in
+      STUN responses to re-transmitted requests and assists the client in
       determining the path characteristics like round-trip time (RTT) and
       packet loss in each direction between endpoints. These metrics can be
       used by the controlling agent to influence the ICE candidate pair
@@ -152,7 +152,8 @@
              title="Path characteristics determination mechanism">
       <t>When multiple paths are available for communication, the endpoint
       sends ICE connectivity checks across each path and perhaps chooses the
-      path with the lowest round trip time, but re- transmits can cause an
+      path with the lowest round trip time. Choosing the path with the lowest
+      round trip time is a reasonable approach, but re- transmits can cause an
       otherwise-good path to appear flawed. However, STUN's retransmission
       algorithm <xref target="RFC5389"></xref> cannot determine the round-trip
       time if a STUN request packet is re-transmitted, because each packet
@@ -189,7 +190,8 @@
       <section title="The PATH-CHARACTERISTIC attribute in request">
         <t>The PATH-CHARACTERISTIC attribute in a STUN request takes a 1-byte
         Value, which means that the Length is 1 and 3 bytes of padding are
-        required after the value. When sending a STUN request, the
+        required after the value (Section 15 of <xref
+        target="RFC5389"></xref>). When sending a STUN request, the
         PATH-CHARACTERISTIC attribute allows a client to indicate to the
         server that it wants to determine path characteristics. If the client
         receives a STUN response with error code 420 (Unknown Attribute) and
