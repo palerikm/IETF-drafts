@@ -146,7 +146,7 @@
         DTLS handshake. DTLS-SRTP is defined for point-to-point media
         sessions, in which there are exactly two participants. Each DTLS-SRTP
         session (described in section 3 of <xref target="RFC5764"></xref>)
-        contains a single DTLS association, and either two SRTP contexts (if
+        contains a single DTLS connection, and either two SRTP contexts (if
         media traffic is flowing in both directions on the same 5-tuple) or
         one SRTP context (if media traffic is only flowing in one
         direction).</t>
@@ -168,8 +168,8 @@
 
         <t><list style="hanging">
             <t>A B2BUA that act as a simple media relay effectively unaware of
-            anything that is transported and only modifies the UDP/IP header
-            of the packets.</t>
+            anything that is transported and only terminates the media plane at 
+            the IP and transport (UDP/TCP) layers on its UAS and UAC sides.</t>
 
             <t>A B2BUA that performs a media-aware role. It inspects and
             potentially modifies RTP or RTP Control Protocol (RTCP) headers;
@@ -220,9 +220,9 @@
       <section title="Media Relay">
         <t>A media relay, as defined in section 3.2.1 of <xref
         target="RFC7092"></xref>, from an application layer point-of-view,
-        forwards all packets it receives on a negotiated UDP connection,
-        without inspecting or modifying them. It forwards the UDP payload
-        as-is changing only the UDP/IP header.</t>
+        forwards all packets it receives on a negotiated connection,
+        without inspecting or modifying them. A media relay only modifies the transport
+        layer(UDP/TCP) and IP headers.</t>
 
         <t>A media relay B2BUA MUST forward the certificate fingerprint and
         setup attribute it receives in the SDP from the originating endpoint
@@ -240,7 +240,7 @@
      |(1) INVITE               |  (3)INVITE                |
      |   a=setup:actpass       |   a=setup:actpass         |
      |   a=fingerprint1        |   a= fingerprint1         | 
-     |   (alice's IP/port)     |   (B2BUA's IP, port)      |                        
+     |   (alice's IP/port)     |   (B2BUAs IP/port)        |                        
      |------------------------>|-------------------------->|
      |                         |                           |
      |    (2)  100 trying      |                           |
@@ -251,12 +251,12 @@
      |                         |  (5)200 OK                |
      |                         |   a=setup:active          |
      |                         |    a=fingerprint2         |
-     |                         |  (Bob's IP, port)         |
+     |                         |  (Bob's IP/port)          |
      |<------------------------|<--------------------------|
      |    (6) 200 OK           |                           |
      |    a=setup:active       |                           |
      |    a=fingerprint2       |                           |
-     |    B2BUAs address,port  |                           |
+     |    B2BUAs IP/port       |                           |
      |               (7, 8)ClientHello + use_srtp          |
      |<------------------------|<--------------------------|
      |                         |                           |
@@ -269,7 +269,7 @@
      |                         |                           |
      |         (12)            |                           |
      |<---------SRTP/SRTCP---->|<----SRTP/SRTCP----------->|
-     |   [B2BUA just changes UDP/IP header]                |   
+     | [B2BUA changes transport(UDP/TCP) and IP headers]   |   
           ]]></artwork>
           </figure></t>
 
@@ -277,14 +277,16 @@
         shown.</t>
 
         <t>For each RTP or RTCP flow, the peers do a DTLS handshake on the
-        same source and destination port pair to establish a DTLS association.
-        In this case, Bob, after he receives an INVITE, triggers a DTLS
-        connection. Note the DTLS handshake and the response to the INVITE may
+        same source and destination port pair to establish a DTLS connection.
+        Hence, there would be then two DTLS connections (if transport unmultiplexed) 
+        or a single DTLS connection (in case of transport multiplexing). In this case, 
+        Bob, after he receives an INVITE, triggers the establishment of a DTLS connection
+        per L4 connection.. Note the DTLS handshake and the response to the INVITE may
         happen in parallel; thus, the B2BUA SHOULD be prepared to receive
         media on the ports it advertised to Bob in the OFFER. Since a media
         relay B2BUA does not differentiate between a DTLS, RTP or any packet
-        sent it receives, it just changes the UDP/IP addresses and forwards
-        the packet on either leg.</t>
+        sent it receives, it just changes the transport layer(UDP/TCP) and IP headers 
+        and forwards the packet on either leg.</t>
 
         <t><xref target="I-D.ietf-stir-rfc4474bis"></xref> provides a means
         for signing portions of SIP requests in order to provide identity
@@ -303,7 +305,7 @@
         response being returned.</t>
       </section>
 
-      <section title="Media Aware Relay">
+      <section title="Media plane and Media Aware B2BUA">
         <t>A media-aware relay, unlike the media relay discussed in the
         previous section, is actually aware of the media traffic it is
         handling. A media-aware relay inspects SRTP and SRTCP packets flowing
@@ -351,7 +353,7 @@
       fingerprints and setup attributes it receives from each answerer as-is
       to the offerer. Since DTLS operates on the 5-tuple, B2BUA MUST replace
       the answerers transport addresses in each answer with its unique
-      transport addresses so that the offerer can establish a DTLS association
+      transport addresses so that the offerer can establish a DTLS connection
       with each answerer.</t>
 
       <figure>
@@ -380,7 +382,7 @@ Alice (192.0.2.0:5555)             B2BUA
       <t>For instance, if Alice makes a call that is forked and receives
       multiple answers from Bob and Charlie, B2BUA must advertise different
       B2BUA transport address in each answer, as shown in the above Figure,
-      where XXX and YYY represent different DTLS-SRTP associations, B2BUA
+      where XXX and YYY represent different DTLS-SRTP connections, B2BUA
       replaces the Bob's transport address (192.0.2.1:6666) in the answer with
       its transport address (192.0.2.3:7777) and Charlie's transport address
       (192.0.2.2:6666) in the answer with its transport address
