@@ -222,7 +222,7 @@
         target="RFC7092"></xref>, from an application layer point-of-view,
         forwards all packets it receives on a negotiated connection,
         without inspecting or modifying them. A media relay only modifies the transport
-        layer(UDP/TCP) and IP headers.</t>
+        layer (UDP/TCP) and IP headers.</t>
 
         <t>A media relay B2BUA MUST forward the certificate fingerprint and
         setup attribute it receives in the SDP from the originating endpoint
@@ -284,7 +284,7 @@
         In this case, Bob, after he receives an INVITE, triggers the establishment of a 
         DTLS connection. Note the DTLS handshake and the response to the INVITE may
         happen in parallel; thus, the B2BUA SHOULD be prepared to receive
-        media on the ports it advertised to Bob in the OFFER. Since a media
+        DTLS, STUN and media on the ports it advertised to Bob in the OFFER. Since a media
         relay B2BUA does not differentiate between a DTLS, RTP or any packet
         sent it receives, it just changes the transport layer (UDP/TCP) and IP headers 
         and forwards the packet on either leg.</t>
