@@ -167,9 +167,9 @@
         media plane:</t>
 
         <t><list style="hanging">
-            <t>A B2BUA that act as a simple media relay effectively unaware of
+            <t>A B2BUA that acts as a simple media relay effectively unaware of
             anything that is transported and only terminates the media plane at 
-            the IP and transport (UDP/TCP) layers on its UAS and UAC sides.</t>
+            the IP and transport (UDP/TCP) layers.</t>
 
             <t>A B2BUA that performs a media-aware role. It inspects and
             potentially modifies RTP or RTP Control Protocol (RTCP) headers;
@@ -274,18 +274,19 @@
           </figure></t>
 
         <t>NOTE: For brevity the entire fingerprint attribute is not
-        shown.</t>
+        shown. The example here shows only one DTLS connection for the sake of simplicity.
+        In reality depending on whether the transport is multiplexed or unmultiplexed there 
+        will be one or two DTLS connections.</t>
 
-        <t>For each RTP or RTCP flow, the peers do a DTLS handshake on the
-        same source and destination port pair to establish a DTLS connection.
-        Hence, there would be then two DTLS connections (if transport unmultiplexed) 
-        or a single DTLS connection (in case of transport multiplexing). In this case, 
+        <t>If RTP and RTCP traffic is multiplexed as described in <xref target="RFC5761"/> on a
+        single port then only a single DTLS connection would be required between the peers. 
+        If RTP and RTCP are not multiplexed, then the peers would have to establish two DTLS connections. In this case, 
         Bob, after he receives an INVITE, triggers the establishment of a DTLS connection
-        per L4 connection.. Note the DTLS handshake and the response to the INVITE may
+        per L4 connection. Note the DTLS handshake and the response to the INVITE may
         happen in parallel; thus, the B2BUA SHOULD be prepared to receive
         media on the ports it advertised to Bob in the OFFER. Since a media
         relay B2BUA does not differentiate between a DTLS, RTP or any packet
-        sent it receives, it just changes the transport layer(UDP/TCP) and IP headers 
+        sent it receives, it just changes the transport layer (UDP/TCP) and IP headers 
         and forwards the packet on either leg.</t>
 
         <t><xref target="I-D.ietf-stir-rfc4474bis"></xref> provides a means
@@ -415,7 +416,7 @@ Alice (192.0.2.0:5555)             B2BUA
     <section title="Acknowledgments">
       <t>Special thanks to Lorenzo Miniero, Ranjit Avarsala, Hadriel Kaplan,
       Muthu Arul Mozhi, Paul Kyzivat, Peter Dawes, Brett Tate, Dan Wing,
-      Charles Eckel and Simon Perreault for their constructive comments,
+      Charles Eckel, Simon Perreault, Albrecht Schwarz and Guballa Jens for their constructive comments,
       suggestions, and early reviews that were critical to the formulation and
       refinement of this document.</t>
     </section>
