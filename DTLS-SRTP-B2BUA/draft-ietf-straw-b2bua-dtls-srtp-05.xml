@@ -275,14 +275,14 @@
 
         <t>NOTE: For brevity the entire fingerprint attribute is not
         shown. The example here shows only one DTLS connection for the sake of simplicity.
-        In reality depending on whether the transport is multiplexed or unmultiplexed there 
-        will be one or two DTLS connections.</t>
+        In reality depending on whether the RTP and RTCP flows are multiplexed or un-multiplexed 
+        there will be one or two DTLS connections.</t>
 
         <t>If RTP and RTCP traffic is multiplexed as described in <xref target="RFC5761"/> on a
         single port then only a single DTLS connection would be required between the peers. 
-        If RTP and RTCP are not multiplexed, then the peers would have to establish two DTLS connections. In this case, 
-        Bob, after he receives an INVITE, triggers the establishment of a DTLS connection
-        per L4 connection. Note the DTLS handshake and the response to the INVITE may
+        If RTP and RTCP are not multiplexed, then the peers would have to establish two DTLS connections. 
+        In this case, Bob, after he receives an INVITE, triggers the establishment of a 
+        DTLS connection. Note the DTLS handshake and the response to the INVITE may
         happen in parallel; thus, the B2BUA SHOULD be prepared to receive
         media on the ports it advertised to Bob in the OFFER. Since a media
         relay B2BUA does not differentiate between a DTLS, RTP or any packet
