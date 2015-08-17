@@ -93,7 +93,7 @@
           <street>Spain</street>
         </postal>
 
-        <email>victor.pascual@quobis.com</email>
+        <email>victor.pascual.avila@gmail.com</email>
       </address>
     </author>
 
@@ -416,7 +416,7 @@ Alice (192.0.2.0:5555)             B2BUA
     <section title="Acknowledgments">
       <t>Special thanks to Lorenzo Miniero, Ranjit Avarsala, Hadriel Kaplan,
       Muthu Arul Mozhi, Paul Kyzivat, Peter Dawes, Brett Tate, Dan Wing,
-      Charles Eckel, Simon Perreault, Albrecht Schwarz and Guballa Jens for their constructive comments,
+      Charles Eckel, Simon Perreault, Albrecht Schwarz and Jens Guballa for their constructive comments,
       suggestions, and early reviews that were critical to the formulation and
       refinement of this document.</t>
     </section>
