@@ -11,7 +11,7 @@
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
 <!--rfc category="info" ipr="full3978"-->
-<rfc category="std" docName="draft-ietf-straw-b2bua-dtls-srtp-04"
+<rfc category="std" docName="draft-ietf-straw-b2bua-dtls-srtp-05"
      ipr="trust200902">
   <front>
     <title abbrev="DTLS-SRTP handling in SIP B2BUA">DTLS-SRTP Handling in
@@ -453,6 +453,7 @@ Alice (192.0.2.0:5555)             B2BUA
       <?rfc include="reference.I-D.jones-perc-private-media-reqts" ?>
 
       <?rfc include="reference.I-D.ietf-stir-rfc4474bis"  ?>
+      <?rfc include="reference.RFC.5761"?>
     </references>
   </back>
 </rfc>
