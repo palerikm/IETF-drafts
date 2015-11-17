@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd">
+<?rfc toc="yes"?>
+<?rfc tocompact="yes"?>
+<?rfc tocdepth="3"?>
+<?rfc tocindent="yes"?>
+<?rfc symrefs="yes"?>
+<?rfc sortrefs="yes"?>
+<?rfc comments="yes"?>
+<?rfc inline="yes"?>
+<?rfc compact="yes"?>
+<?rfc subcompact="no"?>
+<rfc category="std" docName="draft-reddy-pcp-sdn-firewall-00"
+     ipr="trust200902">
+  <front>
+    <title abbrev="SDN controlled PCP firewall">PCP Firewall Control in
+    Managed Networks</title>
+
+    <author fullname="Tirumaleswar Reddy" initials="T." surname="Reddy">
+      <organization abbrev="Cisco">Cisco Systems, Inc.</organization>
+
+      <address>
+        <postal>
+          <street>Cessna Business Park, Varthur Hobli</street>
+
+          <street>Sarjapur Marathalli Outer Ring Road</street>
+
+          <city>Bangalore</city>
+
+          <region>Karnataka</region>
+
+          <code>560103</code>
+
+          <country>India</country>
+        </postal>
+
+        <email>tireddy@cisco.com</email>
+      </address>
+    </author>
+
+    <author fullname="Prashanth Patil" initials="P." surname="Patil">
+      <organization abbrev="Cisco">Cisco Systems, Inc</organization>
+
+      <address>
+        <postal>
+          <street></street>
+
+          <street></street>
+
+          <city>Bangalore</city>
+
+          <region></region>
+
+          <code></code>
+
+          <country>India</country>
+        </postal>
+
+        <email>praspati@cisco.com</email>
+      </address>
+    </author>
+
+    <author fullname="Dan Wing" initials="D." surname="Wing">
+      <organization abbrev="Cisco">Cisco Systems, Inc.</organization>
+
+      <address>
+        <postal>
+          <street>170 West Tasman Drive</street>
+
+          <city>San Jose</city>
+
+          <region>California</region>
+
+          <code>95134</code>
+
+          <country>USA</country>
+        </postal>
+
+        <email>dwing@cisco.com</email>
+      </address>
+    </author>
+
+    <author fullname="Mohamed Boucadair" initials="M." surname="Boucadair">
+      <organization>France Telecom</organization>
+
+      <address>
+        <postal>
+          <street></street>
+
+          <city>Rennes</city>
+
+          <region></region>
+
+          <code>35000</code>
+
+          <country>France</country>
+        </postal>
+
+        <email>mohamed.boucadair@orange.com</email>
+      </address>
+    </author>
+
+    <date />
+
+    <workgroup>PCP</workgroup>
+
+    <abstract>
+      <t>In the context of ongoing efforts to add more automation and promote
+      means to dynamically interact with network resources, e.g., SDN- labeled
+      efforts, various proposals are made to accommodate the needs of Network
+      Providers to program the network with flow information. This document
+      describes a means for an SDN controller to install firewall rules using
+      the Port Control Protocol (PCP).</t>
+    </abstract>
+  </front>
+
+  <middle>
+    <section title="Introduction">
+      <t>All modern firewalls allow an administrator to change the policies in
+      the firewall devices, although the ease of administration for making
+      those changes, and the granularity of the policies, vary widely between
+      firewalls and vendors. With the advent of Software-Defined Networking
+      (SDN), which is a new approach for network programmability, it becomes
+      important to have a means to program these firewalls in a generic
+      fashion. Network programmability in the context of a firewall refers to
+      the capacity to initialize, control, change, and manage firewall
+      policies dynamically via open interfaces as opposed to relying on
+      closed-box solutions and their associated proprietary interfaces.</t>
+
+      <t>The Port Control Protocol (PCP) <xref target="RFC6887"></xref>
+      provides a mechanism to control how incoming packets are forwarded by
+      upstream devices such as Network Address Translator IPv6/IPv4 (NAT64),
+      Network Address Translator IPv4/IPv4 (NAT44), and IPv6 and IPv4 firewall
+      devices. PCP can be leveraged to program firewalls, for example, from an
+      SDN controller using standardized mechanisms.</t>
+
+      <t>Existing PCP methods, such as PCP THIRD PARTY OPTION, can be used to
+      install firewall rules, but current PCP methods only allow to create
+      firewall rules on a per-user basis. This document proposes a new PCP
+      OPCODE to accommodate generic firewall based on standard traffic
+      selectors as described in <xref target="RFC6088"></xref>. Note, PCP
+      MAP/PEER OpCodes can be used to achieve basic firewall control
+      functionalities, but advanced functionalities are not supported in <xref
+      target="RFC6887"></xref>. Concretely,<xref
+      target="I-D.boucadair-pcp-sfc-classifier-control"></xref> identifies
+      some missing PCP features to address the firewall control needs: (1)
+      Extended THIRD_PARTY option to include a L2 identifier (e.g., MAC
+      address), an opaque subscriber-identifier, an IMSI, etc.; (2) Extended
+      FILTER to include a remote range of ports; and (3) DSCP-based filtering.
+      The encoding in <xref target="tselect"></xref> and the support of the
+      THIRD_PARTY_ID (<xref target="I-D.ripke-pcp-tunnel-id-option"></xref>)
+      covers most of these functionalities.</t>
+
+      <t>PCP extensions in this document can be used in non-SDN contexts such
+      as managed networks. The following use-cases describe the need for SDN
+      controlled firewalls. </t>
+
+      <section title="Cloud conferencing server">
+        <t>In the field of real-time conferencing there is a transformation
+        towards cloud-based, virtualized and software based conferencing
+        server implementations. The trend of using virtualized cloud-based
+        services (e.g., conferencing) has a number of positive effects on
+        flexibility, CAPEX, ease of use, etc. One enabling factor for cloud
+        conferencing server is the increased capabilities of the end-points
+        that allow them to decode and process multiple simultaneously received
+        media streams. This in turn has made the central conferring media
+        nodes to switch from mixing or composing media in the decoded domain
+        to instead perform the much less heavy-weight operation of selection,
+        switching and forwarding of media streams, at least for video. Cloud
+        conferencing server typically supports Interactive Connectivity
+        Establishment (ICE) <xref target="RFC5245"></xref> or at a minimum
+        supports the ICE LITE functionality as described in section 2.7 of
+        <xref target="RFC5245"></xref>. A cloud conferencing server can
+        terminate ICE and thus have two ICE contexts with either endpoints.
+        The reason for ICE termination is the need for cloud conferencing
+        server to be in the media path. Cloud conferencing server advertises
+        support for ICE in offer/answer and includes its candidates of
+        different types for each component of each media stream.</t>
+
+        <t>Enterprise leveraging cloud conferencing server may have a
+        restricted firewall policy to only permit UDP traffic to cloud
+        conferencing provided candidate addresses. The problem is that these
+        candidate addresses could keep changing causing the firewall policy to
+        be frequently modified with human intervention. This problem can be
+        solved by the cloud conferencing server communicating it's media
+        candidate addresses to the SDN controller in the enterprise network
+        through a cloud connector and the SDN controller in-turn configures
+        enterprise firewalls using PCP to permit UDP traffic to the cloud
+        conferencing provided candidate addresses.</t>
+      </section>
+
+      <section title="TURN server ">
+        <t>Traversal Using Relay NAT (TURN) <xref target="RFC5766"></xref> is
+        a protocol that is often used to improve the connectivity of
+        Peer-to-Peer (P2P) applications. TURN allows a connection to be
+        established when one or both sides is incapable of a direct P2P
+        connection. The TURN server is a building block to support
+        interactive, real-time communication using audio, video,
+        collaboration, games, etc., between two peer web browsers using the
+        Web Real-Time Communication (WebRTC) framework explained in <xref
+        target="I-D.ietf-rtcweb-overview"></xref>. A TURN server could be
+        provided by an enterprise network, an access network, an application
+        service provider or a third party provider.</t>
+
+        <t>Enterprise that has business agreement with an application or third
+        party provider hosting TURN servers may have a firewall policy to only
+        permit UDP traffic to the external TURN servers provided by the
+        application or third party provider. But the problem is that these
+        TURN addresses could keep changing resulting in the firewall rules to
+        be frequently modified with human intervention. This problem can be
+        solved by the provider hosting the TURN servers to communicate the
+        TURN server IP addresses to the SDN controller deployed in the
+        enterprise network through a cloud connector and the SDN controller
+        in-turn configures enterprise firewalls using PCP to permit UDP
+        traffic to the TURN servers.</t>
+      </section>
+    </section>
+
+    <section anchor="notation" title="Notational Conventions">
+      <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+      "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+      document are to be interpreted as described in <xref
+      target="RFC2119"></xref>.</t>
+    </section>
+
+    <section anchor="tselect" title="TSELECT OPCODE">
+      <section title="TSELECT OpCode Packet Format">
+        <t><xref target="Figure1"></xref> shows the format of the TSELECT
+        Opcode-specific information.</t>
+
+        <t><figure anchor="Figure1" title="TSELECT Opcode Request">
+            <artwork align="left"><![CDATA[
+
+      0                   1                   2                   3
+      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     |                                                               |
+     |                 Mapping Nonce (96 bits)                       |
+     |                                                               |
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     |   TS Format   |   Length      |  Direction    |   Reserved    |
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     |                                                               |
+     |                  Traffic Selector ...                         |
+     |                                                               |
+     |                                                               |
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+          ]]></artwork>
+          </figure></t>
+
+        <t>The fields are described below:<list style="hanging">
+            <t
+            hangText="Requested/Assigned lifetime (in common header):">Requested
+            lifetime of this firewall control rule entry, in seconds, in a
+            request or assigned lifetime of this entry, in seconds, in a
+            response . The value 0 indicates "delete".</t>
+
+            <t hangText="Mapping Nonce:">Random value chosen by the PCP
+            client. Mapping Nonce MUST be copied and returned by the PCP
+            server in a response.</t>
+
+            <t hangText="TS Format:">An 8-bit unsigned integer indicating the
+            Traffic Selector Format. Value "0" is reserved and MUST NOT be
+            used. The values for that field are defined in Section 3 of <xref
+            target="RFC6088"> </xref> and are repeated here for completeness.
+            <list style="symbols">
+                <t>When the value of the TS Format field is set to (1), the
+                format that follows is the IPv4 binary traffic selector
+                specified in Section 3.1 of <xref
+                target="RFC6088"></xref>.</t>
+
+                <t>When the value of the TS Format field is set to (2), the
+                format that follows is the IPv6 binary traffic selector
+                specified in Section 3.2 of <xref
+                target="RFC6088"></xref>.</t>
+              </list></t>
+
+            <t hangText="Length:">8-bit unsigned integer indicating the length
+            in octets of the traffic selector field.</t>
+
+            <t hangText="Direction:"><list style="symbols">
+                <t>0 indicates outbound direction for traffic selector
+                rule.</t>
+
+                <t>1 indicates inbound direction for traffic selector
+                rule.</t>
+
+                <t>2 indicates inbound and outbound direction for traffic
+                selector rule.</t>
+              </list></t>
+
+            <t hangText="Reserved:">8 reserved bits, MUST be sent as 0 and
+            MUST be ignored when received.</t>
+
+            <t hangText="Traffic Selector:">The traffic selector defined in
+            <xref target="RFC6088"></xref> is mandatory to implement.</t>
+          </list></t>
+      </section>
+
+      <section title="Generating a TSELECT Request">
+        <t>The PCP client, first does all processing described in Section 8.1
+        of <xref target="RFC6887"></xref>. It then includes the TSELECT
+        OPCODE.</t>
+
+        <t>The Mapping Nonce value is randomly chosen by the PCP client,
+        following accepted practices for generating unguessable random numbers
+        <xref target="RFC4086"></xref>, and is used as part of the validation
+        of PCP responses by the PCP client, and validation for mapping
+        refreshes by the PCP server.</t>
+
+        <t>The PCP client MUST use a different mapping nonce for each PCP
+        server it communicates with, and it is RECOMMENDED to choose a new
+        random mapping nonce whenever the PCP client is initialized. The
+        client MAY use a different mapping nonce for every mapping.</t>
+      </section>
+
+      <section title="Processing a TSELECT Request">
+        <t>The PCP server performs processing in the order of the paragraphs
+        below.</t>
+
+        <t>Upon receiving a PCP request with the TSELECT opcode, the PCP
+        server performs the processing described in Section 8.2 of <xref
+        target="RFC6887"></xref>. If the PCP server can accommodate the
+        request as described in the TSELECT request, it sends a PCP response
+        with the SUCCESS response else returns a failure response with the
+        appropriate error code.</t>
+      </section>
+
+      <section title="Processing a TSELECT Response">
+        <t>Upon receiving a TSELECT response, the PCP client performs the
+        normal processing described in Section 8.3 of <xref
+        target="RFC6887"></xref>.</t>
+      </section>
+    </section>
+
+    <section title="IANA Considerations">
+      <t>In order to identify TSELECT Opcode, a new value (TBD) needs to be
+      defined in the IANA registry for PCP Opcodes.</t>
+    </section>
+
+    <section title="Security Considerations">
+      <t>Only certain users or certain applications can be authorized to
+      signal TSELECT request. This authorization can be achieved using PCP
+      authentication <xref target="I-D.ietf-pcp-authentication"></xref>. PCP
+      authentication must be used for mutual authentication between the
+      application signaling TSELECT request and the PCP-aware firewall.
+      Without this authentication enabled, the TSELECT request is open for
+      attacks with fake applications falsely claiming to be legitimate
+      applications that require special treatment, i.e., the firewall
+      infrastructure is at risk of being misused.</t>
+
+      <t>Should the firewall be spoofed, applications could be misled that the
+      firewall has successfully processed the PCP request.</t>
+    </section>
+
+    <section anchor="ack" title="Acknowledgements">
+      <t>TODO</t>
+    </section>
+  </middle>
+
+  <back>
+    <references title="Normative References">
+      <?rfc include="reference.RFC.2119"
+?>
+
+      <?rfc include="reference.RFC.5245"?>
+
+      <?rfc include="reference.RFC.5766"?>
+
+      <?rfc include='reference.RFC.6887'?>
+
+      <?rfc include="reference.RFC.6088"?>
+
+      <?rfc include="reference.I-D.ietf-pcp-authentication"?>
+    </references>
+
+    <references title="Informative References">
+      <?rfc include="reference.RFC.4086"?>
+
+      <?rfc include="reference.I-D.ietf-rtcweb-overview"  ?>
+
+      <?rfc include='reference.I-D.boucadair-pcp-sfc-classifier-control'?>
+
+      <?rfc include='reference.I-D.ripke-pcp-tunnel-id-option'?>
+    </references>
+  </back>
+</rfc>

@@ -13,189 +13,172 @@
 <rfc category="std" docName="draft-reddy-mmusic-ice-happy-eyeballs-04"
      ipr="trust200902">
   <front>
-    <title abbrev="Happy Eyeballs for ICE ">
-      Happy Eyeballs Extension for ICE
-    </title>
+    <title abbrev="Happy Eyeballs for ICE ">Happy Eyeballs Extension for
+    ICE</title>
 
     <author fullname="Tirumaleswar Reddy" initials="T." surname="Reddy">
       <organization abbrev="Cisco">Cisco Systems, Inc.</organization>
+
       <address>
         <postal>
           <street>Cessna Business Park, Varthur Hobli</street>
+
           <street>Sarjapur Marathalli Outer Ring Road</street>
+
           <city>Bangalore</city>
+
           <region>Karnataka</region>
+
           <code>560103</code>
+
           <country>India</country>
         </postal>
+
         <email>tireddy@cisco.com</email>
       </address>
     </author>
 
     <author fullname="Prashanth Patil" initials="P." surname="Patil">
       <organization abbrev="Cisco">Cisco Systems, Inc.</organization>
+
       <address>
         <postal>
-          <street/>
+          <street>Cessna Business Park, Varthur Hobli</street>
+
+          <street>Sarjapur Marathalli Outer Ring Road</street>
+
           <city>Bangalore</city>
+
           <country>India</country>
         </postal>
+
         <email>praspati@cisco.com</email>
       </address>
     </author>
 
     <author fullname="Paal-Erik Martinsen" initials="P.E" surname="Martinsen">
       <organization abbrev="Cisco">Cisco Systems, Inc.</organization>
+
       <address>
         <postal>
           <street>Philip Pedersens vei 22</street>
+
           <city>Lysaker</city>
+
           <region>Akershus</region>
+
           <code>1325</code>
+
           <country>Norway</country>
         </postal>
+
         <email>palmarti@cisco.com</email>
       </address>
     </author>
 
-    <date/>
+    <date />
 
     <workgroup>MMUSIC</workgroup>
 
     <abstract>
-      <t>
-        This document provides guidelines on how to make ICE
-        <xref target="RFC5245"/> conclude faster in IPv4/IPv6
-        dual-stack scenarios where broken paths exists.
-      </t>
+      <t>This document provides guidelines on how to make ICE <xref
+      target="RFC5245"></xref> conclude faster in IPv4/IPv6 dual-stack
+      scenarios where broken paths exists.</t>
     </abstract>
   </front>
 
   <middle>
-    
     <section anchor="introduction" title="Introduction">
-      <t>
-        There is a need to introduce more fairness in the handling of
-        connectivity checks in dual-stack IPv4/IPv6 ICE
-        scenarios. Section 4.1.2.1 of ICE <xref target="RFC5245"/>
-        points to <xref target="RFC3484"/> for prioritizing among the
-        different IP families. <xref target="RFC3484"/> is obsoleted
-        by <xref target="RFC6724"/> but following the recommendations
-        from the updated RFC will still lead to prioritization of IPv6
-        over IPv4 with the same candidate type.
-      </t>
-      <t>
-        As IPv6 is preferred over IPv4, recommendations made in this
-        document help avoid user-noticeable delays when the IPv6 path
-        is broken or excessively slow. This is achieved by making sure
-        both address families are given a more "fair" treatment when
-        prioritizing candidates, forming checklists or conducting
-        connectivity checks.
-      </t>
-      <t>
-        By introducing more fairness into ICE dual-stack
-        implementations it will hopefully lead to better IPv6
-        deployment as it will enable implementers to prioritize IPv6
-        with just a small penalty for the IPv4 connectivity checks.
-      </t>
-      
+      <t>There is a need to introduce more fairness in the handling of
+      connectivity checks in dual-stack IPv4/IPv6 ICE scenarios. Section
+      4.1.2.1 of ICE <xref target="RFC5245"></xref> points to <xref
+      target="RFC3484"></xref> for prioritizing among the different IP
+      families. <xref target="RFC3484"></xref> is obsoleted by <xref
+      target="RFC6724"></xref> but following the recommendations from the
+      updated RFC will still lead to prioritization of IPv6 over IPv4 with the
+      same candidate type. There can be a lot of ICE candidates belonging to
+      one address family which results in user-noticable setup delays if the
+      path for that address family is broken.</t>
+
+      <t>To avoid such user-noticable delays when the IPv6 path or IPv4 path
+      is broken, this specification encourages earlier checking of the other
+      address family. Greater IP address family fairness into ICE connectivity
+      checks will lead to more sustained IPv6 deployment (so users will no
+      longer have an incentive to disable IPv6), which incurs only a small
+      penalty for the IPv4 connectivity checks.</t>
+
       <section anchor="notation" title="Notational Conventions">
-        <t>
-          The key words "MUST", "MUST NOT", "REQUIRED", "SHALL",
-          "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY",
-          and "OPTIONAL" in this document are to be interpreted as
-          described in <xref target="RFC2119"/>.
-        </t>
-        
-        <t>
-          This document uses terminology defined in
-          <xref target="RFC5245"/>.
-        </t>
+        <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+        "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+        document are to be interpreted as described in <xref
+        target="RFC2119"></xref>.</t>
+
+        <t>This document uses terminology defined in <xref
+        target="RFC5245"></xref>.</t>
       </section>
     </section>
-    
+
     <section title="Improving ICE Dual-stack Fairness">
-      <t>
-        Candidates SHOULD be prioritized such that a long sequence of
-        candidates belonging to the same address family be interleaved
-        with candidates from the alternate IP family. For example,
-        promoting IPv4 candidates in the presence of many IPv6
-        addresses such that an IPv4 address candidate is always
-        present after a small sequence of IPv6 addresses. This makes
-        ICE connectivity checks more responsive to failures of an
-        address family by reordering the candidates such that IPv6 and
-        IPv4 candidates get a fair chance during connectivity checks.
-      </t>  
-      <t>
-        An ICE agent can choose an algorithm or a technique of its
-        choice to promote IPv4 candidates.
-      </t>
+      <t>Candidates SHOULD be prioritized such that a long sequence of
+      candidates belonging to the same address family be interleaved with
+      candidates from the alternate IP family. For example, promoting IPv4
+      candidates in the presence of many IPv6 addresses such that an IPv4
+      address candidate is always present after a small sequence of IPv6
+      addresses. This makes ICE connectivity checks more responsive to
+      failures of an address family by reordering the candidates such that
+      IPv6 and IPv4 candidates get a fair chance during connectivity
+      checks.</t>
+
+      <t>An ICE agent can choose an algorithm or a technique of its choice to
+      promote IPv4 candidates.</t>
     </section>
 
     <section title="Compatibility">
-      <t>
-        ICE <xref target="RFC5245"/> section 4.1.2 states that the
-        formula in section 4.1.2.1 SHOULD be used. Failing to do so
-        may lead to ICE taking longer to converge as the checklist no
-        longer will be coordinated. Therefore responsiveness of ICE
-        candidate checks are improved when both sides support
-        Happy-Eyeballs. There might be a penalty if only one end
-        supports it.
-      </t>
+      <t>ICE <xref target="RFC5245"></xref> section 4.1.2 states that the
+      formula in section 4.1.2.1 SHOULD be used. Failing to do so may lead to
+      ICE taking longer to converge as the checklist no longer will be
+      coordinated. Therefore responsiveness of ICE candidate checks are
+      improved when both sides support Happy-Eyeballs, both sides have the
+      same number of candidate pairs, and both sides use the same Happy
+      Eyeballs promotion algorithm.</t>
 
-      <t>
-        <list style="symbols">
-          <t>
-            It is optimal when both agents support the same technique
-            to promote IPv4 candidates in the candidate-list.
-          </t>
-          <t>
-            If each happens to use a different technique to promote
-            IPv4 candidates, ICE connectivity checks will be as
-            responsive as the least aggressive algorithm. This is due
-            to the fact that MAX/MIN logic used for calculating
-            candidate-pair priority ensures that for a particular
-            agent, lower-priority candidate is never used until all
-            higher-priority candidates have been tried
-          </t>
-          <t>
-            If only one agent supports Happy-Eyeballs, there is
-            potentially no change in pacing of ICE connectivity checks
-            and the situation is no worse than what exists today.
-          </t>
-        </list>
-      </t>
+      <t>If each ICE agent uses a different algorithm to promote IPv4
+      candidates, ICE connectivity checks will be as responsive as the least
+      aggressive algorithm. This is because the MAX/MIN candiate-pair logic
+      ensures that for a particular agent, a lower-priority candidate is never
+      used (for media) until all higher-priority candidates have been
+      tried.</t>
+
+      <t>If only one ICE agent supports Happy-Eyeballs, there is potentially
+      no change in pacing of ICE connectivity checks and the situation is no
+      worse than what exists today</t>
     </section>
 
     <section title="IANA Considerations">
-      <t>
-        None.
-      </t>
+      <t>None.</t>
     </section>
-    
+
     <section anchor="security" title="Security Considerations">
-      <t>
-        STUN connectivity check using MAC computed during key
-        exchanged in the signaling channel provides message integrity
-        and data origin authentication as described in section 2.5 of
-        <xref target="RFC5245"/> apply to this use.
-      </t>
+      <t>STUN connectivity check using MAC computed during key exchanged in
+      the signaling channel provides message integrity and data origin
+      authentication as described in section 2.5 of <xref
+      target="RFC5245"></xref> apply to this use.</t>
     </section>
 
     <section anchor="ack" title="Acknowledgements">
-      <t>
-        Authors would like to thank Dan Wing, Ari Keranen, Bernard
-        Aboba, Martin Thomson and Jonathan Lennox for their comments
-        and review.
-      </t>
+      <t>Authors would like to thank Dan Wing, Ari Keranen, Bernard Aboba,
+      Martin Thomson and Jonathan Lennox for their comments and review.</t>
     </section>
   </middle>
-  
+
   <back>
     <references title="Normative References">
       <?rfc include="reference.RFC.2119"?>
+
       <?rfc include="reference.RFC.3484"?>
+
       <?rfc include="reference.RFC.5245"?>
+
       <?rfc include="reference.RFC.6724"?>
     </references>
   </back>

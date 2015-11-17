@@ -1,0 +1,728 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!-- This template is for creating an Internet Draft using xml2rfc,
+     which is available here: http://xml.resource.org. -->
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+<!-- One method to get references from the online citation libraries.
+     There has to be one entity for each item to be referenced.
+     An alternate method (rfc include) is described in the references. -->
+<!ENTITY RFC7206 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7206.xml">
+<!--ENTITY I-D.ietf-insipid-session-id-reqts SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-insipid-session-id-reqts.xml"-->
+]>
+<?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
+<!-- used by XSLT processors -->
+<!-- For a complete list and description of processing instructions (PIs),
+     please see http://xml.resource.org/authoring/README.html. -->
+<!-- Below are generally applicable Processing Instructions (PIs) that most I-Ds might want to use.
+     (Here they are set differently than their defaults in xml2rfc v1.32) -->
+<?rfc strict="yes" ?>
+<!-- give errors regarding ID-nits and DTD validation -->
+<!-- control the table of contents (ToC) -->
+<?rfc toc="yes"?>
+<!-- generate a ToC -->
+<?rfc tocdepth="4"?>
+<!-- the number of levels of subsections in ToC. default: 3 -->
+<!-- control references -->
+<?rfc symrefs="yes"?>
+<!-- use symbolic references tags, i.e, [RFC2119] instead of [1] -->
+<?rfc sortrefs="yes" ?>
+<!-- sort the reference entries alphabetically -->
+<!-- control vertical white space
+     (using these PIs as follows is recommended by the RFC Editor) -->
+<?rfc compact="yes" ?>
+<!-- do not start each main section on a new page -->
+<?rfc subcompact="no" ?>
+<!-- keep one blank line between list items -->
+<!-- end of list of popular I-D processing instructions -->
+<rfc category="info" docName="draft-conet-aeon-use-cases-00" ipr="trust200902">
+  <!--  category values: std, bcp
+, info, exp, and historic
+     ipr values: full3667, noModification3667, noDerivatives3667
+     you can add the attributes updates="NNNN" and obsoletes="NNNN"
+     they will automatically be output with "(if approved)" -->
+
+  <!-- ***** FRONT MATTER ***** -->
+
+  <front>
+    <!-- The abbreviated title is used in the page header - it is only necessary if the
+         full title is longer than 39 characters -->
+
+    <title abbrev="AEON/CONET Use Cases">Application Enabled Collaborative
+    Networking Use Cases</title>
+
+    <!-- add 'role="editor"' below for the editors if appropriate -->
+
+    <!-- Another author who claims to be an editor -->
+
+    <author fullname="Wesley George" initials="W." surname="George">
+      <organization>Time Warner Cable</organization>
+
+      <address>
+        <postal>
+          <street>13820 Sunrise Valley Drive</street>
+
+          <city>Herndon</city>
+
+          <region>VA</region>
+
+          <code>20171</code>
+
+          <country>US</country>
+        </postal>
+
+        <email>wesley.george@twcable.com</email>
+
+        <!-- uri and facsimile elements may also be added -->
+      </address>
+    </author>
+
+    <author fullname="Tirumaleswar Reddy" initials="T." surname="Reddy">
+      <organization>Cisco Systems, Inc.</organization>
+
+      <address>
+        <postal>
+          <street>Cessna Business Park, Varthur Hobli</street>
+
+          <street>Sarjapur Marathalli Outer Ring Road</street>
+
+          <city>Bangalore</city>
+
+          <region>Karnataka</region>
+
+          <code>560103</code>
+
+          <country>India</country>
+        </postal>
+
+        <email>tireddy@cisco.com</email>
+      </address>
+    </author>
+
+    <author fullname="Charles Eckel" initials="C." surname="Eckel">
+      <organization>Cisco Systems, Inc.</organization>
+
+      <address>
+        <postal>
+          <street>170 West Tasman Drive</street>
+
+          <city>San Jose</city>
+
+          <region>CA</region>
+
+          <code>95134</code>
+
+          <country>US</country>
+        </postal>
+
+        <email>eckelcu@cisco.com</email>
+
+        <!-- uri and facsimile elements may also be added -->
+      </address>
+    </author>
+
+    <date/>
+
+    <!-- If the month and year are both specified and are the current ones, xml2rfc will fill
+         in the current day for you. If only the current year is specified, xml2rfc will fill
+	 in the current day and month for you. If the year is not the current one, it is
+	 necessary to specify at least a month (xml2rfc assumes day="1" if not specified for the
+	 purpose of calculating the expiry date).  With drafts it is normally sufficient to
+	 specify just the year. -->
+
+    <!-- Meta-data Declarations -->
+
+    <area>General</area>
+
+    <workgroup>Internet Engineering Task Force</workgroup>
+
+    <!-- WG name at the upperleft corner of the doc,
+         IETF is fine for individual submissions.
+	 If this element is not present, the default is "Network Working Group",
+         which is used by the RFC Editor as a nod to the history of the IETF. -->
+
+    <keyword>aeon flow metadata use cases</keyword>
+
+    <!-- Keywords will be incorporated into HTML output
+         files in a meta tag but they have no effect on text or nroff
+         output. If you submit your draft to the RFC Editor, the
+         keywords will be used for the search engine. -->
+
+    <abstract>
+      <t>This document describes application enabled collaborative networking
+      use cases. Application enabled collaborative networking has applications
+      explicitly signal their flow characteristics to the network. This
+      provides network nodes with visibility of the application flow
+      characteristics, which enables them to apply the correct flow treatment
+      and provide feedback to applications.</t>
+    </abstract>
+  </front>
+
+  <middle>
+    <section title="Introduction">
+      <t>Identification and treatment of application flows are important to
+      many application providers and network operators. They often rely on
+      these capabilities to deploy and/or support a wide range of
+      applications. These applications, and the packet flows they generate and
+      consume, may have specific connectivity requirements that can be met if
+      made known to the network. Historically, this functionality has been
+      implemented to the extent possible using heuristics, which inspect and
+      infer flow characteristics. Heuristics may be based on port ranges,
+      network separation (e.g. subnets or VLANs, Deep Flow Inspection (DFI),
+      or Deep Packet Inspection (DPI). But many application flows in current
+      usages are dynamic, adaptive, time-bound, encrypted, peer-to-peer,
+      asymmetric, used on multipurpose devices, and have different priorities
+      depending on direction of flow, user preferences, and other factors. Any
+      combination of these properties renders heuristic based techniques less
+      effective and may result in compromises to application security or user
+      privacy, as described in detail in
+      draft-conet-aeon-problem-statement-00.</t>
+
+      <t>Application enabled open networking (AEON) allows applications to
+      explicitly signal their flow characteristics to the network. This
+      provides network nodes with visibility of the application flow
+      characteristics. These network nodes may take action based on this
+      visibility and/or contribute to the flow description. The resulting flow
+      description may be communicated as feedback from the network to
+      applications.</t>
+
+      <t>This document describes a set of use cases addressable by application
+      enabled collaborative networking.</t>
+    </section>
+
+    <section title="Use Cases">
+      <t>The following use cases have been identified.<list counter="1"
+          style="numbers">
+          <t>Firewall Traversal: Identification of new applications</t>
+
+          <t>Efficient Capacity Usage</t>
+
+          <t>Video Adaptation: Use client metadata to help video bit rate
+          selection.</t>
+
+          <t>Multi-interface selection: Use metadata to help interface
+          selection or prioritization.</t>
+
+          <t>Session Identification: Identification of multiple media flows
+          belonging to a common application session.</t>
+        </list></t>
+
+      <t>In describing each use case, the following information is
+      provided.<list style="symbols">
+          <t>description of the problem</t>
+
+          <t>proposed solution</t>
+
+          <t>user benefit</t>
+
+          <t>operator benefit</t>
+
+          <t>flow characteristics provided by application</t>
+
+          <t>action taken by network as result of receiving flow
+          characteristics</t>
+
+          <t>feedback provided by network</t>
+
+          <t>security and privacy considerations</t>
+        </list></t>
+
+      <section title="Firewall Traversal: Identification of new applications">
+        <section title="Description of Problem">
+          <t>Modern firewalls use application-layer gateways (ALGs) to perform
+          policy enforcement. For example firewalls implement SIP-aware
+          Application Layer Gateway function, which examines the SIP signaling
+          and opens the appropriate pinholes for the RTP media. In particular
+          firewall extracts media transport addresses, transport protocol and
+          ports from session description and creates a dynamic mapping for
+          media to flow through. This model will not work in the following
+          cases: <list style="numbers">
+              <t>Session signaling is end-to-end encrypted (say, using
+              TLS).</t>
+
+              <t>Firewall does not understand the session signaling protocol,
+              or extensions to the protocol, used by the endpoints (e.g.
+              WebRTC signaling protocols).</t>
+
+              <t>Session signaling and media traverse different firewalls
+              (e.g., signaling exits a network via one firewall whereas media
+              exits a network via a different firewall).</t>
+            </list></t>
+
+          <t>Enterprise networks that use firewalls with restrictive policies
+          block new applications like WebRTC and delay deployment of killer
+          applications.</t>
+        </section>
+
+        <section title="Proposed Solution">
+          <t>The above problems can be addressed by the host getting
+          authorization from the Application Server trusted by the network in
+          order to install flows and associated actions (e.g., policies). PCP
+          third party authorization (draft-wing-pcp-third-party-authz-01)
+          solves this problem by associating the media session with the
+          signaling session. This is done by sending a cryptographic token in
+          the signaling which authorizes the firewall mapping for the media
+          session.</t>
+        </section>
+
+        <section title="User Benefit">
+          <t>Enterprise networks that use firewalls with restrictive policies
+          can deploy new applications at a faster rate for user benefit.</t>
+        </section>
+
+        <section title="Operator Benefit">
+          <t>Enterprise firewalls can enforce restrictive policies without the
+          need to be enhanced to perform ALG on new applications. For example
+          Enterprise firewall could have granular policies to permit
+          peer-to-peer UDP media session only when the call is initiated using
+          the selected WebRTC server (Dr. Good) it trusts and block others
+          (Dr. Evil). PCP-aware firewalls can enforce such granular security
+          policies without performing ALG on the session signaling protocols.
+          This mechanism can be used by any other Application Function trusted
+          by the network to permit time-bound, encrypted, peer-to-peer
+          traffic.</t>
+        </section>
+
+        <section title="Flow characteristics provided by application">
+          <t>The client requests dynamic mappings to permit flows required by
+          the application. This request includes a cryptographic token and
+          characteristics of the flow, such as the anticipated bandwidth needs
+          as well as the tolerance to delay, loss, and jitter.</t>
+        </section>
+
+        <section title="Action taken by firewall as result of receiving flow characteristics">
+          <t>The firewall uses the client request to permit and prioritize the
+          traffic associated with those flows. The cryptographic token
+          provides authorization for the flows and their prioritization.</t>
+        </section>
+
+        <section title="Feedback provided by firewall">
+          <t>Firewall matches the authorization data with what is requested in
+          the request sent by the client. If the authorization sets match, the
+          firewall processes the request made by the client. If the token is
+          invalid or the request exceeds what is authorized by the token then
+          firewall rejects the request.</t>
+        </section>
+
+        <section title="Security and Privacy Considerations"/>
+      </section>
+
+      <section title="Efficient Capacity Usage">
+        <section title="Description of Problem">
+          <t>Network traffic is bursty and often follows diurnal usage
+          patterns such that there are times of day where traffic levels are
+          at a peak, and other times of day where they are at a valley.
+          Networks that are properly capacity planned need to have enough
+          capacity to service the traffic demands at peak. In a network with
+          consistent demand and usage patterns, keeping up with demand is a
+          matter of building capacity at a faster rate than the growth of the
+          peak, in conjunction with any requirements for diversity and fault
+          tolerance as well as any SLA for performance (latency, jitter,
+          packet loss, etc) that may inform which traffic is passed, which is
+          prioritized, and which may be dropped during periods of congestion.
+          However, there are several problems to consider in this
+          context:<list counter="1" style="numbers">
+              <t>Simply building enough capacity for peak usage is not always
+              efficient and cost-effective, because not all traffic is the
+              same in terms of its need to transit the network at the exact
+              moment it is currently doing so, but few tools exist to provide
+              applications with the information they need to make more
+              intelligent decisions on demand, and thus they default to
+              &ldquo;as soon as possible.&rdquo; For example, those watching
+              streaming video or doing real time communication or head to head
+              gaming need immediate access, while less real-time activities
+              such as data synchronization with the cloud for backups, or
+              downloading software updates, or preloading content onto a CDN
+              could potentially be deferred to times when more capacity is
+              available, but today, all of that traffic competes for the same
+              capacity at the same time.</t>
+
+              <t>QoS is not a substitute for capacity, and often a network
+              designed for long periods of congested operation provides a poor
+              user experience, since QoS ultimately is a method to identify
+              which traffic should be dropped first.</t>
+
+              <t>When the network is not at peak usage, there is capacity
+              sitting idle. Even in a well-used network capacity is built in
+              increments that may not match up with growth rate i.e. if a
+              network adds capacity in increments of 10G or 100G, but only
+              needed a small fraction of that until growth catches up. This
+              inefficiency is magnified when one considers the spare capacity
+              designed into most networks to address the need to tolerate one
+              or more failures in the network with minimal traffic impact. In
+              many cases, the idle capacity even at peak may be up to 50%, and
+              at off peak, it could be much higher.</t>
+
+              <t>Few networks have truly consistent demand and usage patterns.
+              While the average usage may follow a rough pattern, this does
+              not always provide for flash demands, where a large number of
+              users are simultaneously downloading an OS update, or all
+              watching the same event via streaming video, or more heavily
+              using the network due to being stuck at home during a snowstorm,
+              etc. The average usage patterns also do not take into account
+              the effects of outages at shifting large volumes of traffic
+              around in the network, and so managing these exception events
+              either requires further spare capacity, or acknowledgement that
+              some traffic will be dropped due to congestion, with the
+              attendant impact to end user experience.</t>
+            </list></t>
+        </section>
+
+        <section title="Proposed Solution">
+          <t>Addressing this problem requires a multi-part solution:<list
+              style="symbols">
+              <t>Provide a mechanism for the network to communicate to
+              applications when the network is busy and when it is not so that
+              individual applications can manage their demand based on the
+              nature of the application and its needs. This demand management
+              helps to smooth the traffic at peak by redirecting some of the
+              demand to off-peak, and has an analog in the power utility
+              industry where demand based pricing or smart grid technology
+              signals devices that use a large amount of power so that they
+              can be intelligent about those demands and reduce the burden on
+              the available capacity of the electrical grid.</t>
+
+              <t>Similarly, provide a means for applications to communicate
+              their required performance envelope, as well as any data on how
+              flexible the time of data transmission can be, i.e. &ldquo;I
+              need this transfer to complete by $time on $day&rdquo; or
+              &ldquo;I need this transfer to complete within 12 hours&rdquo;
+              etc. This information can be used by the network to compute the
+              best way to deliver the requested service, or to identify when
+              it cannot provide the request and suggest an alternate.</t>
+
+              <t>Provide a means for &ldquo;below best effort&rdquo; or
+              scavenger class data transmission so that traffic marked as
+              scavenger will be carried in periods where no congestion is
+              present, but may be discarded during periods of congestion due
+              to either peak usage or outages.</t>
+            </list></t>
+
+          <t>This solution could also be used in conjunction with defined
+          paths through the network (TE, Segment Routing, etc) to provide
+          capacity for traffic that has specific performance requirements, or
+          is not sensitive to using a sub-optimal path. i.e. capacity exists
+          on this backup path that is much longer, so since this traffic does
+          not care about a few 10s of milliseconds of additional latency, it
+          should be marked to use the non-optimal path even if that path is
+          not seen as best by the routing protocol.</t>
+        </section>
+
+        <section title="User Benefit">
+          <t>Key user benefits include:<list style="symbols">
+              <t>Best service for real-time and other interactive applications
+              (less interference from non real-time or non-interactive
+              traffic)</t>
+
+              <t>More control over application bandwidth usage, potential for
+              service guarantees for important applications</t>
+            </list></t>
+        </section>
+
+        <section title="Operator Benefit">
+          <t>Reduced cost via better/more efficient management of
+          capacity/growth while still providing first-class service to
+          customers.</t>
+        </section>
+
+        <section title="Flow characteristics provided by application">
+          <t>An application signals one or more of the following to the
+          network: <list style="symbols">
+              <t>level of service required (e.g. guaranteed service,
+              best-effort, or below best effort)</t>
+
+              <t>minimum requirement for transmission rate/throughput</t>
+
+              <t>that it is tolerant/intolerant of high latency, high jitter,
+              high packet loss</t>
+
+              <t>a request in the form &ldquo;I need to deliver this data by
+              X, when should I send, and how should I identify the
+              flow?&rdquo;</t>
+            </list></t>
+        </section>
+
+        <section title="Action taken by network as result of receiving flow characteristics">
+          <t>Potential action taken by the network include:<list
+              style="symbols">
+              <t>Identify path through network that meets flow service
+              requirements</t>
+
+              <t>Treat marked traffic according to identified service type
+              (e.g. scavenger class carried in periods of low usage, and/or
+              dropped during congestion)</t>
+            </list></t>
+        </section>
+
+        <section title="Feedback provided by network">
+          <t>Feedback provided by the network includes:<list style="symbols">
+              <t>Peak demand times, either proactively (e.g. this network
+              peaks daily between the hours of X and Y) or reactively through
+              something like Explicit Congestion Notification (this network is
+              at peak or is experiencing congestion right now)</t>
+
+              <t>ACK/NACK for requested level of service, throughput, etc.</t>
+            </list></t>
+        </section>
+
+        <section title="Security and Privacy Considerations">
+          <t>This requires a trust model between application and network so
+          that the information communicated about performance envelope
+          requirements can be trusted. In the case where there are different
+          costs, charging rates, tonnage limits by type of traffic, there is
+          opportunity for abuse (maliciously marking all traffic such that it
+          incurs additional cost, or such that it is dropped when it should
+          not be, etc). Even simpler data such as IP Precedence is often
+          remarked at the boundaries between networks as untrusted, so
+          carrying this sort of metadata likely requires a method to ensure
+          that it was set by a trusted entity and not manipulated in
+          transit.</t>
+        </section>
+      </section>
+
+      <section title="Video Adaptation: Use client metadata to help video bit rate selection">
+        <t>HTTP Adaptive Streaming (HAS) is an umbrella term for various
+        HTTP-based streaming technologies that allow a client to adaptively
+        switch between multiple bitrates, depending on current network
+        conditions. HAS client first requests and receives a Manifest File,
+        and then, after parsing the information in the Manifest File, proceeds
+        with sequentially requesting the chunks listed in the Manifest
+        File.</t>
+
+        <section title="Description of Problem">
+          <t>The problems with HAS are:</t>
+
+          <t><list style="symbols">
+              <t>HAS client selects the initial bitrate without knowing the
+              current network conditions which could cause start-up delay and
+              frame freezes while a lower bitrate chunk is being retrieved.
+              HAS client does not have a mechanism to signal the flow
+              characteristics and flow priority to the network.</t>
+
+              <t>HAS server can mark the packets appropriately but setting
+              DSCP has limitations. DSCP value may not be preserved or honored
+              over the Internet and OS may not allow to set DSCP values.</t>
+
+              <t>Content Providers may have agreements with ISPs and need a
+              mechanism to convey the flow characteristics and flow priority
+              to the ISP. Existing mechanisms and the associated limitations
+              are:<list style="numbers">
+                  <t>ISP can be configured with the IP addresses of content
+                  providers to prioritize the traffic originating from those
+                  servers. The limitations with this approach are ISP has to
+                  keep track of content providers IP addresses. With CDNI
+                  (Content Delivery Network InterConnection) content could be
+                  served either from uCDN (upstream CDN) or any of a number of
+                  dCDNs (downstream CDN) and it will not be possible to
+                  manually track the IP addresses of all the CDN surrogates.
+                  There is also no way to differentiate content which could be
+                  available in different bitrates.</t>
+
+                  <t>If HAS client is behind NAT and content provider uses
+                  RESTful API (OneAPI) to install differentiated QoS then ISP
+                  will struggle to find the pre-NAT information. Content
+                  provider also needs to be aware of the ISP to which the
+                  client is attached and the IP address of the Policy Decision
+                  Point (PDP) in the ISP to which it needs to signal the flow
+                  characteristics.</t>
+                </list></t>
+
+              <t>ISP can use DPI to prioritize one-way video streaming content
+              but is expensive and fails if the traffic is encrypted.</t>
+            </list></t>
+        </section>
+
+        <section title="Proposed Solution">
+          <t>If ISP has agreement with content provider then HAS client can
+          use third party authorization to request network resources. At a
+          high level, this authorization works by the client first obtaining a
+          cryptographic token from the authorizing network element, then
+          including that token in the request along with relevant flow
+          characteristics. ISP validates the token and grants the request.</t>
+        </section>
+
+        <section title="User Benefit">
+          <t>AEON helps increase the average play quality, reduces the
+          start-up delay and frame freezes by avoiding attempt to retrieve a
+          too high-bit rate chunk etc thus improving the quality of experience
+          for end user.</t>
+        </section>
+
+        <section title="Operator Benefit">
+          <t>Network Operators can recognize and prioritize one-way video
+          streaming content.</t>
+        </section>
+
+        <section title="Flow characteristics provided by application">
+          <t>HAS client signals the flow characteristics such as the
+          anticipated bandwidth needs as well as the tolerance to delay, loss,
+          and jitter.</t>
+        </section>
+
+        <section title="Action taken by network as result of receiving flow characteristics">
+          <t>Subject to local policies, a network node might perform bandwidth
+          counting, or reconfigure the underlying network so that additional
+          bandwidth is made available for this particular flow, or might
+          perform other actions.</t>
+        </section>
+
+        <section title="Feedback provided by network">
+          <t>The network responds that the client request can be fully or
+          partially accommodated. It also notifies the client when conditions
+          change.</t>
+        </section>
+
+        <section title="Security and Privacy Considerations"/>
+      </section>
+
+      <section title="Multi-interface selection: Use metadata to help interface selection or prioritization">
+        <section title="Description of Problem">
+          <t>An increasing number of hosts are operating in multiple-interface
+          environments and a host with multiple interfaces needs to choose the
+          best interface for communication. Oftentimes, this decision is based
+          on a static configuration and does not consider the link
+          characteristics of that interface, which may affect the user
+          experience. The network interfaces may have different link
+          characteristics, but that will not be known without the awareness of
+          the upstream and downstream characteristics of the access link.</t>
+        </section>
+
+        <section title="Proposed Solution">
+          <t>TODO</t>
+        </section>
+
+        <section title="User Benefit">
+          <t>Applications can choose the best interface for communication
+          using AEON.</t>
+        </section>
+
+        <section title="Operator Benefit">
+          <t>The network that can provide the requested flow characteristics
+          will be selected by the application thus increasing the subscriber
+          base of the operator.</t>
+        </section>
+
+        <section title="Flow characteristics provided by application">
+          <t>Application signals flow characteristics over multiple interfaces
+          and based on the response from its various interfaces sorts the
+          source addresses according to the link capacity characteristics.
+          Source addresses from the interface which best fulfills the desired
+          flow characteristics are assigned the highest priority and would be
+          tried first to communicate with the server or remote peer. For
+          example draft-reddy-mmusic-ice-best-interface-pcp-00 explains the
+          mechanism where Interactive Connectivity Establishment (ICE) agent
+          on a host with multiple interfaces uses AEON to determine the link
+          characteristics of the host's interfaces, which influences the ICE
+          candidate priority. Similarly draft-wing-mptcp-pcp-00 explains how
+          Multipath TCP (MPTCP) can select the best path when multiple paths
+          are available.</t>
+        </section>
+
+        <section title="Action taken by network as result of receiving flow characteristics"/>
+
+        <section title="Feedback provided by network"/>
+
+        <section title="Security and Privacy Considerations"/>
+      </section>
+
+      <section title="Session Identification: Identification of multiple media flows belonging to a common application session">
+        <section title="Description of Problem">
+          <t>Many end-to-end application sessions involve multiple application
+          protocols, devices and administrative domains. These sessions
+          involve multiple media flows (e.g. an audio flow and a video flow
+          for a video call, media flows between different entities in a
+          supplementary service session consisting of multiple SIP dialogs or
+          H.323 calls). Media flows may be added/removed from a application
+          session during the lifetime of the session. From within the network,
+          determining which media flows are associated with each application
+          session is often difficult, making it hard to provide application
+          level troubleshooting, traffic analysis, and QoS.</t>
+        </section>
+
+        <section title="Proposed Solution">
+          <t>Including a session identifier (e.g. as defined in RFC 7206) in
+          the flow characteristics communicated by the application to the
+          network would allow the network to identify media flows belonging to
+          a common application session. This visibility would enable the
+          following:<list style="symbols">
+              <t>network troubleshooting and traffic analysis tools to
+              correctly associate media flows with application sessions</t>
+
+              <t>media flows that are part of established application sessions
+              to be identified (e.g. the triggered call in the case of a
+              transfer) and given dedicated QoS. Preserving established
+              sessions generally is higher priority than setting up new
+              sessions (except when there is some form of multi-level
+              preemption). Giving more bandwidth to additional flows on
+              established sessions might cause some newer sessions to fail due
+              to resource unavailability while established sessions continue
+              without degradation, which is the preferred outcome in most
+              cases.</t>
+            </list></t>
+        </section>
+
+        <section title="User Benefit">
+          <t>Users receive more predictable and reliable QoS for their
+          application sessions.</t>
+        </section>
+
+        <section title="Operator Benefit">
+          <t>Operators are able to perform traffic analysis and
+          troubleshooting at the application level, and they are able to
+          provide QoS at the application level rather than only at the media
+          flow level.</t>
+        </section>
+
+        <section title="Flow characteristics provided by application">
+          <t>The application provides a common session id as metadata for all
+          its media flows throughout the lifetime of the session.</t>
+        </section>
+
+        <section title="Action taken by network as result of receiving flow characteristics">
+          <t>The network identifies all media flows associated with a given
+          session. This information may be used to provide application level
+          QoS, preserving established sessions and/or giving more bandwidth to
+          additional flows on established sessions.</t>
+        </section>
+
+        <section title="Feedback provided by network">
+          <t>The network may provide feedback to the application indicating
+          the amount of bandwidth it expects to be able to provide for its
+          session. It may also be provide indications of the expected amount
+          of delay, jitter, and loss the application should be prepared to
+          tolerate.</t>
+        </section>
+
+        <section title="Security and Privacy Considerations"/>
+      </section>
+    </section>
+
+    <section anchor="Acknowledgements" title="Acknowledgements">
+      <t>The authors thank the attendees of the Bar BoF for contributing
+      towards this set of use cases.</t>
+    </section>
+  </middle>
+
+  <!--  *****BACK MATTER ***** -->
+
+  <back>
+    <!-- References split into informative and normative -->
+
+    <!-- There are 2 ways to insert reference entries from the citation libraries:
+     1. define an ENTITY at the top, and use "ampersand character"RFC2629; here (as shown)
+     2. simply use a PI "less than character"?rfc include="reference.RFC.2119.xml"?> here
+        (for I-Ds: include="reference.I-D.narten-iana-considerations-rfc2434bis.xml")
+
+     Both are cited textually in the same manner: by using xref elements.
+     If you use the PI option, xml2rfc will, by default, try to find included files in the same
+     directory as the including file. You can also define the XML_LIBRARY environment variable
+     with a value containing a set of directories to search.  These can be either in the local
+     filing system or remote ones accessed by http (http://domain/dir/... ).-->
+
+    <!-- reference commented out due to problem with IETF tools
+   <references title="Informative References">
+
+      &RFC7206;
+
+    </references>
+-->
+  </back>
+</rfc>

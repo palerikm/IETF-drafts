@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd">
+<?rfc toc="yes"?>
+<?rfc tocompact="yes"?>
+<?rfc tocdepth="3"?>
+<?rfc tocindent="yes"?>
+<?rfc symrefs="yes"?>
+<?rfc sortrefs="yes"?>
+<?rfc comments="yes"?>
+<?rfc inline="yes"?>
+<?rfc compact="yes"?>
+<?rfc subcompact="no"?>
+<!--rfc category="info" ipr="full3978"-->
+<rfc category="std" docName="draft-ietf-straw-b2bua-dtls-srtp-09"
+     ipr="trust200902">
+  <front>
+    <title abbrev="DTLS-SRTP Handling in SIP B2BUA">DTLS-SRTP Handling in
+    Session Initiation Protocol (SIP) Back-to-Back User Agents
+    (B2BUAs)</title>
+
+    <author fullname="Ram Mohan Ravindranath" initials="R."
+            surname="Ravindranath">
+      <organization>Cisco</organization>
+
+      <address>
+        <postal>
+          <street>Cessna Business Park</street>
+
+          <street>Sarjapur-Marathahalli Outer Ring Road</street>
+
+          <city>Bangalore</city>
+
+          <region>Karnataka</region>
+
+          <code>560103</code>
+
+          <country>India</country>
+        </postal>
+
+        <email>rmohanr@cisco.com</email>
+      </address>
+    </author>
+
+    <author fullname="Tirumaleswar Reddy" initials="T." surname="Reddy">
+      <organization>Cisco</organization>
+
+      <address>
+        <postal>
+          <street>Cessna Business Park, Varthur Hobli</street>
+
+          <street>Sarjapur Marathalli Outer Ring Road</street>
+
+          <city>Bangalore</city>
+
+          <region>Karnataka</region>
+
+          <code>560103</code>
+
+          <country>India</country>
+        </postal>
+
+        <email>tireddy@cisco.com</email>
+      </address>
+    </author>
+
+    <author fullname="Gonzalo Salgueiro" initials="G." surname="Salgueiro">
+      <organization abbrev="Cisco">Cisco Systems, Inc.</organization>
+
+      <address>
+        <postal>
+          <street>7200-12 Kit Creek Road</street>
+
+          <city>Research Triangle Park</city>
+
+          <region>NC</region>
+
+          <code>27709</code>
+
+          <country>US</country>
+        </postal>
+
+        <email>gsalguei@cisco.com</email>
+      </address>
+    </author>
+
+    <author fullname="Victor Pascual" initials="V.P."
+            surname="Pascual">
+      <organization>Quobis</organization>
+
+      <address>
+        <email>victor.pascual.avila@gmail.com</email>
+      </address>
+    </author>
+    
+    <author fullname="Parthasarathi Ravindran" initials="Parthasarathi"
+            surname="Ravindran">
+      <organization>Nokia Networks</organization>
+
+      <address>
+        <postal>
+          <street></street>
+
+          <city>Bangalore</city>
+
+          <region>Karnataka</region>
+
+          <country>India</country>
+        </postal>
+
+        <email>partha@parthasarathi.co.in</email>
+      </address>
+    </author>
+
+    <date year="2015" />
+
+    <area>Real-time Applications and Infrastructure (RAI)</area>
+
+    <workgroup>STRAW</workgroup>
+
+    <abstract>
+      <t>Session Initiation Protocol (SIP) Back-to-Back User Agents (B2BUAs)
+      often act on the media plane, rather than just on the signaling
+      path. This document describes the behavior such B2BUAs can adhere to when 
+      acting on the media plane that uses an Secure Real-time Transport (SRTP) security 
+      context set up with the Datagram Transport Layer Security (DTLS) protocol.</t>
+    </abstract>
+  </front>
+
+  <middle>
+    <section title="Introduction">
+      <section title="Overview">
+        <t><xref target="RFC5763"></xref> describes how Session Initiation
+        Protocol (SIP) <xref target="RFC3261"></xref> can be used to establish
+        a Secure Real-time Transport Protocol (SRTP) <xref
+        target="RFC3711"></xref> security context with the Datagram Transport
+        Layer Security (DTLS) <xref target="RFC6347"></xref> protocol. It
+        describes a mechanism for transporting a certificate fingerprint using
+        Session Description Protocol (SDP) <xref target="RFC4566"></xref>. The fingerprint, 
+         identifies the certificate that will be presented during the
+        DTLS handshake. DTLS-SRTP is currently defined for point-to-point media
+        sessions, in which there are exactly two participants. Each DTLS-SRTP
+        session (described in Section 3 of <xref target="RFC5764"></xref>)
+        contains a single DTLS connection (if RTP and RTCP are multiplexed) or 
+        two DTLS connections (if RTP and RTCP are not multiplexed), and either two SRTP contexts (if
+        media traffic is flowing in both directions on the same 5-tuple) or
+        one SRTP context (if media traffic is only flowing in one
+        direction).</t>
+
+        <t>In many SIP deployments, SIP Back-to-Back User Agents (B2BUA) entities 
+        exist on the SIP signaling path between the endpoints. As described in 
+        <xref target="RFC7092"></xref>, these B2BUAs can modify
+        SIP and SDP information. They can also be present on the media path, in which case 
+        they modify parts of the SDP information (like IP address, port) and subsequently 
+        modify the RTP headers as well. Such B2BUAs are referred to as media plane B2BUAs.</t>
+      </section>
+
+      <section title="Goals">
+        <t><xref target="RFC7092"></xref> describes two different categories
+        of media plane B2BUAs, according to the level of activities performed on the
+        media plane:</t>
+
+        <t><list style="hanging">
+            <t>A B2BUA that acts as a simple media relay effectively unaware of
+            anything that is transported and only terminates the media plane at 
+            the IP and transport (UDP/TCP) layers.</t>
+
+            <t>A B2BUA that performs a media-aware role. It inspects and
+            potentially modifies RTP headers or RTP Control Protocol (RTCP) packets.
+            </t>
+          </list></t>
+
+        <t>The following sections describe the behavior B2BUAs MUST follow
+        in order to avoid any impact to end-to-end DTLS-SRTP sessions. The DTLS-SRTP 
+         framework <xref target="RFC5763"/> recommends that endpoints or proxy server in the endpoint domain use 
+         <xref target="RFC4474"/> to integrity protect the fingerprint attributes.
+         Thus, under most circumstances, B2BUAs cannot terminate the DTLS-SRTP
+         session without invalidating the signature and causing the session to 
+         fail.</t>
+      </section>
+    </section>
+
+    <section anchor="sec-term" title="Terminology">
+      <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+      "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+      document are to be interpreted as described in <xref
+      target="RFC2119"></xref>.</t>
+      <t>Transport Address:  The combination of an IP address and port number. </t>
+
+      <t>The following generalized terms are defined in <xref
+      target="RFC3261"></xref>, Section 6.</t>
+
+      <t><list style="hanging">
+          <t>B2BUA: a SIP Back-to-Back User Agent, which is the logical
+          combination of a User Agent Server (UAS) and User Agent Client
+          (UAC).</t>
+
+          <t>UAS: a SIP User Agent Server.</t>
+
+          <t>UAC: a SIP User Agent Client.</t>
+        </list></t>
+
+      <t>All of the pertinent B2BUA terminology and taxonomy used in this
+      document is based on <xref target="RFC7092"></xref>.</t>
+
+      <t>It is assumed the reader is already familiar with the fundamental
+      concepts of the RTP protocol <xref target="RFC3550"></xref> and its
+      taxonomy <xref target="I-D.ietf-avtext-rtp-grouping-taxonomy"></xref>,
+      as well as those of SRTP <xref target="RFC3711"></xref>, and DTLS <xref
+      target="RFC6347"></xref>.</t>
+    </section>
+
+    <section title="Media Plane B2BUA Handling of DTLS-SRTP">
+      <section title="General">
+      <t>
+        This section describes the DTLS-SRTP handling by the different types of
+         media plane B2BUAs defined in <xref target="RFC7092"/>.
+      </t>
+    
+      <section title="Media Relay">
+        <t>A media relay, as defined in section 3.2.1 of <xref
+        target="RFC7092"></xref>, from an application layer point-of-view,
+        forwards all packets it receives on a negotiated connection,
+        without inspecting or modifying the packet contents. A media relay 
+        only modifies the transport layer (UDP/TCP) and IP headers.</t>
+
+        <t>A media relay B2BUA MUST forward the certificate fingerprint and
+        SDP setup attribute it receives from one endpoint
+        unmodified towards the other endpoint and vice-versa. The example below shows a
+        SIP call establishment flow, with both SIP endpoints (user agents) using
+        DTLS-SRTP, and a media relay B2BUA.</t>
+
+        <t><figure anchor="Figure1"
+            title="INVITE with SDP call-flow for Media Relay B2BUA">
+            <artwork align="center"><![CDATA[
+ +-------+            +------------------+              +-----+         
+ | Alice |            | MediaRelay B2BUA |              | Bob |
+ +-------+            +------------------+              +-----+
+     |(1) INVITE               |  (3)INVITE                |
+     |   a=setup:actpass       |   a=setup:actpass         |
+     |   a=fingerprint1        |   a= fingerprint1         | 
+     |   (alice's IP/port)     |   (B2BUAs IP/port)        |                        
+     |------------------------>|-------------------------->|
+     |                         |                           |
+     |    (2)  100 trying      |                           |
+     |<------------------------|                           |
+     |                         | (4) 100 trying            |
+     |                         |<--------------------------|
+     |                         |                           |
+     |                         |  (5)200 OK                |
+     |                         |   a=setup:active          |
+     |                         |    a=fingerprint2         |
+     |                         |  (Bob's IP/port)          |
+     |<------------------------|<--------------------------|
+     |    (6) 200 OK           |                           |
+     |    a=setup:active       |                           |
+     |    a=fingerprint2       |                           |
+     |    B2BUAs IP/port       |                           |
+     |               (7, 8)ClientHello + use_srtp          |
+     |<------------------------|<--------------------------|
+     |                         |                           |
+     |                         |                           |
+     |           (9,10)ServerHello + use_srtp              |
+     |------------------------>|-------------------------->|
+     |                 (11)    |                           |
+     |  [Certificate exchange between Alice and Bob over   | 
+     |   DTLS ]                |                           |  
+     |                         |                           |
+     |         (12)            |                           |
+     |<---------SRTP/SRTCP---->|<----SRTP/SRTCP----------->|
+     | [B2BUA changes transport(UDP/TCP) and IP headers]   |   
+          ]]></artwork>
+          </figure></t>
+
+        <t>NOTE: For brevity the entire value of the SDP fingerprint attribute is not
+        shown. The example here shows only one DTLS connection for the sake of simplicity.
+        In reality depending on whether the RTP and RTCP flows are multiplexed or 
+        demultiplexed there will be one or two DTLS connections.</t>
+
+        <t>If RTP and RTCP traffic is multiplexed as described in <xref target="RFC5761"/>
+        on a single port then only a single DTLS connection is required between the peers. 
+        If RTP and RTCP are not multiplexed, then the peers would have to establish two
+        DTLS connections. In this case, Bob, after he receives an INVITE request, triggers
+         the establishment of a DTLS connection. Note that the DTLS handshake and the 
+         sending of INVITE response can happen in parallel; thus, the B2BUA MUST be 
+         prepared to receive DTLS, STUN and media on the ports it advertised to Bob in the
+          SIP offer before it receives a SIP answer from Bob. Since a media relay B2BUA
+           does not differentiate between a DTLS message, RTP or any packet it receives, 
+           it only changes the transport layer (UDP/TCP) and IP headers and forwards the 
+           packet towards the other endpoint. The B2BUA cannot decrypt the RTP payload as 
+           the payload is encrypted using the SRTP keys derived from the DTLS connection 
+           setup between Alice and Bob.</t>
+
+        <t><xref target="RFC4474"></xref> provides a means for signing portions of
+   SIP requests in order to provide identity assurance and certificate
+   pinning by providing a signature over the SDP that carries the fingerprint of keying
+   for DTLS-SRTP <xref target="RFC5763"/>.  A media relay B2BUA MUST
+   ensure that it does not modify any of the information used to
+   construct the signature.</t>
+
+        <t>In the above example, Alice can be authorized by the authorization
+        server (SIP proxy) in its domain using the procedures in Section 5 of
+        <xref target="RFC4474"></xref>. In such a case, if the
+        B2BUA modifies some of the SIP headers or SDP content that was used by
+        Alice's authorization server to generate the identity, it would break
+        the identity verification procedure explained in Section 6 of <xref
+        target="RFC4474"></xref> resulting in a 438 error response being returned.</t>
+      </section>
+
+      <section title="RTP/RTCP-aware Media Aware B2BUA">
+        <t>Unlike the media relay discussed in Section 3.1.1, a media-aware relay as 
+        defined in Section 3.2.2 of <xref target="RFC7092"/>, is aware of the type of 
+        media traffic it is receiving.  There are two types of media-aware relay, those 
+        that merely inspect the RTP headers and unencrypted portions of RTCP packets, and
+         those that inspect and modify the RTP headers and unencrypted portions of RTCP
+          packets. The identity integrity protection procedures described in Security 
+          Considerations section MUST be used by the endpoint or the proxy server in the 
+          endpoints network to detect malicious B2BUAs that attempt to terminate the 
+          DTLS-SRTP session.</t>
+
+        <section title="RTP header and RTCP packets Inspection">
+          <t>This kind of media aware relay does not modify the RTP headers and RTCP
+          packets but only inspects the packets. It MUST NOT terminate the DTLS-SRTP
+          session on which the packets are received.</t>
+        </section> 
+
+        <section title="RTP header and RTCP packet Modification">
+          <t>
+           A B2BUA cannot modify RTP headers or RTCP packets, as to do so it  would need
+            to act as a DTLS endpoint, terminate the DTLS-SRTP session and 
+            decrypt/re-encrypt RTP packet.  This would cause the identity and integrity 
+            protection procedures discussed in  <xref target="RFC4474"/> 
+            to fail and hence a B2BUA MUST NOT terminate the DTLS-SRTP session.
+           This security and privacy problem can be mitigated by having different keys 
+           for protecting RTP header integrity and encrypting the RTP payload. 
+           For example, the approach discussed in  
+           <xref target="I-D.jones-perc-private-media-reqts"></xref> can be used.
+           With such an approach, the B2BUA is not aware of the keys used to decrypt 
+           the media payload.
+           </t>
+        </section>
+      </section>
+   </section>    
+      <section title="Media Plane B2BUA with NAT Handling">
+        <t>DTLS-SRTP handshakes and SDP offer/answer exchanges <xref target="RFC3264"/> may
+        happen in parallel. If an endpoint is behind a NAT, and the endpoint is acting as a DTLS
+        server, the ClientHello message from a B2BUA (acting as DTLS client) is likely to be lost, as described
+        in Section 7.3 of <xref target="RFC5763"></xref>. In order to overcome
+        this problem, the endpoint and B2BUA can support the Interactive Connectivity 
+        Establishment (ICE) mechanism <xref target="RFC5245"/>, as discussed in Section
+        7.3 of <xref target="RFC5763"></xref>. If the ICE check is successful then the endpoint
+        will receive the ClientHello message from the B2BUA.</t>
+      </section>
+    </section>
+
+    <section title="Forking Considerations">
+      <t>Due to forking <xref target="RFC3261"/>, a SIP request carrying an SDP offer
+      sent by an endpoint (offerer) can reach multiple remote endpoints. As a result,
+      multiple DTLS-SRTP sessions can be established, one between the endpoint that sent
+      the SIP request and each of the remote endpoints that received the request.
+      Both media relays and media-aware relays MUST forward the certificate
+      fingerprints and SDP setup attributes it received in the SDP answer from each endpoint (answerer)
+      unmodified towards the offerer. Since each DTLS connection is setup on a unique 5-tuple, B2BUA MUST replace
+      the answerer's transport addresses in each answer with its unique
+      transport addresses so that the offerer can establish a DTLS connection
+      with each answerer.</t>
+
+      <figure anchor="Figure2"
+            title="B2BUA handling multiple answers">
+        <artwork><![CDATA[
+                                          Bob (192.0.2.1:6666)
+                                         /
+                                        /
+                                       / DTLS-SRTP=XXX
+                                      /  
+                                     /
+                      DTLS-SRTP=XXX v
+                      <----------->  (192.0.2.3:7777) 
+Alice (192.0.2.0:5555)             B2BUA 
+                      <----------->  (192.0.2.3:8888)       
+                      DTLS-SRTP=YYY ^
+                                     \
+                                      \  DTLS-SRTP=YYY 
+                                       \ 
+                                        \
+                                         \
+                                          Charlie (192.0.2.2:6666)
+            ]]></artwork>
+      </figure>
+
+      <t></t>
+
+      <t>For instance, as shown in Figure 2 Alice sends a request with an offer, and the request is forked. 
+      Alice receives answers from both Bob and Charlie. B2BUA MUST advertise different
+      B2BUA transport address in each answer, as shown in Figure2,
+      where XXX and YYY represent different DTLS-SRTP sessions. B2BUA
+      replaces the Bob's transport address (192.0.2.1:6666) in the answer with
+      its transport address (192.0.2.3:7777) and Charlie's transport address
+      (192.0.2.2:6666) in the answer with its transport address
+      (192.0.2.3:8888). B2BUA tracks the remote sources (Bob and Charlie) and
+      associates them to the local sources that are used to send packets to
+      Alice.</t>
+    </section>
+
+    <section title="Security Considerations">
+      <t>This document describes the behavior media plane B2BUAs (media-aware
+      and media-unaware) MUST follow when acting on the media plane that
+      uses SRTP security context setup with the DTLS protocol. Attempting to cover
+       media-aware relay modifying RTP headers and media termination scenarios involving secure sessions
+       (like DTLS-SRTP) will inevitably lead to the B2BUA acting as a man-in-the-middle, 
+       and hence a B2BUA MUST NOT terminate DTLS-SRTP session. Security considerations 
+      discussed in <xref target="RFC5763"></xref> are also applicable to this document. In addition, the B2BUA behaviors outlined in this document
+      do not impact the security and integrity of a DTLS-SRTP session or
+      the data exchanged over it. A malicious B2BUA can try to break into the
+      DTLS connection, but such an attack can be prevented using the identity
+      validation mechanism discussed in <xref target="RFC4474"/>. Either the endpoints or authentication service 
+      proxies involved in the call MUST use the identity validation mechanisms discussed in 
+      <xref target="RFC4474"/> to validate the identity of peers and detect malicious B2BUA's 
+      that can attempt to terminate the DTLS connection to decrypt the RTP payload.
+      </t>
+    </section>
+
+    <section anchor="sec.iana-considerations" title="IANA Considerations">
+      <t>This document makes no request of IANA.</t>
+    </section>
+
+    <section title="Acknowledgments">
+      <t>Special thanks to Lorenzo Miniero, Ranjit Avarsala, Hadriel Kaplan,
+      Muthu Arul Mozhi, Paul Kyzivat, Peter Dawes, Brett Tate, Dan Wing,
+      Charles Eckel, Simon Perreault, Albrecht Schwarz, Jens Guballa, Christer Holmberg,
+      Colin Perkins and Ben Campbell for their constructive comments,suggestions, and 
+      early reviews that were critical to the formulation and refinement of this 
+      document.</t>
+    </section>
+
+    <section title="Contributors">
+      <t>Rajeev Seth provided substantial contributions to this document.</t>
+    </section>
+  </middle>
+
+  <back>
+    <references title="Normative References">
+      <?rfc include="reference.RFC.2119"?>
+
+      <?rfc include="reference.RFC.3550"?>
+
+      <?rfc include="reference.RFC.3711"?>
+
+      <?rfc include="reference.RFC.5763"?>
+
+      <?rfc include="reference.RFC.5764"?>
+
+      <?rfc include="reference.RFC.6347"?>
+     <?rfc include="reference.RFC.4474"?>
+
+    </references>
+
+    <references title="Informative References">
+      <?rfc include="reference.RFC.3261"?>
+      <?rfc include="reference.RFC.3264"?>
+
+      <?rfc include="reference.RFC.4566"?>
+
+      <?rfc include="reference.RFC.7092"?>
+
+      <?rfc include="reference.RFC.5245"?>
+      <?rfc include="reference.I-D.ietf-avtext-rtp-grouping-taxonomy"?>
+
+      <?rfc include="reference.I-D.jones-perc-private-media-reqts" ?>
+
+      <?rfc include="reference.RFC.5761"?>
+    </references>
+    </back>
+</rfc>

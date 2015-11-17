@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd">
+<?rfc toc="yes"?>
+<?rfc tocompact="yes"?>
+<?rfc tocdepth="3"?>
+<?rfc tocindent="yes"?>
+<?rfc symrefs="yes"?>
+<?rfc sortrefs="yes"?>
+<?rfc comments="yes"?>
+<?rfc inline="yes"?>
+<?rfc compact="yes"?>
+<?rfc subcompact="no"?>
+<rfc category="std" docName="draft-reddy-tram-stun-path-data-00"
+     ipr="trust200902">
+  <front>
+    <title abbrev="STUN Path Characteristics">Discovery of path
+    characteristics using STUN</title>
+
+    <author fullname="Tirumaleswar Reddy" initials="T." surname="Reddy">
+      <organization abbrev="Cisco">Cisco Systems, Inc.</organization>
+
+      <address>
+        <postal>
+          <street>Cessna Business Park, Varthur Hobli</street>
+
+          <street>Sarjapur Marathalli Outer Ring Road</street>
+
+          <city>Bangalore</city>
+
+          <region>Karnataka</region>
+
+          <code>560103</code>
+
+          <country>India</country>
+        </postal>
+
+        <email>tireddy@cisco.com</email>
+      </address>
+    </author>
+
+    <author fullname="Dan Wing" initials="D." surname="Wing">
+      <organization abbrev="Cisco">Cisco Systems, Inc.</organization>
+
+      <address>
+        <postal>
+          <street>170 West Tasman Drive</street>
+
+          <city>San Jose</city>
+
+          <region>California</region>
+
+          <code>95134</code>
+
+          <country>USA</country>
+        </postal>
+
+        <email>dwing@cisco.com</email>
+      </address>
+    </author>
+
+    <author fullname="Paal-Erik Martinsen" initials="P.E" surname="Martinsen">
+      <organization abbrev="Cisco">Cisco Systems, Inc.</organization>
+
+      <address>
+        <postal>
+          <street>Philip Pedersens vei 22</street>
+
+          <city>Lysaker</city>
+
+          <region>Akershus</region>
+
+          <code>1325</code>
+
+          <country>Norway</country>
+        </postal>
+
+        <email>palmarti@cisco.com</email>
+      </address>
+    </author>
+
+    <author fullname="Varun Singh" initials="V." surname="Singh">
+      <organization abbrev="callstats.io">Nemu Dialogue System
+      Oy</organization>
+
+      <address>
+        <postal>
+          <street></street>
+
+          <city>Espoo</city>
+
+          <code>02235</code>
+
+          <country>Finland</country>
+        </postal>
+
+        <email>varun@callstats.io</email>
+      </address>
+    </author>
+
+    <date />
+
+    <workgroup>TRAM</workgroup>
+
+    <abstract>
+      <t>A host with multiple interfaces needs to choose the best interface
+      for communication. Oftentimes, this decision is based on a static
+      configuration and does not consider the path characteristics, which may
+      affect the user experience.</t>
+
+      <t>This document describes a mechanism for an endpoint to discover the
+      path characteristics using Session Traversal Utilities for NAT (STUN)
+      messages. The measurement information can then be used to influence the
+      endpoint's Interactive Connectivity Establishment (ICE) candidate pair
+      selection algorithm.</t>
+    </abstract>
+  </front>
+
+  <middle>
+    <section anchor="introduction" title="Introduction">
+      <t>The ICE <xref target="RFC5245"></xref> mechanism uses a
+      prioritization formula to order the candidate pairs and perform
+      connectivity checks, in which the most preferred address pairs are
+      tested first and when a sufficiently good pair is discovered, that pair
+      is used for communications and further connectivity tests are stopped.
+      This approach works well for an endpoint with a single interface, but is
+      too simplistic for endpoints with multiple interfaces, wherein a
+      candidate pair with a lower priority might infact have better path
+      characteristics (e.g., round-trip time, loss, etc.). The ICE
+      connectivity checks can be used to measure the path characteristics but
+      the issue is that STUN responses to re-transmitted requests are
+      indistinguishable from each other.</t>
+
+      <t>This draft extends STUN <xref target="RFC5389"></xref> to distinguish
+      STUN responses to re-transmitted requests and assists the client in
+      determining the path characteristics like round-trip time (RTT) and
+      packet loss in each direction between endpoints. These metrics can be
+      used by the controlling agent to influence the ICE candidate pair
+      priorities.</t>
+    </section>
+
+    <section anchor="notation" title="Notational Conventions">
+      <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+      "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+      document are to be interpreted as described in <xref
+      target="RFC2119"></xref>.</t>
+
+      <t>This note uses terminology defined in <xref
+      target="RFC5245">ICE</xref> and STUN <xref target="RFC5389"></xref>.</t>
+    </section>
+
+    <section anchor="alg_over"
+             title="Path characteristics determination mechanism">
+      <t>When multiple paths are available for communication, the endpoint
+      sends ICE connectivity checks across each path and perhaps chooses the
+      path with the lowest round trip time. Choosing the path with the lowest
+      round trip time is a reasonable approach, but re- transmits can cause an
+      otherwise-good path to appear flawed. However, STUN's retransmission
+      algorithm <xref target="RFC5389"></xref> cannot determine the round-trip
+      time if a STUN request packet is re-transmitted, because each packet
+      request and retransmission is identical, further, several STUN requests
+      may be sent before the connectivity between pairs is ascertained (see
+      Section 16 of <xref target="RFC5245"></xref>). To resolve the issue of
+      identical request and response packets in a STUN transaction, this
+      document changes that retransmission behavior for idempotent packets. In
+      addition to determining RTT, it is also desirable to detect which path
+      direction caused packet loss, described as "bi-directional path
+      characteristics," below. This is achieved by defining a new STUN
+      attribute and requires compliant STUN (TURN, ICE) servers to count
+      retransmitted request packets.</t>
+
+      <t>This specification defines a new comprehension-optional STUN
+      attribute PATH-CHARACTERISTIC. PATH-CHARACTERISTIC will have a STUN Type
+      TBD-CA. This type is in the comprehension-optional range, which means
+      that STUN agents can safely ignore the attribute if they do not
+      understand it.</t>
+
+      <t>If a client wishes to determine the path characteristics, it inserts
+      the PATH-CHARACTERISTIC attribute in a STUN request. In the
+      PATH-CHARACTERISTIC attribute client sends the number of times the STUN
+      request is retransmitted with the same Transaction ID. The server would
+      echo back the retransmission count in the response so that client can
+      distinguish STUN responses from the re-transmitted requests. Hence, the
+      endpoint can use the STUN requests and responses to determine the
+      round-trip time (RTT). The server may also convey the number of times it
+      received the request with the same Transaction ID and the number of
+      responses it has sent for the STUN request to the client. Further, this
+      information enables the client to determine packet loss in each
+      direction.</t>
+
+      <section title="The PATH-CHARACTERISTIC attribute in request">
+        <t>The PATH-CHARACTERISTIC attribute in a STUN request takes a 1-byte
+        Value, which means that the Length is 1 and 3 bytes of padding are
+        required after the value (Section 15 of <xref
+        target="RFC5389"></xref>). When sending a STUN request, the
+        PATH-CHARACTERISTIC attribute allows a client to indicate to the
+        server that it wants to determine path characteristics. If the client
+        receives a STUN response with error code 420 (Unknown Attribute) and
+        PATH-CHARACTERISTIC is listed in the UNKNOWN-ATTRIBUTE attribute of
+        the message, the client SHOULD retransmit the original request without
+        the PATH-CHARACTERISTIC attribute. However this case is not expected
+        to occur, due to the use of the comprehension-optional attribute
+        type.</t>
+
+        <t>This specification updates one the STUN message structuring rules
+        explained in Section 6 of <xref target="RFC5389"></xref> that resends
+        of the same request reuse the same transaction ID and are bit-wise
+        identical to the previous request. The ReTransCnt in the
+        PATH-CHARACTERISTIC attribute will be incremented by 1 for every
+        re-transmission and the re-transmitted STUN request MUST be bit-wise
+        identical to the previous request except for the ReTransCnt value.</t>
+
+        <t>The format of the value in PATH-CHARACTERISTIC attribute in the
+        request is:</t>
+
+        <t><figure anchor="Figure1"
+            title=" PATH-CHARACTERISTIC attribute in request">
+            <artwork align="left"><![CDATA[         0
+         0 1 2 3 4 5 6 7
+        +-+-+-+-+-+-+-+-+
+        | ReTransCnt    |
+        +-+-+-+-+-+-+-+-+
+          ]]></artwork>
+          </figure></t>
+
+        <t>The field is described below:</t>
+
+        <t><list style="hanging">
+            <t hangText="ReTransCnt:">Number of times request is
+            re-transmitted with the same transaction ID to the server.</t>
+          </list></t>
+      </section>
+
+      <section title="The PATH-CHARACTERISTIC attribute in response">
+        <t>When a server receives a STUN request that includes a
+        PATH-CHARACTERISTIC attribute, it processes the request as per the
+        STUN specification <xref target="RFC5389"></xref> plus the specific
+        rules mentioned here. The server checks the following:</t>
+
+        <t><list style="symbols">
+            <t>If the PATH-CHARACTERISTIC attribute is not recognized, ignore
+            the attribute because its type indicates that it is comprehension-
+            optional. This should be the existing behavior as explained in
+            section 3.1 of <xref target="RFC5389"></xref>.</t>
+
+            <t>The server that supports PATH-CHARACTERISTIC attribute MUST
+            echo back ReTransCnt in the response.</t>
+
+            <t>If the server is stateless or does not want to remember the
+            transaction ID then it would populate value 0 for the ReqTransCnt
+            and RespTransCnt fields in PATH-CHARACTERISTIC attribute sent in
+            the response .If the server is stateful then it populates
+            ReqTransCnt with the number of times it received the STUN request
+            with the same transaction ID and RespTransCnt with the number of
+            responses it has sent for the STUN request.</t>
+          </list></t>
+
+        <t><figure anchor="Figure2"
+            title=" PATH-CHARACTERISTIC attribute in response">
+            <artwork align="left"><![CDATA[     0                   1                   2                   3
+     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0|        ReTransCnt             |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |   ReqTransCnt                 |        RespTransCnt           |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+          ]]></artwork>
+          </figure></t>
+
+        <t>The fields are described below:<list style="hanging">
+            <t hangText="ReTransCnt:">Copied from request.</t>
+
+            <t hangText="ReqTransCnt:">Number of times request is received
+            from the client with the same transaction ID.</t>
+
+            <t hangText="RespTransCnt:">Number of responses sent to the client
+            for the same transaction ID.</t>
+          </list></t>
+
+        <section title="Example Operation">
+          <t>The operation is described in <xref target="Figure3"></xref>. In
+          the first case, all the requests and responses are received
+          correctly. In the upstream loss case, the first request is lost, but
+          the second one is received correctly, the client on receiving the
+          response notes that while 2 requests were sent, only one was
+          received by the server, also the server realizes that the
+          RespTransCnt does not match the ReTransCnt, therefore 1 request was
+          lost. This may also occur at startup in the presence firewalls or
+          NATs that block unsolicited incoming traffic. In the downstream loss
+          case, the responses get lost, client expecting multiple response
+          notes that while the server responded to 3 requests but only 1
+          response was received. In the both loss case, requests and responses
+          get lost in tandem, the server notes one request packet was not
+          received, while the client expecting 3 responses received only one,
+          it notes that one request and response packets were lost.</t>
+
+          <t><figure anchor="Figure3"
+              title="Retransmit Operation between client and Server">
+              <artwork align="left"><![CDATA[
+    Normal     |  Upstream loss  |  Downstream loss|      Both loss  |
+Client  Server |  Client  Server |  Client  Server |  Client  Server |
+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-|
+1         1,1  |  1         x    |  1         1,1  |  1         x    |
+  1,1          |                 |    x            |                 |
+2         2,2  |  2         2,1  |  2         2,2  |  2         2,1  |
+  2,2          |    2,1          |    x            |    x            |
+3         3,3  |  3         3,2  |  3         3,3  |  3         3,2  |
+  3,3          |    3,2          |    3,3          |    3,2          |
+          ]]></artwork>
+            </figure></t>
+        </section>
+      </section>
+    </section>
+
+    <section anchor="mif" title="Multiple Interfaces and other usecases">
+      <t>The STUN attribute defined in this specification can be used by
+      applications in the following scenarios:</t>
+
+      <t><list style="symbols">
+          <t>When an endpoint has multiple interfaces (for example 3G, 4G,
+          WiFi, VPN, etc.), an ICE agent can choose the interfaces for media
+          streams according to the path characteristics. After STUN responses
+          to STUN checks are received, the ICE agent using regular nomination
+          can sort the ICE candidate pairs according to the path
+          characteristics discovered using STUN. The controlling agent can
+          assign highest priority to candidate pair which best fulfills the
+          desired path characteristics.</t>
+
+          <t>[TODO: Add details of
+          http://juberti.github.io/draughts/nombis/draft-uberti-mmusic-nombis.html
+          that explains simplifying and improving the procedures for candidate
+          nomination in ICE to make dynamic decisions.]</t>
+
+          <t>When a host has multiple interfaces available an <xref
+          target="I-D.ietf-avtcore-mprtp">MPRTP</xref> application can choose
+          the interface for the primary subflow and interfaces for subsequent
+          subflows according to the path characteristics discovered using
+          STUN. For example, the scheduling algorithm described in <xref
+          target="ACM-MPRTP"></xref> uses both path loss and latency for
+          choosing the most suitable subset of paths.</t>
+
+          <t>The STUN extension proposed in this specification can also be
+          used to choose a TURN server that provides the best user experience
+          (section 3.1 of <xref
+          target="I-D.patil-tram-turn-serv-selection"></xref>).</t>
+        </list></t>
+    </section>
+
+    <section title="IANA Considerations">
+      <t>[Paragraphs in braces should be removed by the RFC Editor upon
+      publication]</t>
+
+      <t>[The PATH-CHARACTERISTIC attribute requires that IANA allocate a
+      value in the "STUN attributes Registry" from the comprehension-optional
+      range (0x8000-0xFFFF), to be replaced for TBD-CA throughout this
+      document]</t>
+
+      <t>This document defines the PATH-CHARACTERISTIC STUN attribute,
+      described in <xref target="alg_over"></xref>. IANA has allocated the
+      comprehension-optional codepoint TBD-CA for this attribute.</t>
+    </section>
+
+    <section anchor="security" title="Security Considerations">
+      <t>Security considerations discussed in <xref target="RFC5389"></xref>
+      are to be taken into account. STUN requires the 96 bits transaction ID
+      to be uniformly and randomly chosen from the interval 0 .. 2**96-1, and
+      be cryptographically strong. This is good enough security against an
+      off-path attacker. An on-path attacker can either inject a fake response
+      or modify the values in PATH-CHARACTERISTIC attribute to mislead the
+      client and server, this attack can be mitigated using STUN
+      authentication. As PATH-CHARACTERISTIC is expected to be used between
+      peers using ICE, and ICE uses STUN short-term credential mechanism the
+      risk of on-path attack influencing the messages is minimal. However, an
+      attacker could corrupt, remove, or delay an ICE request or response, in
+      order to discourage that path from being used.</t>
+    </section>
+
+    <section anchor="ack" title="Acknowledgements">
+      <t>TODO</t>
+    </section>
+  </middle>
+
+  <back>
+    <references title="Normative References">
+      <?rfc include="reference.RFC.2119"?>
+
+      <?rfc include="reference.RFC.5245"?>
+
+      <?rfc include="reference.RFC.5389"  ?>
+    </references>
+
+    <references title="Informative References">
+      <?rfc include='reference.I-D.patil-tram-turn-serv-selection'?>
+
+      <?rfc include='reference.I-D.ietf-avtcore-mprtp'?>
+
+      <reference anchor="ACM-MPRTP">
+        <front>
+          <title>MPRTP: multipath considerations for real-time media</title>
+
+          <author fullname="Varun Singh" initials="V." surname="Singh"></author>
+
+          <author fullname="Saba Ahsan" initials="S." surname="Ahsan"></author>
+
+          <author fullname="Joerg Ott" initials="J." surname="Ott"></author>
+
+          <date year="2013" />
+        </front>
+
+        <seriesInfo name="in Proc. of ACM Multimedia Systems," value="MMSys" />
+      </reference>
+    </references>
+  </back>
+</rfc>

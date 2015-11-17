@@ -1,0 +1,12 @@
+language: c
+compiler:
+- gcc
+before_install:
+- sudo pip install lxml==3.2.4
+- sudo pip install xml2rfc
+script:
+- ./createdrafts.sh
+after_success: ./update_pages.sh
+env:
+  global:
+    secure: N/H2IibbK31A4artQvQ2Xr/VQ+TdfxT0CIUzKD1uWvb3KgTTJe/zn8ooAKIv3q5gD1UfLGRtVbN8srWX9GLq24ON6QPXnHyhwhJGpBUHWrKr+UBHgz4VE9ckM8G1uvy5gjGz8lDzV1G9cnI187DUlcp1YKp17EBD2P8JZBiay3Q=
